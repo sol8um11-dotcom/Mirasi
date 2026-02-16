@@ -87,15 +87,16 @@ async function main() {
     try {
       const startTime = Date.now();
 
+      const kontextInput: Record<string, unknown> = {
+        image_url: imageUrl,
+        prompt,
+        guidance_scale: config.guidanceScale,
+        num_inference_steps: config.numInferenceSteps,
+        output_format: "jpeg",
+        safety_tolerance: "2",
+      };
       const result = await fal.subscribe(KONTEXT_PRO, {
-        input: {
-          image_url: imageUrl,
-          prompt,
-          guidance_scale: config.guidanceScale,
-          num_inference_steps: config.numInferenceSteps,
-          output_format: "jpeg",
-          safety_tolerance: "2",
-        } as Record<string, unknown>,
+        input: kontextInput as never,
       });
 
       const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
