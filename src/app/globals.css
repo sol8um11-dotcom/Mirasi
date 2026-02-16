@@ -1,0 +1,221 @@
+@import "tailwindcss";
+
+/* Mirasi Design Tokens — Dark Theme */
+@theme inline {
+  /* Brand Colors - Saffron/Gold inspired by Indian art */
+  --color-saffron: #C75B12;
+  --color-saffron-light: #E8863F;
+  --color-saffron-dark: #A34A0E;
+  --color-gold: #D4A843;
+  --color-gold-light: #E8C96A;
+  --color-gold-dark: #B08C2E;
+
+  /* Neutral palette - Dark warm tones */
+  --color-cream: #0A0A0A;
+  --color-cream-dark: #141210;
+  --color-sand: #1E1C18;
+  --color-earth: #8B7355;
+  --color-earth-dark: #5C4A35;
+
+  /* Deep blues for accents */
+  --color-deep-blue: #1B2A4A;
+  --color-deep-blue-light: #2D4373;
+  --color-royal-blue: #1E3A6E;
+
+  /* Semantic — Dark Theme */
+  --color-background: #0A0A0A;
+  --color-foreground: #F0EDE6;
+  --color-muted: #9B8E7E;
+  --color-border: #2A2520;
+  --color-card: #141210;
+  --color-card-hover: #1E1C18;
+
+  /* Status */
+  --color-success: #3DA567;
+  --color-error: #E04040;
+  --color-warning: #E8780A;
+  --color-info: #4A90D9;
+
+  /* Typography */
+  --font-sans: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-display: var(--font-urbanist), system-ui, sans-serif;
+
+  /* Spacing */
+  --spacing-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --spacing-safe-top: env(safe-area-inset-top, 0px);
+
+  /* Radius */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
+  --radius-full: 9999px;
+
+  /* Shadows — Dark theme (subtle depth) */
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-card-hover: 0 4px 12px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
+  --shadow-elevated: 0 8px 24px rgba(0, 0, 0, 0.5), 0 4px 8px rgba(0, 0, 0, 0.4);
+
+  /* 3D Engraved Metal Effect — multi-layer bevel matching logo spiral */
+  --shadow-raised:
+    inset 0 1px 0 0 rgba(242, 200, 130, 0.2),
+    inset 0 -1px 0 0 rgba(0, 0, 0, 0.25),
+    0 1px 0 0 rgba(232, 160, 80, 0.15),
+    0 -1px 0 0 rgba(0, 0, 0, 0.4),
+    0 3px 6px -1px rgba(0, 0, 0, 0.35),
+    0 1px 2px rgba(0, 0, 0, 0.25);
+  --shadow-raised-hover:
+    inset 0 1px 0 0 rgba(242, 200, 130, 0.3),
+    inset 0 -1px 0 0 rgba(0, 0, 0, 0.2),
+    0 1px 0 0 rgba(232, 160, 80, 0.2),
+    0 -1px 0 0 rgba(0, 0, 0, 0.4),
+    0 6px 14px -2px rgba(0, 0, 0, 0.45),
+    0 2px 4px rgba(0, 0, 0, 0.3);
+  --shadow-raised-active:
+    inset 0 1px 2px 0 rgba(0, 0, 0, 0.3),
+    inset 0 -1px 0 0 rgba(242, 200, 130, 0.1),
+    0 0 0 0 rgba(0, 0, 0, 0),
+    0 0 0 0 rgba(0, 0, 0, 0),
+    0 1px 2px rgba(0, 0, 0, 0.2),
+    0 0 0 rgba(0, 0, 0, 0);
+
+  /* Animations */
+  --animate-fade-in: fade-in 0.3s ease-out;
+  --animate-slide-up: slide-up 0.4s ease-out;
+  --animate-scale-in: scale-in 0.2s ease-out;
+}
+
+/* Keyframes */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Base styles */
+html {
+  scroll-behavior: smooth;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  padding-top: var(--spacing-safe-top);
+  padding-bottom: var(--spacing-safe-bottom);
+}
+
+/* Scroll-snap container for style carousels */
+.scroll-snap-x {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.scroll-snap-x::-webkit-scrollbar {
+  display: none;
+}
+
+.scroll-snap-item {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
+
+/* Native dialog styling */
+dialog {
+  border: none;
+  border-radius: var(--radius-xl);
+  padding: 0;
+  max-width: min(90vw, 28rem);
+  max-height: 85vh;
+  box-shadow: var(--shadow-elevated);
+  background: var(--color-card);
+  color: var(--color-foreground);
+}
+
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+}
+
+/* Hide scrollbar utility */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Focus visible for keyboard navigation */
+*:focus-visible {
+  outline: 2px solid var(--color-saffron);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* Prevent overscroll bounce */
+.overscroll-none {
+  overscroll-behavior: none;
+}
+
+/* Image loading shimmer — Dark theme */
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-sand) 0%,
+    var(--color-cream-dark) 50%,
+    var(--color-sand) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* 3D Engraved Metal Effect — reusable utility for buttons & CTAs.
+   Matches the logo spiral's bevel style: subtle highlight on top edge,
+   dark shadow on bottom, inset ridges for that stamped-metal feel. */
+.raised-3d {
+  box-shadow: var(--shadow-raised);
+  transform: translateY(0) scale(1);
+  transition:
+    box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+  border-top: 1px solid rgba(242, 200, 130, 0.12);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+.raised-3d:hover {
+  box-shadow: var(--shadow-raised-hover);
+  transform: translateY(-1.5px) scale(1.01);
+  border-top-color: rgba(242, 200, 130, 0.18);
+}
+
+.raised-3d:active {
+  box-shadow: var(--shadow-raised-active);
+  transform: translateY(0.5px) scale(0.99);
+  border-top-color: rgba(0, 0, 0, 0.15);
+  border-bottom-color: rgba(242, 200, 130, 0.08);
+}

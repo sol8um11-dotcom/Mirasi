@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mirasi — 3D Emboss V5 (Refined Subtle Metallic)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Urbanist', system-ui, sans-serif;
+      background: #0A0A0A;
+      color: #F0EDE6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+    h1 {
+      font-size: 14px; font-weight: 600; letter-spacing: 3px;
+      text-transform: uppercase; color: #9B8E7E; margin-bottom: 48px;
+    }
+    .showcase { display: flex; flex-direction: column; align-items: center; gap: 64px; max-width: 900px; width: 100%; }
+    .section-title { font-size: 12px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: #9B8E7E; margin-bottom: 20px; text-align: center; }
+    .comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; width: 100%; }
+    .compare-card { display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 32px; border-radius: 16px; border: 1px solid #1A1A1A; background: #0F0F0F; }
+    .compare-card.hl { border-color: #C75B12; background: linear-gradient(135deg, rgba(199,91,18,0.05), rgba(212,168,67,0.03)); }
+    .card-label { font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: #6B5E51; }
+    .card-label.new { color: #C75B12; }
+    .sizes { display: flex; align-items: center; justify-content: center; gap: 48px; flex-wrap: wrap; }
+    .size-item { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    .size-label { font-size: 11px; color: #6B5E51; font-weight: 500; }
+
+    /* Wordmark with gold dots */
+    .wordmark { font-family: 'Urbanist', sans-serif; font-weight: 700; color: #C75B12; letter-spacing: -0.5px; display: inline-flex; align-items: baseline; }
+    .wordmark .ch { position: relative; display: inline-block; }
+    .wordmark .dot { position: absolute; left: 50%; transform: translateX(-50%); border-radius: 50%; background: #D4A843; }
+    .wordmark.wm-sm { font-size: 16px; }
+    .wordmark.wm-sm .dot { width: 3px; height: 3px; top: 0.12em; }
+    .wordmark.wm-md { font-size: 18px; }
+    .wordmark.wm-md .dot { width: 3.5px; height: 3.5px; top: 0.1em; }
+    .wordmark.wm-lg { font-size: 24px; }
+    .wordmark.wm-lg .dot { width: 4.5px; height: 4.5px; top: 0.1em; }
+    .wordmark.wm-xl { font-size: 36px; }
+    .wordmark.wm-xl .dot { width: 7px; height: 7px; top: 0.1em; }
+
+    /* Header sim */
+    .header-sim { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 12px 20px; border-radius: 12px; border: 1px solid #1A1A1A; background: rgba(10,10,10,0.95); backdrop-filter: blur(8px); }
+    .header-logo { display: flex; align-items: center; gap: 8px; }
+    .header-nav { display: flex; gap: 24px; }
+    .header-nav a { font-size: 14px; color: rgba(240,237,230,0.6); text-decoration: none; font-weight: 500; }
+
+    /* Button styles */
+    .btn-3d {
+      background: #C75B12; color: white; padding: 14px 28px; border-radius: 12px;
+      font-family: 'Urbanist', sans-serif; font-size: 16px; font-weight: 600; cursor: pointer;
+      border: none; border-top: 1px solid rgba(242,200,130,0.12); border-bottom: 1px solid rgba(0,0,0,0.3);
+      box-shadow: inset 0 1px 0 0 rgba(242,200,130,0.2), inset 0 -1px 0 0 rgba(0,0,0,0.25), 0 1px 0 0 rgba(232,160,80,0.15), 0 -1px 0 0 rgba(0,0,0,0.4), 0 3px 6px -1px rgba(0,0,0,0.35), 0 1px 2px rgba(0,0,0,0.25);
+      transform: translateY(0) scale(1);
+      transition: box-shadow 0.25s cubic-bezier(0.4,0,0.2,1), transform 0.2s cubic-bezier(0.4,0,0.2,1), background-color 0.2s ease, border-color 0.2s ease;
+    }
+    .btn-3d:hover {
+      background: #A34A0E; border-top-color: rgba(242,200,130,0.18);
+      box-shadow: inset 0 1px 0 0 rgba(242,200,130,0.3), inset 0 -1px 0 0 rgba(0,0,0,0.2), 0 1px 0 0 rgba(232,160,80,0.2), 0 -1px 0 0 rgba(0,0,0,0.4), 0 6px 14px -2px rgba(0,0,0,0.45), 0 2px 4px rgba(0,0,0,0.3);
+      transform: translateY(-1.5px) scale(1.01);
+    }
+    .btn-3d:active {
+      border-top-color: rgba(0,0,0,0.15); border-bottom-color: rgba(242,200,130,0.08);
+      box-shadow: inset 0 1px 2px 0 rgba(0,0,0,0.3), inset 0 -1px 0 0 rgba(242,200,130,0.1), 0 1px 2px rgba(0,0,0,0.2);
+      transform: translateY(0.5px) scale(0.99);
+    }
+    .btn-3d.sm { font-size: 14px; padding: 8px 16px; border-radius: 8px; }
+    .btn-outline {
+      background: #141414; color: #F0EDE6; border: 1px solid #2A2520;
+      padding: 14px 28px; border-radius: 12px; font-family: 'Urbanist', sans-serif;
+      font-size: 16px; font-weight: 600; cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3); transition: all 0.2s ease;
+    }
+    .btn-outline:hover { background: #1A1714; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+    .button-row { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; justify-content: center; }
+
+    .hero-showcase { display: flex; flex-direction: column; align-items: center; gap: 24px; padding: 48px; border-radius: 20px; border: 1px solid #1A1A1A; background: linear-gradient(180deg, #0F0F0F, #0A0A0A); width: 100%; }
+    .hero-title { font-size: 28px; font-weight: 700; text-align: center; }
+    .hero-subtitle { font-size: 14px; color: #9B8E7E; text-align: center; }
+    .note { font-size: 12px; color: #6B5E51; text-align: center; max-width: 600px; line-height: 1.6; font-style: italic; }
+  </style>
+</head>
+<body>
+  <h1>Mirasi — 3D Emboss V5 (Refined Subtle Metallic)</h1>
+  <div class="showcase">
+
+    <!-- Flat vs Embossed comparison -->
+    <div>
+      <div class="section-title">Flat vs V5 Refined Emboss (64px)</div>
+      <div class="comparison">
+        <div class="compare-card">
+          <div class="card-label">Flat</div>
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+            <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+            <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34 C41.5 30 38 28 35 28.5 C33 29 31 29.5 29.5 31" stroke="#C75B12" stroke-width="2" stroke-linecap="round" fill="none"/>
+            <circle cx="34" cy="31.5" r="2" fill="#D4A843"/>
+          </svg>
+        </div>
+        <div class="compare-card hl">
+          <div class="card-label new">V5 Refined Subtle</div>
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <filter id="ev5-cmp" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB">
+                <feGaussianBlur in="SourceAlpha" stdDeviation="0.8" result="dropBlur"/>
+                <feOffset in="dropBlur" dx="0.6" dy="1" result="dropOff"/>
+                <feFlood flood-color="#050200" flood-opacity="0.45" result="dropFill"/>
+                <feComposite in="dropFill" in2="dropOff" operator="in" result="dropShadow"/>
+                <feMorphology in="SourceAlpha" operator="dilate" radius="0.35" result="fat"/>
+                <feOffset in="fat" dx="0.4" dy="0.6" result="darkEdge"/>
+                <feFlood flood-color="#1A0800" flood-opacity="0.75" result="darkFill"/>
+                <feComposite in="darkFill" in2="darkEdge" operator="in" result="darkBevel"/>
+                <feOffset in="fat" dx="-0.35" dy="-0.45" result="lightEdge"/>
+                <feFlood flood-color="#D4A843" flood-opacity="0.3" result="lightFill"/>
+                <feComposite in="lightFill" in2="lightEdge" operator="in" result="lightBevel"/>
+                <feColorMatrix in="SourceGraphic" type="matrix" values="1.02 0.03 0 0 0.01  0 0.98 0.02 0 0.005  0 0 0.8 0 0  0 0 0 1 0" result="bronzeFace"/>
+                <feMorphology in="SourceAlpha" operator="erode" radius="0.3" result="thin"/>
+                <feOffset in="thin" dx="-0.2" dy="-0.3" result="ridgeOff"/>
+                <feComposite in="SourceAlpha" in2="ridgeOff" operator="out" result="ridgeMask"/>
+                <feFlood flood-color="#E8C878" flood-opacity="0.2" result="ridgeFill"/>
+                <feComposite in="ridgeFill" in2="ridgeMask" operator="in" result="ridgeHL"/>
+                <feMerge>
+                  <feMergeNode in="dropShadow"/>
+                  <feMergeNode in="darkBevel"/>
+                  <feMergeNode in="lightBevel"/>
+                  <feMergeNode in="bronzeFace"/>
+                  <feMergeNode in="ridgeHL"/>
+                </feMerge>
+              </filter>
+              <filter id="gl-cmp" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="1.5"/></filter>
+            </defs>
+            <g filter="url(#ev5-cmp)">
+              <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+              <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+              <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34 C41.5 30 38 28 35 28.5 C33 29 31 29.5 29.5 31" stroke="#C75B12" stroke-width="2" stroke-linecap="round" fill="none"/>
+            </g>
+            <circle cx="34" cy="31.5" r="2.5" fill="#D4A843" opacity="0.25" filter="url(#gl-cmp)"/>
+            <circle cx="34" cy="31.5" r="2" fill="#D4A843"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- All sizes -->
+    <div>
+      <div class="section-title">All Sizes — 22px · 28px · 36px · 64px · 128px</div>
+      <div class="sizes">
+        <div class="size-item">
+          <svg width="22" height="22" viewBox="0 0 64 64" fill="none"><defs><filter id="ev5a" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB"><feGaussianBlur in="SourceAlpha" stdDeviation="0.8" result="a"/><feOffset in="a" dx="0.6" dy="1" result="b"/><feFlood flood-color="#050200" flood-opacity="0.45" result="c"/><feComposite in="c" in2="b" operator="in" result="d"/><feMorphology in="SourceAlpha" operator="dilate" radius="0.35" result="e"/><feOffset in="e" dx="0.4" dy="0.6" result="f"/><feFlood flood-color="#1A0800" flood-opacity="0.75" result="g"/><feComposite in="g" in2="f" operator="in" result="h"/><feOffset in="e" dx="-0.35" dy="-0.45" result="i"/><feFlood flood-color="#D4A843" flood-opacity="0.3" result="j"/><feComposite in="j" in2="i" operator="in" result="k"/><feColorMatrix in="SourceGraphic" type="matrix" values="1.02 0.03 0 0 0.01 0 0.98 0.02 0 0.005 0 0 0.8 0 0 0 0 0 1 0" result="l"/><feMorphology in="SourceAlpha" operator="erode" radius="0.3" result="m"/><feOffset in="m" dx="-0.2" dy="-0.3" result="n"/><feComposite in="SourceAlpha" in2="n" operator="out" result="o"/><feFlood flood-color="#E8C878" flood-opacity="0.2" result="p"/><feComposite in="p" in2="o" operator="in" result="q"/><feMerge><feMergeNode in="d"/><feMergeNode in="h"/><feMergeNode in="k"/><feMergeNode in="l"/><feMergeNode in="q"/></feMerge></filter></defs><g filter="url(#ev5a)"><path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/><path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/><path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34 C41.5 30 38 28 35 28.5 C33 29 31 29.5 29.5 31" stroke="#C75B12" stroke-width="2" stroke-linecap="round" fill="none"/></g><circle cx="34" cy="31.5" r="2" fill="#D4A843"/></svg>
+          <span class="size-label">22px</span>
+        </div>
+        <div class="size-item">
+          <svg width="28" height="28" viewBox="0 0 64 64" fill="none"><defs><filter id="ev5b" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB"><feGaussianBlur in="SourceAlpha" stdDeviation="0.8" result="a"/><feOffset in="a" dx="0.6" dy="1" result="b"/><feFlood flood-color="#050200" flood-opacity="0.45" result="c"/><feComposite in="c" in2="b" operator="in" result="d"/><feMorphology in="SourceAlpha" operator="dilate" radius="0.35" result="e"/><feOffset in="e" dx="0.4" dy="0.6" result="f"/><feFlood flood-color="#1A0800" flood-opacity="0.75" result="g"/><feComposite in="g" in2="f" operator="in" result="h"/><feOffset in="e" dx="-0.35" dy="-0.45" result="i"/><feFlood flood-color="#D4A843" flood-opacity="0.3" result="j"/><feComposite in="j" in2="i" operator="in" result="k"/><feColorMatrix in="SourceGraphic" type="matrix" values="1.02 0.03 0 0 0.01 0 0.98 0.02 0 0.005 0 0 0.8 0 0 0 0 0 1 0" result="l"/><feMorphology in="SourceAlpha" operator="erode" radius="0.3" result="m"/><feOffset in="m" dx="-0.2" dy="-0.3" result="n"/><feComposite in="SourceAlpha" in2="n" operator="out" result="o"/><feFlood flood-color="#E8C878" flood-opacity="0.2" result="p"/><feComposite in="p" in2="o" operator="in" result="q"/><feMerge><feMergeNode in="d"/><feMergeNode in="h"/><feMergeNode in="k"/><feMergeNode in="l"/><feMergeNode in="q"/></feMerge></filter></defs><g filter="url(#ev5b)"><path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/><path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/><path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34 C41.5 30 38 28 35 28.5 C33 29 31 29.5 29.5 31" stroke="#C75B12" stroke-width="2" stroke-linecap="round" fill="none"/></g><circle cx="34" cy="31.5" r="2" fill="#D4A843"/></svg>
+          <span class="size-label">28px</span>
+        </div>
+        <div class="size-item">
+          <svg width="36" height="36" viewBox="0 0 64 64" fill="none"><defs><filter id="ev5c" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB"><feGaussianBlur in="SourceAlpha" stdDeviation="0.8" result="a"/><feOffset in="a" dx="0.6" dy="1" result="b"/><feFlood flood-color="#050200" flood-opacity="0.45" result="c"/><feComposite in="c" in2="b" operator="in" result="d"/><feMorphology in="SourceAlpha" operator="dilate" radius="0.35" result="e"/><feOffset in="e" dx="0.4" dy="0.6" result="f"/><feFlood flood-color="#1A0800" flood-opacity="0.75" result="g"/><feComposite in="g" in2="f" operator="in" result="h"/><feOffset in="e" dx="-0.35" dy="-0.45" result="i"/><feFlood flood-color="#D4A843" flood-opacity="0.3" result="j"/><feComposite in="j" in2="i" operator="in" result="k"/><feColorMatrix in="SourceGraphic" type="matrix" values="1.02 0.03 0 0 0.01 0 0.98 0.02 0 0.005 0 0 0.8 0 0 0 0 0 1 0" result="l"/><feMorphology in="SourceAlpha" operator="erode" radius="0.3" result="m"/><feOffset in="m" dx="-0.2" dy="-0.3" result="n"/><feComposite in="SourceAlpha" in2="n" operator="out" result="o"/><feFlood flood-color="#E8C878" flood-opacity="0.2" result="p"/><feComposite in="p" in2="o" operator="in" result="q"/><feMerge><feMergeNode in="d"/><feMergeNode in="h"/><feMergeNode in="k"/><feMergeNode in="l"/><feMergeNode in="q"/></feMerge></filter></defs><g filter="url(#ev5c)"><path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/><path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/><path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34 C41.5 30 38 28 35 28.5 C33 29 31 29.5 29.5 31" stroke="#C75B12" stroke-width="2" stroke-linecap="round" fill="none"/></g><circle cx="34" cy="31.5" r="2" fill="#D4A843"/></svg>
+          <span class="size-label">36px</span>
+        </div>
+        <div class="size-item">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none"><defs><filter id="ev5d" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB"><feGaussianBlur in="SourceAlpha" stdDeviation="0.8" result="a"/><feOffset in="a" dx="0.6" dy="1" result="b"/><feFlood flood-color="#050200" flood-opacity="0.45" result="c"/><feComposite in="c" in2="b" operator="in" result="d"/><feMorphology in="SourceAlpha" operator="dilate" radius="0.35" result="e"/><feOffset in="e" dx="0.4" dy="0.6" result="f"/><feFlood flood-color="#1A0800" flood-opacity="0.75" result="g"/><feComposite in="g" in2="f" operator="in" result="h"/><feOffset in="e" dx="-0.35" dy="-0.45" result="i"/><feFlood flood-color="#D4A843" flood-opacity="0.3" result="j"/><feComposite in="j" in2="i" operator="in" result="k"/><feColorMatrix in="SourceGraphic" type="matrix" values="1.02 0.03 0 0 0.01 0 0.98 0.02 0 0.005 0 0 0.8 0 0 0 0 0 1 0" result="l"/><feMorphology in="SourceAlpha" operator="erode" radius="0.3" result="m"/><feOffset in="m" dx="-0.2" dy="-0.3" result="n"/><feComposite in="SourceAlpha" in2="n" operator="out" result="o"/><feFlood flood-color="#E8C878" flood-opacity="0.2" result="p"/><feComposite in="p" in2="o" operator="in" result="q"/><feMerge><feMergeNode in="d"/><feMergeNode in="h"/><feMergeNode in="k"/><feMergeNode in="l"/><feMergeNode in="q"/></feMerge></filter><filter id="gl-d" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="1.5"/></filter></defs><g filter="url(#ev5d)"><path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/><path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/><path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34 C41.5 30 38 28 35 28.5 C33 29 31 29.5 29.5 31" stroke="#C75B12" stroke-width="2" stroke-linecap="round" fill="none"/></g><circle cx="34" cy="31.5" r="2.5" fill="#D4A843" opacity="0.25" filter="url(#gl-d)"/><circle cx="34" cy="31.5" r="2" fill="#D4A843"/></svg>
+          <span class="size-label">64px</span>
+        </div>
+        <div class="size-item">
+          <svg width="128" height="128" viewBox="0 0 64 64" fill="none"><defs><filter id="ev5e" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB"><feGaussianBlur in="SourceAlpha" stdDeviation="0.8" result="a"/><feOffset in="a" dx="0.6" dy="1" result="b"/><feFlood flood-color="#050200" flood-opacity="0.45" result="c"/><feComposite in="c" in2="b" operator="in" result="d"/><feMorphology in="SourceAlpha" operator="dilate" radius="0.35" result="e"/><feOffset in="e" dx="0.4" dy="0.6" result="f"/><feFlood flood-color="#1A0800" flood-opacity="0.75" result="g"/><feComposite in="g" in2="f" operator="in" result="h"/><feOffset in="e" dx="-0.35" dy="-0.45" result="i"/><feFlood flood-color="#D4A843" flood-opacity="0.3" result="j"/><feComposite in="j" in2="i" operator="in" result="k"/><feColorMatrix in="SourceGraphic" type="matrix" values="1.02 0.03 0 0 0.01 0 0.98 0.02 0 0.005 0 0 0.8 0 0 0 0 0 1 0" result="l"/><feMorphology in="SourceAlpha" operator="erode" radius="0.3" result="m"/><feOffset in="m" dx="-0.2" dy="-0.3" result="n"/><feComposite in="SourceAlpha" in2="n" operator="out" result="o"/><feFlood flood-color="#E8C878" flood-opacity="0.2" result="p"/><feComposite in="p" in2="o" operator="in" result="q"/><feMerge><feMergeNode in="d"/><feMergeNode in="h"/><feMergeNode in="k"/><feMergeNode in="l"/><feMergeNode in="q"/></feMerge></filter><filter id="gl-e" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="1.5"/></filter></defs><g filter="url(#ev5e)"><path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/><path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/><path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34 C41.5 30 38 28 35 28.5 C33 29 31 29.5 29.5 31" stroke="#C75B12" stroke-width="2" stroke-linecap="round" fill="none"/></g><circle cx="34" cy="31.5" r="2.5" fill="#D4A843" opacity="0.25" filter="url(#gl-e)"/><circle cx="34" cy="31.5" r="2" fill="#D4A843"/></svg>
+          <span class="size-label">128px</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Wordmark with gold dots showcase -->
+    <div>
+      <div class="section-title">Wordmark Gold Dots — All Sizes</div>
+      <div class="sizes">
+        <div class="size-item">
+          <span class="wordmark wm-sm"><span class="ch">m</span><span class="ch">ı<span class="dot"></span></span><span class="ch">r</span><span class="ch">a</span><span class="ch">s</span><span class="ch">ı<span class="dot"></span></span></span>
+          <span class="size-label">16px (sm)</span>
+        </div>
+        <div class="size-item">
+          <span class="wordmark wm-md"><span class="ch">m</span><span class="ch">ı<span class="dot"></span></span><span class="ch">r</span><span class="ch">a</span><span class="ch">s</span><span class="ch">ı<span class="dot"></span></span></span>
+          <span class="size-label">18px (md)</span>
+        </div>
+        <div class="size-item">
+          <span class="wordmark wm-lg"><span class="ch">m</span><span class="ch">ı<span class="dot"></span></span><span class="ch">r</span><span class="ch">a</span><span class="ch">s</span><span class="ch">ı<span class="dot"></span></span></span>
+          <span class="size-label">24px (lg)</span>
+        </div>
+        <div class="size-item">
+          <span class="wordmark wm-xl"><span class="ch">m</span><span class="ch">ı<span class="dot"></span></span><span class="ch">r</span><span class="ch">a</span><span class="ch">s</span><span class="ch">ı<span class="dot"></span></span></span>
+          <span class="size-label">36px (xl preview)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Header simulation -->
+    <div style="width: 100%;">
+      <div class="section-title">Header Simulation</div>
+      <div class="header-sim">
+        <div class="header-logo">
+          <svg width="28" height="28" viewBox="0 0 64 64" fill="none"><defs><filter id="ev5hdr" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB"><feGaussianBlur in="SourceAlpha" stdDeviation="0.8" result="a"/><feOffset in="a" dx="0.6" dy="1" result="b"/><feFlood flood-color="#050200" flood-opacity="0.45" result="c"/><feComposite in="c" in2="b" operator="in" result="d"/><feMorphology in="SourceAlpha" operator="dilate" radius="0.35" result="e"/><feOffset in="e" dx="0.4" dy="0.6" result="f"/><feFlood flood-color="#1A0800" flood-opacity="0.75" result="g"/><feComposite in="g" in2="f" operator="in" result="h"/><feOffset in="e" dx="-0.35" dy="-0.45" result="i"/><feFlood flood-color="#D4A843" flood-opacity="0.3" result="j"/><feComposite in="j" in2="i" operator="in" result="k"/><feColorMatrix in="SourceGraphic" type="matrix" values="1.02 0.03 0 0 0.01 0 0.98 0.02 0 0.005 0 0 0.8 0 0 0 0 0 1 0" result="l"/><feMorphology in="SourceAlpha" operator="erode" radius="0.3" result="m"/><feOffset in="m" dx="-0.2" dy="-0.3" result="n"/><feComposite in="SourceAlpha" in2="n" operator="out" result="o"/><feFlood flood-color="#E8C878" flood-opacity="0.2" result="p"/><feComposite in="p" in2="o" operator="in" result="q"/><feMerge><feMergeNode in="d"/><feMergeNode in="h"/><feMergeNode in="k"/><feMergeNode in="l"/><feMergeNode in="q"/></feMerge></filter></defs><g filter="url(#ev5hdr)"><path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/><path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/><path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34 C41.5 30 38 28 35 28.5 C33 29 31 29.5 29.5 31" stroke="#C75B12" stroke-width="2" stroke-linecap="round" fill="none"/></g><circle cx="34" cy="31.5" r="2" fill="#D4A843"/></svg>
+          <span class="wordmark wm-md"><span class="ch">m</span><span class="ch">ı<span class="dot"></span></span><span class="ch">r</span><span class="ch">a</span><span class="ch">s</span><span class="ch">ı<span class="dot"></span></span></span>
+        </div>
+        <div class="header-nav">
+          <a href="#">Gallery</a>
+          <a href="#">Pricing</a>
+        </div>
+        <button class="btn-3d sm">Create Portrait</button>
+      </div>
+    </div>
+
+    <!-- Button showcase -->
+    <div>
+      <div class="section-title">Buttons — Engraved Metallic (hover me!)</div>
+      <div class="button-row">
+        <button class="btn-3d">Create Your Portrait</button>
+        <button class="btn-3d sm">Create Portrait</button>
+        <button class="btn-outline">View Gallery</button>
+      </div>
+    </div>
+
+    <!-- Hero -->
+    <div class="hero-showcase">
+      <svg width="80" height="80" viewBox="0 0 64 64" fill="none"><defs><filter id="ev5hero" x="-15%" y="-15%" width="130%" height="130%" color-interpolation-filters="sRGB"><feGaussianBlur in="SourceAlpha" stdDeviation="0.8" result="a"/><feOffset in="a" dx="0.6" dy="1" result="b"/><feFlood flood-color="#050200" flood-opacity="0.45" result="c"/><feComposite in="c" in2="b" operator="in" result="d"/><feMorphology in="SourceAlpha" operator="dilate" radius="0.35" result="e"/><feOffset in="e" dx="0.4" dy="0.6" result="f"/><feFlood flood-color="#1A0800" flood-opacity="0.75" result="g"/><feComposite in="g" in2="f" operator="in" result="h"/><feOffset in="e" dx="-0.35" dy="-0.45" result="i"/><feFlood flood-color="#D4A843" flood-opacity="0.3" result="j"/><feComposite in="j" in2="i" operator="in" result="k"/><feColorMatrix in="SourceGraphic" type="matrix" values="1.02 0.03 0 0 0.01 0 0.98 0.02 0 0.005 0 0 0.8 0 0 0 0 0 1 0" result="l"/><feMorphology in="SourceAlpha" operator="erode" radius="0.3" result="m"/><feOffset in="m" dx="-0.2" dy="-0.3" result="n"/><feComposite in="SourceAlpha" in2="n" operator="out" result="o"/><feFlood flood-color="#E8C878" flood-opacity="0.2" result="p"/><feComposite in="p" in2="o" operator="in" result="q"/><feMerge><feMergeNode in="d"/><feMergeNode in="h"/><feMergeNode in="k"/><feMergeNode in="l"/><feMergeNode in="q"/></feMerge></filter><filter id="gl-hero" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="1.5"/></filter></defs><g filter="url(#ev5hero)"><path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/><path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/><path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34 C41.5 30 38 28 35 28.5 C33 29 31 29.5 29.5 31" stroke="#C75B12" stroke-width="2" stroke-linecap="round" fill="none"/></g><circle cx="34" cy="31.5" r="2.5" fill="#D4A843" opacity="0.25" filter="url(#gl-hero)"/><circle cx="34" cy="31.5" r="2" fill="#D4A843"/></svg>
+      <div class="hero-title">Transform Your Photos Into <span style="color: #C75B12;">Indian Art</span></div>
+      <div class="hero-subtitle">AI-powered portraits inspired by 15 authentic Indian art traditions.</div>
+      <div class="button-row">
+        <button class="btn-3d">Create Your Portrait</button>
+        <button class="btn-outline">View Gallery</button>
+      </div>
+    </div>
+
+    <div class="note">
+      <strong style="color: #C75B12;">V5 Changes vs V4:</strong>
+      (1) Light bevel toned way down: #D4A843 at 30% opacity (was #F0B860 at 70%) — no more yellow boundary feel.
+      (2) Ridge highlight halved: #E8C878 at 20% (was #F5D590 at 40%).
+      (3) Thinner dilate (0.35 vs 0.5) — bevel edge is crisp, not thick.
+      (4) Color matrix nearly neutral — gentle warm shift, not heavy bronze.
+      (5) Shadow-driven depth: the 3D reads from dark bevel + drop shadow, not from bright edges.
+    </div>
+  </div>
+</body>
+</html>

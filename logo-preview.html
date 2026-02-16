@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mirasi Logo — Final Preview</title>
+  <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Urbanist', system-ui, sans-serif;
+      background: #0A0A0A;
+      color: #F0EDE6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    h1 {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #9B8E7E;
+      margin-bottom: 48px;
+    }
+
+    .showcase {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 64px;
+      max-width: 900px;
+      width: 100%;
+    }
+
+    /* ─── Large hero logo ─── */
+    .hero-logo {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      padding: 64px 80px;
+      border-radius: 24px;
+      background: #141210;
+      border: 1px solid #2A2520;
+    }
+
+    .hero-logo .wordmark {
+      font-size: 56px;
+      font-weight: 700;
+      color: #C75B12;
+      letter-spacing: -1px;
+      position: relative;
+    }
+
+    .hero-logo .wordmark .char {
+      position: relative;
+      display: inline-block;
+    }
+
+    .hero-logo .wordmark .gold-dot {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 8px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #D4A843;
+    }
+
+    .hero-label {
+      font-size: 13px;
+      color: #9B8E7E;
+      letter-spacing: 1px;
+    }
+
+    /* ─── Variations row ─── */
+    .variations {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      width: 100%;
+    }
+
+    .variant {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      padding: 40px 24px;
+      border-radius: 16px;
+      background: #141210;
+      border: 1px solid #2A2520;
+    }
+
+    .variant .wordmark {
+      font-weight: 700;
+      color: #C75B12;
+      letter-spacing: -0.5px;
+      position: relative;
+    }
+
+    .variant .wordmark .char {
+      position: relative;
+      display: inline-block;
+    }
+
+    .variant-sm .wordmark { font-size: 18px; }
+    .variant-md .wordmark { font-size: 24px; }
+    .variant-lg .wordmark { font-size: 36px; }
+
+    .variant-sm .gold-dot { width: 3px; height: 3px; top: 4px; }
+    .variant-md .gold-dot { width: 4px; height: 4px; top: 4px; }
+    .variant-lg .gold-dot { width: 6px; height: 6px; top: 5px; }
+
+    .gold-dot {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 50%;
+      background: #D4A843;
+    }
+
+    .variant-label {
+      font-size: 11px;
+      color: #9B8E7E;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* ─── Navy background variant ─── */
+    .navy-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      width: 100%;
+    }
+
+    .navy-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      padding: 48px 32px;
+      border-radius: 16px;
+      border: 1px solid #2A2520;
+    }
+
+    .navy-card.dark { background: #0A0A0A; }
+    .navy-card.navy { background: #0F1A2E; border-color: #1E2D48; }
+
+    .navy-card .wordmark {
+      font-size: 28px;
+      font-weight: 700;
+      color: #C75B12;
+      letter-spacing: -0.5px;
+    }
+
+    .navy-card .wordmark .char { position: relative; display: inline-block; }
+    .navy-card .gold-dot { width: 4.5px; height: 4.5px; top: 5px; }
+
+    .bg-label {
+      font-size: 11px;
+      color: #9B8E7E;
+      font-family: monospace;
+      letter-spacing: 1px;
+    }
+
+    /* ─── Icon only section ─── */
+    .icon-row {
+      display: flex;
+      gap: 40px;
+      align-items: flex-end;
+    }
+
+    .icon-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .icon-block .size-label {
+      font-size: 11px;
+      color: #9B8E7E;
+      font-family: monospace;
+    }
+
+    /* ─── Header simulation ─── */
+    .header-sim {
+      width: 100%;
+      padding: 16px 24px;
+      border-radius: 16px;
+      background: #141210;
+      border: 1px solid #2A2520;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-left .wordmark {
+      font-size: 20px;
+      font-weight: 700;
+      color: #C75B12;
+      letter-spacing: -0.5px;
+    }
+
+    .header-left .wordmark .char { position: relative; display: inline-block; }
+    .header-left .gold-dot { width: 3.5px; height: 3.5px; top: 0px; }
+
+    .header-nav {
+      display: flex;
+      gap: 24px;
+      font-size: 14px;
+      color: #9B8E7E;
+    }
+
+    .header-nav a { color: #9B8E7E; text-decoration: none; }
+    .header-nav a:hover { color: #F0EDE6; }
+
+    .header-cta {
+      background: #C75B12;
+      color: white;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 10px;
+      font-family: 'Urbanist', sans-serif;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .section-title {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #9B8E7E;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Mirasi — Final Logo Preview</h1>
+
+  <div class="showcase">
+
+    <!-- Hero: Large logo -->
+    <div class="hero-logo">
+      <svg width="120" height="120" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="glow-hero" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="1.5"/>
+          </filter>
+        </defs>
+        <!-- Outer spiral -->
+        <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+        <!-- Mid spiral -->
+        <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+        <!-- Inner spiral → upper eyelid (one continuous stroke) -->
+        <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34 C41.5 30 38 28 35 28.5 C33 29 31 29.5 29.5 31" stroke="#C75B12" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <!-- Gold pupil glow -->
+        <circle cx="34" cy="31.5" r="2.5" fill="#D4A843" opacity="0.25" filter="url(#glow-hero)"/>
+        <!-- Gold pupil -->
+        <circle cx="34" cy="31.5" r="2" fill="#D4A843"/>
+      </svg>
+      <div class="wordmark">
+        <span class="char">m</span><span class="char">ı<span class="gold-dot"></span></span><span class="char">r</span><span class="char">a</span><span class="char">s</span><span class="char">ı<span class="gold-dot"></span></span>
+      </div>
+      <div class="hero-label">Every face tells a legend</div>
+    </div>
+
+    <!-- Size Variants -->
+    <div>
+      <div class="section-title">Size Variants</div>
+      <div class="variations">
+        <div class="variant variant-sm">
+          <svg width="22" height="22" viewBox="0 0 64 64" fill="none">
+            <defs><filter id="glow-sm" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="1.5"/></filter></defs>
+            <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+            <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+            <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34 C41.5 30 38 28 35 28.5 C33 29 31 29.5 29.5 31" stroke="#C75B12" stroke-width="2" stroke-linecap="round" fill="none"/>
+            <circle cx="34" cy="31.5" r="2.5" fill="#D4A843" opacity="0.25" filter="url(#glow-sm)"/>
+            <circle cx="34" cy="31.5" r="2" fill="#D4A843"/>
+          </svg>
+          <div class="wordmark"><span class="char">m</span><span class="char">ı<span class="gold-dot"></span></span><span class="char">r</span><span class="char">a</span><span class="char">s</span><span class="char">ı<span class="gold-dot"></span></span></div>
+          <div class="variant-label">Small (Header)</div>
+        </div>
+
+        <div class="variant variant-md">
+          <svg width="28" height="28" viewBox="0 0 64 64" fill="none">
+            <defs><filter id="glow-md" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="1.5"/></filter></defs>
+            <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+            <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+            <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34 C41.5 30 38 28 35 28.5 C33 29 31 29.5 29.5 31" stroke="#C75B12" stroke-width="2" stroke-linecap="round" fill="none"/>
+            <circle cx="34" cy="31.5" r="2.5" fill="#D4A843" opacity="0.25" filter="url(#glow-md)"/>
+            <circle cx="34" cy="31.5" r="2" fill="#D4A843"/>
+          </svg>
+          <div class="wordmark"><span class="char">m</span><span class="char">ı<span class="gold-dot"></span></span><span class="char">r</span><span class="char">a</span><span class="char">s</span><span class="char">ı<span class="gold-dot"></span></span></div>
+          <div class="variant-label">Medium (Default)</div>
+        </div>
+
+        <div class="variant variant-lg">
+          <svg width="36" height="36" viewBox="0 0 64 64" fill="none">
+            <defs><filter id="glow-lg" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="1.5"/></filter></defs>
+            <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+            <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+            <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34 C41.5 30 38 28 35 28.5 C33 29 31 29.5 29.5 31" stroke="#C75B12" stroke-width="2" stroke-linecap="round" fill="none"/>
+            <circle cx="34" cy="31.5" r="2.5" fill="#D4A843" opacity="0.25" filter="url(#glow-lg)"/>
+            <circle cx="34" cy="31.5" r="2" fill="#D4A843"/>
+          </svg>
+          <div class="wordmark"><span class="char">m</span><span class="char">ı<span class="gold-dot"></span></span><span class="char">r</span><span class="char">a</span><span class="char">s</span><span class="char">ı<span class="gold-dot"></span></span></div>
+          <div class="variant-label">Large (Landing)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Background Variants -->
+    <div style="width:100%">
+      <div class="section-title">On Different Backgrounds</div>
+      <div class="navy-section">
+        <div class="navy-card dark">
+          <svg width="48" height="48" viewBox="0 0 64 64" fill="none">
+            <defs><filter id="glow-d" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="1.5"/></filter></defs>
+            <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+            <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+            <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34 C41.5 30 38 28 35 28.5 C33 29 31 29.5 29.5 31" stroke="#C75B12" stroke-width="2" stroke-linecap="round" fill="none"/>
+            <circle cx="34" cy="31.5" r="2.5" fill="#D4A843" opacity="0.25" filter="url(#glow-d)"/>
+            <circle cx="34" cy="31.5" r="2" fill="#D4A843"/>
+          </svg>
+          <div class="wordmark"><span class="char">m</span><span class="char">ı<span class="gold-dot"></span></span><span class="char">r</span><span class="char">a</span><span class="char">s</span><span class="char">ı<span class="gold-dot"></span></span></div>
+          <div class="bg-label">#0A0A0A — App Background</div>
+        </div>
+        <div class="navy-card navy">
+          <svg width="48" height="48" viewBox="0 0 64 64" fill="none">
+            <defs><filter id="glow-n" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="1.5"/></filter></defs>
+            <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+            <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+            <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34 C41.5 30 38 28 35 28.5 C33 29 31 29.5 29.5 31" stroke="#C75B12" stroke-width="2" stroke-linecap="round" fill="none"/>
+            <circle cx="34" cy="31.5" r="2.5" fill="#D4A843" opacity="0.25" filter="url(#glow-n)"/>
+            <circle cx="34" cy="31.5" r="2" fill="#D4A843"/>
+          </svg>
+          <div class="wordmark"><span class="char">m</span><span class="char">ı<span class="gold-dot"></span></span><span class="char">r</span><span class="char">a</span><span class="char">s</span><span class="char">ı<span class="gold-dot"></span></span></div>
+          <div class="bg-label">#1B2A4A — Navy (Original)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Icon Only: Various Sizes -->
+    <div>
+      <div class="section-title">Icon Only — Multiple Sizes</div>
+      <div class="icon-row">
+        <div class="icon-block">
+          <svg width="16" height="16" viewBox="0 0 64 64" fill="none">
+            <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+            <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+            <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34 C41.5 30 38 28 35 28.5 C33 29 31 29.5 29.5 31" stroke="#C75B12" stroke-width="2" stroke-linecap="round" fill="none"/>
+            <circle cx="34" cy="31.5" r="2" fill="#D4A843"/>
+          </svg>
+          <div class="size-label">16px</div>
+        </div>
+        <div class="icon-block">
+          <svg width="24" height="24" viewBox="0 0 64 64" fill="none">
+            <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+            <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+            <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34 C41.5 30 38 28 35 28.5 C33 29 31 29.5 29.5 31" stroke="#C75B12" stroke-width="2" stroke-linecap="round" fill="none"/>
+            <circle cx="34" cy="31.5" r="2" fill="#D4A843"/>
+          </svg>
+          <div class="size-label">24px</div>
+        </div>
+        <div class="icon-block">
+          <svg width="32" height="32" viewBox="0 0 64 64" fill="none">
+            <defs><filter id="glow-32" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="1.5"/></filter></defs>
+            <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+            <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+            <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34 C41.5 30 38 28 35 28.5 C33 29 31 29.5 29.5 31" stroke="#C75B12" stroke-width="2" stroke-linecap="round" fill="none"/>
+            <circle cx="34" cy="31.5" r="2.5" fill="#D4A843" opacity="0.25" filter="url(#glow-32)"/>
+            <circle cx="34" cy="31.5" r="2" fill="#D4A843"/>
+          </svg>
+          <div class="size-label">32px</div>
+        </div>
+        <div class="icon-block">
+          <svg width="48" height="48" viewBox="0 0 64 64" fill="none">
+            <defs><filter id="glow-48" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="1.5"/></filter></defs>
+            <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+            <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+            <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34 C41.5 30 38 28 35 28.5 C33 29 31 29.5 29.5 31" stroke="#C75B12" stroke-width="2" stroke-linecap="round" fill="none"/>
+            <circle cx="34" cy="31.5" r="2.5" fill="#D4A843" opacity="0.25" filter="url(#glow-48)"/>
+            <circle cx="34" cy="31.5" r="2" fill="#D4A843"/>
+          </svg>
+          <div class="size-label">48px</div>
+        </div>
+        <div class="icon-block">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+            <defs><filter id="glow-64" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="1.5"/></filter></defs>
+            <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+            <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+            <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34 C41.5 30 38 28 35 28.5 C33 29 31 29.5 29.5 31" stroke="#C75B12" stroke-width="2" stroke-linecap="round" fill="none"/>
+            <circle cx="34" cy="31.5" r="2.5" fill="#D4A843" opacity="0.25" filter="url(#glow-64)"/>
+            <circle cx="34" cy="31.5" r="2" fill="#D4A843"/>
+          </svg>
+          <div class="size-label">64px</div>
+        </div>
+        <div class="icon-block">
+          <svg width="96" height="96" viewBox="0 0 64 64" fill="none">
+            <defs><filter id="glow-96" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="1.5"/></filter></defs>
+            <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+            <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+            <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34 C41.5 30 38 28 35 28.5 C33 29 31 29.5 29.5 31" stroke="#C75B12" stroke-width="2" stroke-linecap="round" fill="none"/>
+            <circle cx="34" cy="31.5" r="2.5" fill="#D4A843" opacity="0.25" filter="url(#glow-96)"/>
+            <circle cx="34" cy="31.5" r="2" fill="#D4A843"/>
+          </svg>
+          <div class="size-label">96px</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Header Simulation -->
+    <div style="width:100%">
+      <div class="section-title">In Context — App Header</div>
+      <div class="header-sim">
+        <div class="header-left">
+          <svg width="28" height="28" viewBox="0 0 64 64" fill="none">
+            <defs><filter id="glow-h" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="1.5"/></filter></defs>
+            <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+            <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+            <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34 C41.5 30 38 28 35 28.5 C33 29 31 29.5 29.5 31" stroke="#C75B12" stroke-width="2" stroke-linecap="round" fill="none"/>
+            <circle cx="34" cy="31.5" r="2.5" fill="#D4A843" opacity="0.25" filter="url(#glow-h)"/>
+            <circle cx="34" cy="31.5" r="2" fill="#D4A843"/>
+          </svg>
+          <div class="wordmark"><span class="char">m</span><span class="char">ı<span class="gold-dot" style="width:3.5px;height:3.5px;top:4px"></span></span><span class="char">r</span><span class="char">a</span><span class="char">s</span><span class="char">ı<span class="gold-dot" style="width:3.5px;height:3.5px;top:4px"></span></span></div>
+        </div>
+        <div class="header-nav">
+          <a href="#">Gallery</a>
+          <a href="#">Pricing</a>
+        </div>
+        <button class="header-cta">Create Portrait</button>
+      </div>
+    </div>
+
+    <!-- Design Notes -->
+    <div style="width:100%; padding: 32px; background: #141210; border-radius: 16px; border: 1px solid #2A2520;">
+      <div class="section-title" style="margin-bottom:24px">Design Specification</div>
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 24px; font-size: 13px; color: #9B8E7E; line-height: 1.8;">
+        <div>
+          <strong style="color:#F0EDE6">Icon</strong><br>
+          • Paisley spiral "Subtle Almond Eye"<br>
+          • 3 strokes: outer (3.5px), mid (2.8px), inner→eyelid (2px)<br>
+          • Inner spiral flows into upper eyelid — ONE continuous path<br>
+          • Upper eyelid ONLY — no lower lid boundary<br>
+          • Gold pupil (#D4A843) with gaussian blur glow<br>
+          • ViewBox: 0 0 64 64
+        </div>
+        <div>
+          <strong style="color:#F0EDE6">Wordmark</strong><br>
+          • Font: Urbanist Bold (700)<br>
+          • Color: Saffron (#C75B12)<br>
+          • Gold dots (#D4A843) on both "i" letters<br>
+          • Tracking: tight (-0.5px to -1px)<br>
+          • All lowercase: "mirasi"
+        </div>
+        <div>
+          <strong style="color:#F0EDE6">Brand Colors</strong><br>
+          • Saffron: #C75B12<br>
+          • Gold: #D4A843<br>
+          • Background: #0A0A0A<br>
+          • Card: #141210<br>
+          • Foreground: #F0EDE6
+        </div>
+        <div>
+          <strong style="color:#F0EDE6">Usage</strong><br>
+          • Header: icon (28px) + wordmark (20px)<br>
+          • Landing hero: icon (36px+) + wordmark (24px+)<br>
+          • Favicon/PWA: icon only<br>
+          • Footer: icon (22px) + wordmark (18px)
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

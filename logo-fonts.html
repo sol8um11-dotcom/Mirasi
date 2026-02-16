@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mirasi — Font & Wordmark Exploration</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&family=Sora:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&family=Josefin+Sans:wght@400;500;600;700&family=Quicksand:wght@400;500;600;700&family=Raleway:wght@400;500;600;700;800&family=Nunito:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=Urbanist:wght@400;500;600;700;800&family=Albert+Sans:wght@400;500;600;700;800&family=General+Sans:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@400;500;600;700&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: #0A0A0A;
+      color: #F0EDE6;
+      min-height: 100vh;
+    }
+
+    .header {
+      text-align: center;
+      padding: 48px 24px 20px;
+      border-bottom: 1px solid #1E1C18;
+    }
+
+    .header h1 {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+
+    .header h1 span { color: #C75B12; }
+
+    .header p {
+      color: #9B8E7E;
+      font-size: 14px;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* ─── Section headers ─── */
+    .section-title {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 24px 16px;
+    }
+
+    .section-title h2 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #C75B12;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 4px;
+    }
+
+    .section-title p {
+      font-size: 13px;
+      color: #6B6050;
+    }
+
+    /* ─── Font grid ─── */
+    .font-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .font-card {
+      background: #141210;
+      border: 1px solid #2A2520;
+      border-radius: 16px;
+      padding: 24px;
+      transition: border-color 0.3s, transform 0.2s;
+      position: relative;
+    }
+
+    .font-card:hover {
+      border-color: #C75B12;
+      transform: translateY(-2px);
+    }
+
+    .font-card .number {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #C75B12;
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .font-card .font-name {
+      font-size: 11px;
+      color: #6B6050;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 4px;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .font-card .font-category {
+      font-size: 10px;
+      color: #4A4235;
+      margin-bottom: 16px;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    /* Logo + wordmark display */
+    .logo-wordmark {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 20px 0;
+      justify-content: center;
+      background: linear-gradient(135deg, #1B2A4A, #0F1525);
+      border-radius: 12px;
+      margin-bottom: 16px;
+    }
+
+    .wordmark-text {
+      letter-spacing: -0.3px;
+    }
+
+    /* Weight variations */
+    .weights {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #1E1C18;
+    }
+
+    .weight-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .weight-label {
+      font-size: 10px;
+      color: #4A4235;
+      font-family: 'DM Sans', sans-serif;
+      min-width: 60px;
+    }
+
+    /* ─── Wordmark color section ─── */
+    .color-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .color-card {
+      background: linear-gradient(135deg, #1B2A4A, #0F1525);
+      border: 1px solid #2A2520;
+      border-radius: 14px;
+      padding: 24px;
+      text-align: center;
+      transition: border-color 0.3s;
+    }
+
+    .color-card:hover { border-color: #C75B12; }
+
+    .color-card .label {
+      font-size: 11px;
+      color: #6B6050;
+      margin-top: 12px;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .color-card .letter {
+      font-size: 10px;
+      color: #4A4235;
+      margin-top: 4px;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    /* ─── Best combos section ─── */
+    .combo-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px 40px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+
+    .combo-card {
+      background: #141210;
+      border: 1px solid #2A2520;
+      border-radius: 16px;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.2s;
+    }
+
+    .combo-card:hover {
+      border-color: #C75B12;
+      transform: translateY(-2px);
+    }
+
+    .combo-display {
+      background: linear-gradient(135deg, #1B2A4A, #0F1525);
+      padding: 32px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+    }
+
+    .combo-info {
+      padding: 16px 20px;
+    }
+
+    .combo-info h3 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .combo-info p {
+      font-size: 12px;
+      color: #9B8E7E;
+      line-height: 1.5;
+    }
+
+    .combo-info .tags {
+      margin-top: 8px;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .combo-info .tag {
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 20px;
+      background: #1E1C18;
+      color: #9B8E7E;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .combo-info .tag.best {
+      background: #C75B12;
+      color: white;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 32px 24px 48px;
+      color: #6B6050;
+      font-size: 13px;
+      border-top: 1px solid #1E1C18;
+    }
+
+    .footer strong { color: #C75B12; }
+
+    /* The paisley icon SVG inline */
+    .paisley-icon {
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>mi<span>rasi</span> — Typography Exploration</h1>
+    <p>Finding the perfect typeface for a brand that bridges Indian heritage and modern AI art. Research-backed selections inspired by Airbnb, Spotify, Zomato, CRED, and Fortune 500 creative brands.</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- SECTION 1: GEOMETRIC SANS-SERIF (Best Fit)            -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="section-title">
+    <h2>Category A — Geometric Sans-Serif</h2>
+    <p>The category used by Airbnb (Cereal), Spotify (Circular), Canva, Zomato (Okra). Clean, modern, premium.</p>
+  </div>
+
+  <div class="font-grid">
+
+    <!-- 1. Montserrat -->
+    <div class="font-card">
+      <span class="number">1</span>
+      <div class="font-name">Montserrat</div>
+      <div class="font-category">Geometric Sans · Used by: Google-adjacent brands</div>
+      <div class="logo-wordmark">
+        <svg class="paisley-icon" width="30" height="30" viewBox="0 0 64 64" fill="none">
+          <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+          <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+          <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34" stroke="#C75B12" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 28.5 32 28.5 30 31" stroke="#C75B12" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 33.5 32 33.5 30 31" stroke="#C75B12" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <circle cx="34" cy="31" r="1.8" fill="#D4A843"/>
+        </svg>
+        <span class="wordmark-text" style="font-family:'Montserrat'; font-size:28px; font-weight:700; color:#F0EDE6;">mirasi</span>
+      </div>
+      <div class="weights">
+        <div class="weight-row">
+          <span class="weight-label">Medium</span>
+          <span style="font-family:'Montserrat'; font-weight:500; font-size:20px;">mirasi</span>
+        </div>
+        <div class="weight-row">
+          <span class="weight-label">SemiBold</span>
+          <span style="font-family:'Montserrat'; font-weight:600; font-size:20px;">mirasi</span>
+        </div>
+        <div class="weight-row">
+          <span class="weight-label">Bold</span>
+          <span style="font-family:'Montserrat'; font-weight:700; font-size:20px;">mirasi</span>
+        </div>
+        <div class="weight-row">
+          <span class="weight-label">ExtraBold</span>
+          <span style="font-family:'Montserrat'; font-weight:800; font-size:20px;">mirasi</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Poppins -->
+    <div class="font-card">
+      <span class="number">2</span>
+      <div class="font-name">Poppins</div>
+      <div class="font-category">Geometric Sans · India's most popular brand font (Indian Type Foundry)</div>
+      <div class="logo-wordmark">
+        <svg class="paisley-icon" width="30" height="30" viewBox="0 0 64 64" fill="none">
+          <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+          <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+          <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34" stroke="#C75B12" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 28.5 32 28.5 30 31" stroke="#C75B12" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 33.5 32 33.5 30 31" stroke="#C75B12" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <circle cx="34" cy="31" r="1.8" fill="#D4A843"/>
+        </svg>
+        <span class="wordmark-text" style="font-family:'Poppins'; font-size:28px; font-weight:700; color:#F0EDE6;">mirasi</span>
+      </div>
+      <div class="weights">
+        <div class="weight-row">
+          <span class="weight-label">Medium</span>
+          <span style="font-family:'Poppins'; font-weight:500; font-size:20px;">mirasi</span>
+        </div>
+        <div class="weight-row">
+          <span class="weight-label">SemiBold</span>
+          <span style="font-family:'Poppins'; font-weight:600; font-size:20px;">mirasi</span>
+        </div>
+        <div class="weight-row">
+          <span class="weight-label">Bold</span>
+          <span style="font-family:'Poppins'; font-weight:700; font-size:20px;">mirasi</span>
+        </div>
+        <div class="weight-row">
+          <span class="weight-label">ExtraBold</span>
+          <span style="font-family:'Poppins'; font-weight:800; font-size:20px;">mirasi</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Plus Jakarta Sans -->
+    <div class="font-card">
+      <span class="number">3</span>
+      <div class="font-name">Plus Jakarta Sans</div>
+      <div class="font-category">Modern Geometric · Rising star in SaaS/creative brands</div>
+      <div class="logo-wordmark">
+        <svg class="paisley-icon" width="30" height="30" viewBox="0 0 64 64" fill="none">
+          <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+          <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+          <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34" stroke="#C75B12" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 28.5 32 28.5 30 31" stroke="#C75B12" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 33.5 32 33.5 30 31" stroke="#C75B12" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <circle cx="34" cy="31" r="1.8" fill="#D4A843"/>
+        </svg>
+        <span class="wordmark-text" style="font-family:'Plus Jakarta Sans'; font-size:28px; font-weight:700; color:#F0EDE6;">mirasi</span>
+      </div>
+      <div class="weights">
+        <div class="weight-row">
+          <span class="weight-label">Medium</span>
+          <span style="font-family:'Plus Jakarta Sans'; font-weight:500; font-size:20px;">mirasi</span>
+        </div>
+        <div class="weight-row">
+          <span class="weight-label">SemiBold</span>
+          <span style="font-family:'Plus Jakarta Sans'; font-weight:600; font-size:20px;">mirasi</span>
+        </div>
+        <div class="weight-row">
+          <span class="weight-label">Bold</span>
+          <span style="font-family:'Plus Jakarta Sans'; font-weight:700; font-size:20px;">mirasi</span>
+        </div>
+        <div class="weight-row">
+          <span class="weight-label">ExtraBold</span>
+          <span style="font-family:'Plus Jakarta Sans'; font-weight:800; font-size:20px;">mirasi</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Outfit -->
+    <div class="font-card">
+      <span class="number">4</span>
+      <div class="font-name">Outfit</div>
+      <div class="font-category">Rounded Geometric · Closest to Airbnb Cereal feel (free)</div>
+      <div class="logo-wordmark">
+        <svg class="paisley-icon" width="30" height="30" viewBox="0 0 64 64" fill="none">
+          <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+          <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+          <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34" stroke="#C75B12" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 28.5 32 28.5 30 31" stroke="#C75B12" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 33.5 32 33.5 30 31" stroke="#C75B12" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <circle cx="34" cy="31" r="1.8" fill="#D4A843"/>
+        </svg>
+        <span class="wordmark-text" style="font-family:'Outfit'; font-size:28px; font-weight:700; color:#F0EDE6;">mirasi</span>
+      </div>
+      <div class="weights">
+        <div class="weight-row">
+          <span class="weight-label">Medium</span>
+          <span style="font-family:'Outfit'; font-weight:500; font-size:20px;">mirasi</span>
+        </div>
+        <div class="weight-row">
+          <span class="weight-label">SemiBold</span>
+          <span style="font-family:'Outfit'; font-weight:600; font-size:20px;">mirasi</span>
+        </div>
+        <div class="weight-row">
+          <span class="weight-label">Bold</span>
+          <span style="font-family:'Outfit'; font-weight:700; font-size:20px;">mirasi</span>
+        </div>
+        <div class="weight-row">
+          <span class="weight-label">ExtraBold</span>
+          <span style="font-family:'Outfit'; font-weight:800; font-size:20px;">mirasi</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. DM Sans -->
+    <div class="font-card">
+      <span class="number">5</span>
+      <div class="font-name">DM Sans</div>
+      <div class="font-category">Geometric Humanist · Used by CRED-style premium Indian brands</div>
+      <div class="logo-wordmark">
+        <svg class="paisley-icon" width="30" height="30" viewBox="0 0 64 64" fill="none">
+          <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+          <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+          <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34" stroke="#C75B12" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 28.5 32 28.5 30 31" stroke="#C75B12" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 33.5 32 33.5 30 31" stroke="#C75B12" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <circle cx="34" cy="31" r="1.8" fill="#D4A843"/>
+        </svg>
+        <span class="wordmark-text" style="font-family:'DM Sans'; font-size:28px; font-weight:700; color:#F0EDE6;">mirasi</span>
+      </div>
+      <div class="weights">
+        <div class="weight-row">
+          <span class="weight-label">Medium</span>
+          <span style="font-family:'DM Sans'; font-weight:500; font-size:20px;">mirasi</span>
+        </div>
+        <div class="weight-row">
+          <span class="weight-label">SemiBold</span>
+          <span style="font-family:'DM Sans'; font-weight:600; font-size:20px;">mirasi</span>
+        </div>
+        <div class="weight-row">
+          <span class="weight-label">Bold</span>
+          <span style="font-family:'DM Sans'; font-weight:700; font-size:20px;">mirasi</span>
+        </div>
+        <div class="weight-row">
+          <span class="weight-label">ExtraBold</span>
+          <span style="font-family:'DM Sans'; font-weight:800; font-size:20px;">mirasi</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Sora -->
+    <div class="font-card">
+      <span class="number">6</span>
+      <div class="font-name">Sora</div>
+      <div class="font-category">Technical Geometric · AI/tech-forward, Spotify Circular vibe</div>
+      <div class="logo-wordmark">
+        <svg class="paisley-icon" width="30" height="30" viewBox="0 0 64 64" fill="none">
+          <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+          <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+          <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34" stroke="#C75B12" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 28.5 32 28.5 30 31" stroke="#C75B12" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 33.5 32 33.5 30 31" stroke="#C75B12" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <circle cx="34" cy="31" r="1.8" fill="#D4A843"/>
+        </svg>
+        <span class="wordmark-text" style="font-family:'Sora'; font-size:28px; font-weight:700; color:#F0EDE6;">mirasi</span>
+      </div>
+      <div class="weights">
+        <div class="weight-row">
+          <span class="weight-label">Medium</span>
+          <span style="font-family:'Sora'; font-weight:500; font-size:20px;">mirasi</span>
+        </div>
+        <div class="weight-row">
+          <span class="weight-label">SemiBold</span>
+          <span style="font-family:'Sora'; font-weight:600; font-size:20px;">mirasi</span>
+        </div>
+        <div class="weight-row">
+          <span class="weight-label">Bold</span>
+          <span style="font-family:'Sora'; font-weight:700; font-size:20px;">mirasi</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- SECTION 2: HUMANIST / WARM SANS                       -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="section-title">
+    <h2>Category B — Humanist / Warm Sans</h2>
+    <p>Warmer, more organic feel. Friendly and approachable while staying modern. Think artistic warmth.</p>
+  </div>
+
+  <div class="font-grid">
+
+    <!-- 7. Quicksand -->
+    <div class="font-card">
+      <span class="number">7</span>
+      <div class="font-name">Quicksand</div>
+      <div class="font-category">Rounded Humanist · Friendly, playful, approachable</div>
+      <div class="logo-wordmark">
+        <svg class="paisley-icon" width="30" height="30" viewBox="0 0 64 64" fill="none">
+          <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+          <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+          <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34" stroke="#C75B12" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 28.5 32 28.5 30 31" stroke="#C75B12" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 33.5 32 33.5 30 31" stroke="#C75B12" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <circle cx="34" cy="31" r="1.8" fill="#D4A843"/>
+        </svg>
+        <span class="wordmark-text" style="font-family:'Quicksand'; font-size:28px; font-weight:700; color:#F0EDE6;">mirasi</span>
+      </div>
+      <div class="weights">
+        <div class="weight-row">
+          <span class="weight-label">Medium</span>
+          <span style="font-family:'Quicksand'; font-weight:500; font-size:20px;">mirasi</span>
+        </div>
+        <div class="weight-row">
+          <span class="weight-label">Bold</span>
+          <span style="font-family:'Quicksand'; font-weight:700; font-size:20px;">mirasi</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. Manrope -->
+    <div class="font-card">
+      <span class="number">8</span>
+      <div class="font-name">Manrope</div>
+      <div class="font-category">Semi-rounded Sans · Modern, versatile, tech-premium</div>
+      <div class="logo-wordmark">
+        <svg class="paisley-icon" width="30" height="30" viewBox="0 0 64 64" fill="none">
+          <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+          <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+          <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34" stroke="#C75B12" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 28.5 32 28.5 30 31" stroke="#C75B12" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 33.5 32 33.5 30 31" stroke="#C75B12" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <circle cx="34" cy="31" r="1.8" fill="#D4A843"/>
+        </svg>
+        <span class="wordmark-text" style="font-family:'Manrope'; font-size:28px; font-weight:700; color:#F0EDE6;">mirasi</span>
+      </div>
+      <div class="weights">
+        <div class="weight-row">
+          <span class="weight-label">Medium</span>
+          <span style="font-family:'Manrope'; font-weight:500; font-size:20px;">mirasi</span>
+        </div>
+        <div class="weight-row">
+          <span class="weight-label">Bold</span>
+          <span style="font-family:'Manrope'; font-weight:700; font-size:20px;">mirasi</span>
+        </div>
+        <div class="weight-row">
+          <span class="weight-label">ExtraBold</span>
+          <span style="font-family:'Manrope'; font-weight:800; font-size:20px;">mirasi</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9. Urbanist -->
+    <div class="font-card">
+      <span class="number">9</span>
+      <div class="font-name">Urbanist</div>
+      <div class="font-category">Modern Geometric · Clean, premium, slightly condensed</div>
+      <div class="logo-wordmark">
+        <svg class="paisley-icon" width="30" height="30" viewBox="0 0 64 64" fill="none">
+          <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+          <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+          <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34" stroke="#C75B12" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 28.5 32 28.5 30 31" stroke="#C75B12" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 33.5 32 33.5 30 31" stroke="#C75B12" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <circle cx="34" cy="31" r="1.8" fill="#D4A843"/>
+        </svg>
+        <span class="wordmark-text" style="font-family:'Urbanist'; font-size:28px; font-weight:700; color:#F0EDE6;">mirasi</span>
+      </div>
+      <div class="weights">
+        <div class="weight-row">
+          <span class="weight-label">Medium</span>
+          <span style="font-family:'Urbanist'; font-weight:500; font-size:20px;">mirasi</span>
+        </div>
+        <div class="weight-row">
+          <span class="weight-label">Bold</span>
+          <span style="font-family:'Urbanist'; font-weight:700; font-size:20px;">mirasi</span>
+        </div>
+        <div class="weight-row">
+          <span class="weight-label">ExtraBold</span>
+          <span style="font-family:'Urbanist'; font-weight:800; font-size:20px;">mirasi</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 10. Space Grotesk -->
+    <div class="font-card">
+      <span class="number">10</span>
+      <div class="font-name">Space Grotesk</div>
+      <div class="font-category">Neo-Grotesk · Techy, distinctive, slightly quirky letterforms</div>
+      <div class="logo-wordmark">
+        <svg class="paisley-icon" width="30" height="30" viewBox="0 0 64 64" fill="none">
+          <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+          <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+          <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34" stroke="#C75B12" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 28.5 32 28.5 30 31" stroke="#C75B12" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 33.5 32 33.5 30 31" stroke="#C75B12" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <circle cx="34" cy="31" r="1.8" fill="#D4A843"/>
+        </svg>
+        <span class="wordmark-text" style="font-family:'Space Grotesk'; font-size:28px; font-weight:700; color:#F0EDE6;">mirasi</span>
+      </div>
+      <div class="weights">
+        <div class="weight-row">
+          <span class="weight-label">Medium</span>
+          <span style="font-family:'Space Grotesk'; font-weight:500; font-size:20px;">mirasi</span>
+        </div>
+        <div class="weight-row">
+          <span class="weight-label">Bold</span>
+          <span style="font-family:'Space Grotesk'; font-weight:700; font-size:20px;">mirasi</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- SECTION 3: ELEGANT / EDITORIAL SERIF                  -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="section-title">
+    <h2>Category C — Elegant Serif</h2>
+    <p>Heritage + luxury feel. Like Forest Essentials, Titan, LVMH. Adds artistic gravitas. Bold move for a tech brand.</p>
+  </div>
+
+  <div class="font-grid">
+
+    <!-- 11. Playfair Display -->
+    <div class="font-card">
+      <span class="number">11</span>
+      <div class="font-name">Playfair Display</div>
+      <div class="font-category">Modern Serif · Editorial elegance, high contrast strokes</div>
+      <div class="logo-wordmark">
+        <svg class="paisley-icon" width="30" height="30" viewBox="0 0 64 64" fill="none">
+          <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+          <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+          <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34" stroke="#C75B12" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 28.5 32 28.5 30 31" stroke="#C75B12" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 33.5 32 33.5 30 31" stroke="#C75B12" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <circle cx="34" cy="31" r="1.8" fill="#D4A843"/>
+        </svg>
+        <span class="wordmark-text" style="font-family:'Playfair Display'; font-size:30px; font-weight:700; color:#F0EDE6;">mirasi</span>
+      </div>
+      <div class="weights">
+        <div class="weight-row">
+          <span class="weight-label">Regular</span>
+          <span style="font-family:'Playfair Display'; font-weight:400; font-size:22px;">mirasi</span>
+        </div>
+        <div class="weight-row">
+          <span class="weight-label">Bold</span>
+          <span style="font-family:'Playfair Display'; font-weight:700; font-size:22px;">mirasi</span>
+        </div>
+        <div class="weight-row">
+          <span class="weight-label">ExtraBold</span>
+          <span style="font-family:'Playfair Display'; font-weight:800; font-size:22px;">mirasi</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 12. Cormorant Garamond -->
+    <div class="font-card">
+      <span class="number">12</span>
+      <div class="font-name">Cormorant Garamond</div>
+      <div class="font-category">Classic Serif · Luxurious, refined, Forest Essentials vibe</div>
+      <div class="logo-wordmark">
+        <svg class="paisley-icon" width="30" height="30" viewBox="0 0 64 64" fill="none">
+          <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+          <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+          <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34" stroke="#C75B12" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 28.5 32 28.5 30 31" stroke="#C75B12" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 33.5 32 33.5 30 31" stroke="#C75B12" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <circle cx="34" cy="31" r="1.8" fill="#D4A843"/>
+        </svg>
+        <span class="wordmark-text" style="font-family:'Cormorant Garamond'; font-size:32px; font-weight:600; color:#F0EDE6;">mirasi</span>
+      </div>
+      <div class="weights">
+        <div class="weight-row">
+          <span class="weight-label">Regular</span>
+          <span style="font-family:'Cormorant Garamond'; font-weight:400; font-size:24px;">mirasi</span>
+        </div>
+        <div class="weight-row">
+          <span class="weight-label">SemiBold</span>
+          <span style="font-family:'Cormorant Garamond'; font-weight:600; font-size:24px;">mirasi</span>
+        </div>
+        <div class="weight-row">
+          <span class="weight-label">Bold</span>
+          <span style="font-family:'Cormorant Garamond'; font-weight:700; font-size:24px;">mirasi</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 13. Josefin Sans -->
+    <div class="font-card">
+      <span class="number">13</span>
+      <div class="font-name">Josefin Sans</div>
+      <div class="font-category">Vintage Geometric · Art deco feel, elegant yet modern</div>
+      <div class="logo-wordmark">
+        <svg class="paisley-icon" width="30" height="30" viewBox="0 0 64 64" fill="none">
+          <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+          <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+          <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34" stroke="#C75B12" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 28.5 32 28.5 30 31" stroke="#C75B12" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 33.5 32 33.5 30 31" stroke="#C75B12" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <circle cx="34" cy="31" r="1.8" fill="#D4A843"/>
+        </svg>
+        <span class="wordmark-text" style="font-family:'Josefin Sans'; font-size:28px; font-weight:700; color:#F0EDE6;">mirasi</span>
+      </div>
+      <div class="weights">
+        <div class="weight-row">
+          <span class="weight-label">Light</span>
+          <span style="font-family:'Josefin Sans'; font-weight:300; font-size:22px;">mirasi</span>
+        </div>
+        <div class="weight-row">
+          <span class="weight-label">Regular</span>
+          <span style="font-family:'Josefin Sans'; font-weight:400; font-size:22px;">mirasi</span>
+        </div>
+        <div class="weight-row">
+          <span class="weight-label">SemiBold</span>
+          <span style="font-family:'Josefin Sans'; font-weight:600; font-size:22px;">mirasi</span>
+        </div>
+        <div class="weight-row">
+          <span class="weight-label">Bold</span>
+          <span style="font-family:'Josefin Sans'; font-weight:700; font-size:22px;">mirasi</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 14. Raleway -->
+    <div class="font-card">
+      <span class="number">14</span>
+      <div class="font-name">Raleway</div>
+      <div class="font-category">Thin Geometric · Ultra-elegant, fashion-forward</div>
+      <div class="logo-wordmark">
+        <svg class="paisley-icon" width="30" height="30" viewBox="0 0 64 64" fill="none">
+          <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+          <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+          <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34" stroke="#C75B12" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 28.5 32 28.5 30 31" stroke="#C75B12" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 33.5 32 33.5 30 31" stroke="#C75B12" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <circle cx="34" cy="31" r="1.8" fill="#D4A843"/>
+        </svg>
+        <span class="wordmark-text" style="font-family:'Raleway'; font-size:28px; font-weight:700; color:#F0EDE6;">mirasi</span>
+      </div>
+      <div class="weights">
+        <div class="weight-row">
+          <span class="weight-label">Medium</span>
+          <span style="font-family:'Raleway'; font-weight:500; font-size:20px;">mirasi</span>
+        </div>
+        <div class="weight-row">
+          <span class="weight-label">Bold</span>
+          <span style="font-family:'Raleway'; font-weight:700; font-size:20px;">mirasi</span>
+        </div>
+        <div class="weight-row">
+          <span class="weight-label">ExtraBold</span>
+          <span style="font-family:'Raleway'; font-weight:800; font-size:20px;">mirasi</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- SECTION 4: WORDMARK COLOR TREATMENTS                  -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="section-title">
+    <h2>Wordmark Color Treatments</h2>
+    <p>How should the "mirasi" text be colored? Using Outfit Bold as the example font. Gold dot on "i" = matching the logo's eye.</p>
+  </div>
+
+  <div class="color-grid">
+    <!-- A: Full White -->
+    <div class="color-card">
+      <div style="display:flex; align-items:center; justify-content:center; gap:10px;">
+        <svg width="28" height="28" viewBox="0 0 64 64" fill="none">
+          <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="4" stroke-linecap="round" fill="none"/>
+          <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+          <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34" stroke="#C75B12" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 28.5 32 28.5 30 31 C32 33.5 36 33.5 38 31Z" stroke="#C75B12" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+          <circle cx="34" cy="31" r="2" fill="#D4A843"/>
+        </svg>
+        <span style="font-family:'Outfit'; font-size:26px; font-weight:700; color:#F0EDE6;">mirasi</span>
+      </div>
+      <div class="label">A — Full White</div>
+      <div class="letter">Clean, icon carries the color</div>
+    </div>
+
+    <!-- B: Full Saffron -->
+    <div class="color-card">
+      <div style="display:flex; align-items:center; justify-content:center; gap:10px;">
+        <svg width="28" height="28" viewBox="0 0 64 64" fill="none">
+          <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="4" stroke-linecap="round" fill="none"/>
+          <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+          <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34" stroke="#C75B12" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 28.5 32 28.5 30 31 C32 33.5 36 33.5 38 31Z" stroke="#C75B12" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+          <circle cx="34" cy="31" r="2" fill="#D4A843"/>
+        </svg>
+        <span style="font-family:'Outfit'; font-size:26px; font-weight:700; color:#C75B12;">mirasi</span>
+      </div>
+      <div class="label">B — Full Saffron</div>
+      <div class="letter">Bold, unified brand color</div>
+    </div>
+
+    <!-- C: Current Split (mi white + rasi saffron) -->
+    <div class="color-card">
+      <div style="display:flex; align-items:center; justify-content:center; gap:10px;">
+        <svg width="28" height="28" viewBox="0 0 64 64" fill="none">
+          <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="4" stroke-linecap="round" fill="none"/>
+          <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+          <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34" stroke="#C75B12" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 28.5 32 28.5 30 31 C32 33.5 36 33.5 38 31Z" stroke="#C75B12" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+          <circle cx="34" cy="31" r="2" fill="#D4A843"/>
+        </svg>
+        <span style="font-family:'Outfit'; font-size:26px; font-weight:700;"><span style="color:#F0EDE6;">mi</span><span style="color:#C75B12;">rasi</span></span>
+      </div>
+      <div class="label">C — mi + rasi (current)</div>
+      <div class="letter">Highlights "rasa" root</div>
+    </div>
+
+    <!-- D: White + Gold dot on i -->
+    <div class="color-card">
+      <div style="display:flex; align-items:center; justify-content:center; gap:10px;">
+        <svg width="28" height="28" viewBox="0 0 64 64" fill="none">
+          <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="4" stroke-linecap="round" fill="none"/>
+          <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+          <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34" stroke="#C75B12" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 28.5 32 28.5 30 31 C32 33.5 36 33.5 38 31Z" stroke="#C75B12" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+          <circle cx="34" cy="31" r="2" fill="#D4A843"/>
+        </svg>
+        <!-- SVG wordmark with gold dots on both i's -->
+        <span style="font-family:'Outfit'; font-size:26px; font-weight:700; color:#F0EDE6; position:relative;">
+          m<span style="position:relative;">i<span style="position:absolute; top:-1px; left:50%; transform:translateX(-50%); width:5px; height:5px; background:#D4A843; border-radius:50%; display:block;"></span></span>ras<span style="position:relative;">i<span style="position:absolute; top:-1px; left:50%; transform:translateX(-50%); width:5px; height:5px; background:#D4A843; border-radius:50%; display:block;"></span></span>
+        </span>
+      </div>
+      <div class="label">D — White + Gold dots on "i"</div>
+      <div class="letter">Dots echo the logo's gold eye</div>
+    </div>
+
+    <!-- E: Saffron + Gold dot on i -->
+    <div class="color-card">
+      <div style="display:flex; align-items:center; justify-content:center; gap:10px;">
+        <svg width="28" height="28" viewBox="0 0 64 64" fill="none">
+          <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="4" stroke-linecap="round" fill="none"/>
+          <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="3.2" stroke-linecap="round" fill="none"/>
+          <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34" stroke="#C75B12" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 28.5 32 28.5 30 31 C32 33.5 36 33.5 38 31Z" stroke="#C75B12" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+          <circle cx="34" cy="31" r="2" fill="#D4A843"/>
+        </svg>
+        <span style="font-family:'Outfit'; font-size:26px; font-weight:700; color:#C75B12; position:relative;">
+          m<span style="position:relative;">i<span style="position:absolute; top:-1px; left:50%; transform:translateX(-50%); width:5px; height:5px; background:#D4A843; border-radius:50%; display:block;"></span></span>ras<span style="position:relative;">i<span style="position:absolute; top:-1px; left:50%; transform:translateX(-50%); width:5px; height:5px; background:#D4A843; border-radius:50%; display:block;"></span></span>
+        </span>
+      </div>
+      <div class="label">E — Saffron + Gold dots</div>
+      <div class="letter">Brand color + gold accent detail</div>
+    </div>
+
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- SECTION 5: BEST COMBOS (Curated picks)                -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="section-title">
+    <h2>Top 5 Curated Combos</h2>
+    <p>The best logo icon + font + color combinations, inspired by world-class brands.</p>
+  </div>
+
+  <div class="combo-grid">
+
+    <!-- Combo 1: Outfit + Full White (Airbnb feel) -->
+    <div class="combo-card">
+      <div class="combo-display">
+        <svg width="36" height="36" viewBox="0 0 64 64" fill="none">
+          <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+          <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+          <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34" stroke="#C75B12" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 28.5 32 28.5 30 31" stroke="#C75B12" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 33.5 32 33.5 30 31" stroke="#C75B12" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <circle cx="34" cy="31" r="1.8" fill="#D4A843"/>
+        </svg>
+        <span style="font-family:'Outfit'; font-size:32px; font-weight:700; color:#F0EDE6; letter-spacing:-0.5px;">mirasi</span>
+      </div>
+      <div class="combo-info">
+        <h3>Outfit Bold + Full White</h3>
+        <p>Rounded geometric warmth, closest to Airbnb Cereal. Feels friendly, premium, approachable.</p>
+        <div class="tags">
+          <span class="tag best">Recommended</span>
+          <span class="tag">Airbnb vibe</span>
+          <span class="tag">Warm</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Combo 2: Plus Jakarta + Gold dots (CRED feel) -->
+    <div class="combo-card">
+      <div class="combo-display">
+        <svg width="36" height="36" viewBox="0 0 64 64" fill="none">
+          <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+          <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+          <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34" stroke="#C75B12" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 28.5 32 28.5 30 31" stroke="#C75B12" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 33.5 32 33.5 30 31" stroke="#C75B12" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <circle cx="34" cy="31" r="1.8" fill="#D4A843"/>
+        </svg>
+        <span style="font-family:'Plus Jakarta Sans'; font-size:32px; font-weight:700; color:#F0EDE6; letter-spacing:-0.5px;">mirasi</span>
+      </div>
+      <div class="combo-info">
+        <h3>Plus Jakarta Bold + White</h3>
+        <p>Modern SaaS aesthetic meets Indian premium. Clean, confident, tech-forward like CRED.</p>
+        <div class="tags">
+          <span class="tag">CRED vibe</span>
+          <span class="tag">Modern</span>
+          <span class="tag">Premium</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Combo 3: Sora + Full Saffron (Spotify feel) -->
+    <div class="combo-card">
+      <div class="combo-display">
+        <svg width="36" height="36" viewBox="0 0 64 64" fill="none">
+          <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+          <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+          <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34" stroke="#C75B12" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 28.5 32 28.5 30 31" stroke="#C75B12" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 33.5 32 33.5 30 31" stroke="#C75B12" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <circle cx="34" cy="31" r="1.8" fill="#D4A843"/>
+        </svg>
+        <span style="font-family:'Sora'; font-size:32px; font-weight:700; color:#C75B12; letter-spacing:-0.3px;">mirasi</span>
+      </div>
+      <div class="combo-info">
+        <h3>Sora Bold + Full Saffron</h3>
+        <p>Tech-forward like Spotify Circular. The full saffron wordmark makes the brand color unmissable.</p>
+        <div class="tags">
+          <span class="tag">Spotify vibe</span>
+          <span class="tag">Bold</span>
+          <span class="tag">Tech</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Combo 4: Playfair + White (Luxury feel) -->
+    <div class="combo-card">
+      <div class="combo-display">
+        <svg width="36" height="36" viewBox="0 0 64 64" fill="none">
+          <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+          <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+          <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34" stroke="#C75B12" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 28.5 32 28.5 30 31" stroke="#C75B12" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 33.5 32 33.5 30 31" stroke="#C75B12" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <circle cx="34" cy="31" r="1.8" fill="#D4A843"/>
+        </svg>
+        <span style="font-family:'Playfair Display'; font-size:34px; font-weight:700; color:#F0EDE6; letter-spacing:0px;">mirasi</span>
+      </div>
+      <div class="combo-info">
+        <h3>Playfair Display + White</h3>
+        <p>Editorial luxury. The serif + paisley icon creates a strong "art heritage" impression. Like a gallery brand.</p>
+        <div class="tags">
+          <span class="tag">Luxury</span>
+          <span class="tag">Heritage</span>
+          <span class="tag">Editorial</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Combo 5: DM Sans + White (Clean minimal) -->
+    <div class="combo-card">
+      <div class="combo-display">
+        <svg width="36" height="36" viewBox="0 0 64 64" fill="none">
+          <path d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+          <path d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32" stroke="#C75B12" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+          <path d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34" stroke="#C75B12" stroke-width="2.2" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 28.5 32 28.5 30 31" stroke="#C75B12" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <path d="M38 31 C36 33.5 32 33.5 30 31" stroke="#C75B12" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+          <circle cx="34" cy="31" r="1.8" fill="#D4A843"/>
+        </svg>
+        <span style="font-family:'DM Sans'; font-size:32px; font-weight:700; color:#F0EDE6; letter-spacing:-0.3px;">mirasi</span>
+      </div>
+      <div class="combo-info">
+        <h3>DM Sans Bold + White</h3>
+        <p>Ultra-clean, no-nonsense. Used by premium Indian startups. Timeless and versatile.</p>
+        <div class="tags">
+          <span class="tag">Minimal</span>
+          <span class="tag">Clean</span>
+          <span class="tag">Versatile</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <p>Mirasi — <strong>"Every face tells a legend"</strong></p>
+    <p style="margin-top:8px;">Tell me: <strong>Font number (1–14)</strong> + <strong>Color treatment (A–E)</strong> + <strong>Weight preference</strong></p>
+  </div>
+
+</body>
+</html>

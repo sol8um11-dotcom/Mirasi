@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mirasi — Refined Logo Concepts</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: #0A0A0A;
+      color: #F0EDE6;
+      min-height: 100vh;
+    }
+
+    .header {
+      text-align: center;
+      padding: 48px 24px 32px;
+      border-bottom: 1px solid #1E1C18;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+
+    .header h1 span { color: #C75B12; }
+
+    .header p {
+      color: #9B8E7E;
+      font-size: 15px;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .concepts {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 24px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 32px;
+    }
+
+    .concept-card {
+      background: #141210;
+      border: 1px solid #2A2520;
+      border-radius: 20px;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.2s;
+    }
+
+    .concept-card:hover {
+      border-color: #C75B12;
+      transform: translateY(-2px);
+    }
+
+    .concept-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #C75B12;
+      color: white;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .concept-header {
+      padding: 20px 24px 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .concept-header h2 {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .concept-desc {
+      padding: 8px 24px 0;
+      font-size: 13px;
+      color: #9B8E7E;
+      line-height: 1.5;
+    }
+
+    /* Main logo display area */
+    .logo-display {
+      padding: 40px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 200px;
+    }
+
+    /* Wordmark display */
+    .wordmark-row {
+      padding: 0 24px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .wordmark {
+      font-size: 26px;
+      font-weight: 700;
+      color: #F0EDE6;
+      letter-spacing: -0.3px;
+    }
+
+    .wordmark .accent { color: #C75B12; }
+
+    /* App icon previews */
+    .icon-previews {
+      padding: 0 24px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .icon-preview {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .icon-preview span {
+      font-size: 11px;
+      color: #6B6050;
+    }
+
+    .icon-box {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #1A1816;
+      border: 1px solid #2A2520;
+    }
+
+    .icon-box.dark { background: #0F0F0F; }
+    .icon-box.saffron { background: #C75B12; }
+    .icon-box.gold-bg { background: linear-gradient(135deg, #1B2A4A, #0F0F0F); }
+
+    .footer {
+      text-align: center;
+      padding: 32px 24px 48px;
+      color: #6B6050;
+      font-size: 13px;
+      border-top: 1px solid #1E1C18;
+    }
+
+    .footer strong { color: #C75B12; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>mi<span>rasi</span> — Refined Logo Concepts</h1>
+    <p>6 polished variations of the Paisley Spiral motif. Each crafted as precise SVG — pick your favorite.</p>
+  </div>
+
+  <div class="concepts">
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- CONCEPT 1: Refined Paisley Spiral              -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="concept-card">
+      <div class="concept-header">
+        <span class="concept-number">1</span>
+        <h2>Refined Paisley Spiral</h2>
+      </div>
+      <p class="concept-desc">The original concept refined — smoother cubic Béziers, mathematically balanced spiral progression, perfectly placed gold bindu (dot) at the eye of the spiral. Elegant and timeless.</p>
+
+      <div class="logo-display">
+        <svg width="120" height="120" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Refined paisley spiral with smooth cubic beziers -->
+          <path
+            d="M32 8
+               C22 8 10 18 10 32
+               C10 44 18 56 32 56
+               C44 56 52 46 52 36
+               C52 26 44 18 34 18
+               C28 18 22 24 22 30
+               C22 36 26 40 32 40
+               C36 40 40 36 40 32
+               C40 28 36 26 33 26"
+            stroke="#C75B12"
+            stroke-width="3"
+            stroke-linecap="round"
+            fill="none"
+          />
+          <!-- Gold bindu at spiral center -->
+          <circle cx="33" cy="30" r="2.5" fill="#D4A843" />
+          <!-- Subtle outer glow -->
+          <circle cx="33" cy="30" r="2.5" fill="#D4A843" opacity="0.3" filter="url(#glow1)" />
+          <defs>
+            <filter id="glow1" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="2" />
+            </filter>
+          </defs>
+        </svg>
+      </div>
+
+      <div class="wordmark-row">
+        <svg width="32" height="32" viewBox="0 0 64 64" fill="none">
+          <path d="M32 8 C22 8 10 18 10 32 C10 44 18 56 32 56 C44 56 52 46 52 36 C52 26 44 18 34 18 C28 18 22 24 22 30 C22 36 26 40 32 40 C36 40 40 36 40 32 C40 28 36 26 33 26" stroke="#C75B12" stroke-width="3" stroke-linecap="round" fill="none"/>
+          <circle cx="33" cy="30" r="2.5" fill="#D4A843"/>
+        </svg>
+        <span class="wordmark">mi<span class="accent">rasi</span></span>
+      </div>
+
+      <div class="icon-previews">
+        <div class="icon-preview">
+          <div class="icon-box dark">
+            <svg width="32" height="32" viewBox="0 0 64 64" fill="none">
+              <path d="M32 8 C22 8 10 18 10 32 C10 44 18 56 32 56 C44 56 52 46 52 36 C52 26 44 18 34 18 C28 18 22 24 22 30 C22 36 26 40 32 40 C36 40 40 36 40 32 C40 28 36 26 33 26" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+              <circle cx="33" cy="30" r="2.5" fill="#D4A843"/>
+            </svg>
+          </div>
+          <span>Dark</span>
+        </div>
+        <div class="icon-preview">
+          <div class="icon-box saffron">
+            <svg width="32" height="32" viewBox="0 0 64 64" fill="none">
+              <path d="M32 8 C22 8 10 18 10 32 C10 44 18 56 32 56 C44 56 52 46 52 36 C52 26 44 18 34 18 C28 18 22 24 22 30 C22 36 26 40 32 40 C36 40 40 36 40 32 C40 28 36 26 33 26" stroke="white" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+              <circle cx="33" cy="30" r="2.5" fill="#D4A843"/>
+            </svg>
+          </div>
+          <span>Saffron</span>
+        </div>
+        <div class="icon-preview">
+          <div class="icon-box gold-bg">
+            <svg width="32" height="32" viewBox="0 0 64 64" fill="none">
+              <path d="M32 8 C22 8 10 18 10 32 C10 44 18 56 32 56 C44 56 52 46 52 36 C52 26 44 18 34 18 C28 18 22 24 22 30 C22 36 26 40 32 40 C36 40 40 36 40 32 C40 28 36 26 33 26" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+              <circle cx="33" cy="30" r="2.5" fill="#D4A843"/>
+            </svg>
+          </div>
+          <span>Navy</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- CONCEPT 2: Filled Paisley                      -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="concept-card">
+      <div class="concept-header">
+        <span class="concept-number">2</span>
+        <h2>Filled Paisley</h2>
+      </div>
+      <p class="concept-desc">A solid saffron paisley form with a carved-out spiral channel creating negative space — bold, iconic, instantly recognizable at any size. The gold dot gleams at the heart.</p>
+
+      <div class="logo-display">
+        <svg width="120" height="120" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Solid paisley body -->
+          <path
+            d="M32 6
+               C18 6 8 20 8 34
+               C8 48 18 58 32 58
+               C46 58 54 48 54 36
+               C54 22 44 14 32 14
+               C24 14 18 22 18 30
+               C18 38 24 44 32 44
+               C38 44 42 40 42 34
+               Z"
+            fill="#C75B12"
+            opacity="0.15"
+          />
+          <!-- Paisley outline -->
+          <path
+            d="M32 6
+               C18 6 8 20 8 34
+               C8 48 18 58 32 58
+               C46 58 54 48 54 36
+               C54 22 44 14 32 14"
+            stroke="#C75B12"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            fill="none"
+          />
+          <!-- Inner spiral -->
+          <path
+            d="M32 14
+               C24 14 18 22 18 30
+               C18 38 24 44 32 44
+               C38 44 42 40 42 34
+               C42 29 38 26 34 26"
+            stroke="#C75B12"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            fill="none"
+          />
+          <!-- Gold bindu -->
+          <circle cx="34" cy="30" r="3" fill="#D4A843" />
+          <!-- Bindu shine -->
+          <circle cx="33" cy="29" r="1" fill="#E8C96A" opacity="0.6" />
+        </svg>
+      </div>
+
+      <div class="wordmark-row">
+        <svg width="32" height="32" viewBox="0 0 64 64" fill="none">
+          <path d="M32 6 C18 6 8 20 8 34 C8 48 18 58 32 58 C46 58 54 48 54 36 C54 22 44 14 32 14" stroke="#C75B12" stroke-width="3" stroke-linecap="round" fill="none"/>
+          <path d="M32 14 C24 14 18 22 18 30 C18 38 24 44 32 44 C38 44 42 40 42 34 C42 29 38 26 34 26" stroke="#C75B12" stroke-width="3" stroke-linecap="round" fill="none"/>
+          <circle cx="34" cy="30" r="3" fill="#D4A843"/>
+        </svg>
+        <span class="wordmark">mi<span class="accent">rasi</span></span>
+      </div>
+
+      <div class="icon-previews">
+        <div class="icon-preview">
+          <div class="icon-box dark">
+            <svg width="32" height="32" viewBox="0 0 64 64" fill="none">
+              <path d="M32 6 C18 6 8 20 8 34 C8 48 18 58 32 58 C46 58 54 48 54 36 C54 22 44 14 32 14" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+              <path d="M32 14 C24 14 18 22 18 30 C18 38 24 44 32 44 C38 44 42 40 42 34 C42 29 38 26 34 26" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+              <circle cx="34" cy="30" r="3" fill="#D4A843"/>
+            </svg>
+          </div>
+          <span>Dark</span>
+        </div>
+        <div class="icon-preview">
+          <div class="icon-box saffron">
+            <svg width="32" height="32" viewBox="0 0 64 64" fill="none">
+              <path d="M32 6 C18 6 8 20 8 34 C8 48 18 58 32 58 C46 58 54 48 54 36 C54 22 44 14 32 14" stroke="white" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+              <path d="M32 14 C24 14 18 22 18 30 C18 38 24 44 32 44 C38 44 42 40 42 34 C42 29 38 26 34 26" stroke="white" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+              <circle cx="34" cy="30" r="3" fill="#D4A843"/>
+            </svg>
+          </div>
+          <span>Saffron</span>
+        </div>
+        <div class="icon-preview">
+          <div class="icon-box gold-bg">
+            <svg width="32" height="32" viewBox="0 0 64 64" fill="none">
+              <path d="M32 6 C18 6 8 20 8 34 C8 48 18 58 32 58 C46 58 54 48 54 36 C54 22 44 14 32 14" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+              <path d="M32 14 C24 14 18 22 18 30 C18 38 24 44 32 44 C38 44 42 40 42 34 C42 29 38 26 34 26" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+              <circle cx="34" cy="30" r="3" fill="#D4A843"/>
+            </svg>
+          </div>
+          <span>Navy</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- CONCEPT 3: Paisley Brush Stroke                -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="concept-card">
+      <div class="concept-header">
+        <span class="concept-number">3</span>
+        <h2>Paisley Brush Stroke</h2>
+      </div>
+      <p class="concept-desc">The spiral rendered as if painted by a master calligrapher — thick, confident strokes that taper to a fine point. Organic, artistic, deeply Indian. The tail flicks upward like a painter's flourish.</p>
+
+      <div class="logo-display">
+        <svg width="120" height="120" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <!-- Tapered brush stroke effect -->
+            <linearGradient id="brush3" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#C75B12" />
+              <stop offset="100%" stop-color="#A34A0E" />
+            </linearGradient>
+          </defs>
+          <!-- Main paisley shape - thick to thin stroke -->
+          <path
+            d="M30 7
+               C16 9 6 22 8 36
+               C10 50 22 58 34 56
+               C46 54 54 44 52 32
+               C50 22 42 16 34 16"
+            stroke="url(#brush3)"
+            stroke-width="4.5"
+            stroke-linecap="round"
+            fill="none"
+          />
+          <!-- Inner spiral - thinner -->
+          <path
+            d="M34 16
+               C26 17 20 24 20 32
+               C20 40 27 45 34 44
+               C40 43 44 38 43 32
+               C42 28 39 25 36 25"
+            stroke="#C75B12"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            fill="none"
+          />
+          <!-- Calligraphic flourish tail -->
+          <path
+            d="M30 7 C28 5 24 4 20 6"
+            stroke="#C75B12"
+            stroke-width="2"
+            stroke-linecap="round"
+            fill="none"
+          />
+          <!-- Gold bindu -->
+          <circle cx="36" cy="29" r="2.8" fill="#D4A843" />
+          <!-- Tiny decorative dots along outer curve -->
+          <circle cx="10" cy="30" r="1" fill="#D4A843" opacity="0.4" />
+          <circle cx="14" cy="50" r="1" fill="#D4A843" opacity="0.3" />
+          <circle cx="46" cy="50" r="1" fill="#D4A843" opacity="0.3" />
+        </svg>
+      </div>
+
+      <div class="wordmark-row">
+        <svg width="32" height="32" viewBox="0 0 64 64" fill="none">
+          <path d="M30 7 C16 9 6 22 8 36 C10 50 22 58 34 56 C46 54 54 44 52 32 C50 22 42 16 34 16" stroke="#C75B12" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+          <path d="M34 16 C26 17 20 24 20 32 C20 40 27 45 34 44 C40 43 44 38 43 32 C42 28 39 25 36 25" stroke="#C75B12" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <path d="M30 7 C28 5 24 4 20 6" stroke="#C75B12" stroke-width="2" stroke-linecap="round" fill="none"/>
+          <circle cx="36" cy="29" r="2.8" fill="#D4A843"/>
+        </svg>
+        <span class="wordmark">mi<span class="accent">rasi</span></span>
+      </div>
+
+      <div class="icon-previews">
+        <div class="icon-preview">
+          <div class="icon-box dark">
+            <svg width="32" height="32" viewBox="0 0 64 64" fill="none">
+              <path d="M30 7 C16 9 6 22 8 36 C10 50 22 58 34 56 C46 54 54 44 52 32 C50 22 42 16 34 16" stroke="#C75B12" stroke-width="5" stroke-linecap="round" fill="none"/>
+              <path d="M34 16 C26 17 20 24 20 32 C20 40 27 45 34 44 C40 43 44 38 43 32 C42 28 39 25 36 25" stroke="#C75B12" stroke-width="3" stroke-linecap="round" fill="none"/>
+              <circle cx="36" cy="29" r="2.8" fill="#D4A843"/>
+            </svg>
+          </div>
+          <span>Dark</span>
+        </div>
+        <div class="icon-preview">
+          <div class="icon-box saffron">
+            <svg width="32" height="32" viewBox="0 0 64 64" fill="none">
+              <path d="M30 7 C16 9 6 22 8 36 C10 50 22 58 34 56 C46 54 54 44 52 32 C50 22 42 16 34 16" stroke="white" stroke-width="5" stroke-linecap="round" fill="none"/>
+              <path d="M34 16 C26 17 20 24 20 32 C20 40 27 45 34 44 C40 43 44 38 43 32 C42 28 39 25 36 25" stroke="white" stroke-width="3" stroke-linecap="round" fill="none"/>
+              <circle cx="36" cy="29" r="2.8" fill="#D4A843"/>
+            </svg>
+          </div>
+          <span>Saffron</span>
+        </div>
+        <div class="icon-preview">
+          <div class="icon-box gold-bg">
+            <svg width="32" height="32" viewBox="0 0 64 64" fill="none">
+              <path d="M30 7 C16 9 6 22 8 36 C10 50 22 58 34 56 C46 54 54 44 52 32 C50 22 42 16 34 16" stroke="#C75B12" stroke-width="5" stroke-linecap="round" fill="none"/>
+              <path d="M34 16 C26 17 20 24 20 32 C20 40 27 45 34 44 C40 43 44 38 43 32 C42 28 39 25 36 25" stroke="#C75B12" stroke-width="3" stroke-linecap="round" fill="none"/>
+              <circle cx="36" cy="29" r="2.8" fill="#D4A843"/>
+            </svg>
+          </div>
+          <span>Navy</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- CONCEPT 4: Double Paisley "M"                  -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="concept-card">
+      <div class="concept-header">
+        <span class="concept-number">4</span>
+        <h2>Double Paisley</h2>
+      </div>
+      <p class="concept-desc">Two mirrored paisley curves interlock to form an abstract "M" for Mirasi. Where they meet, a gold bindu marks the union — like two ragas merging into one composition. Symmetrical and memorable.</p>
+
+      <div class="logo-display">
+        <svg width="120" height="120" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Left paisley curve -->
+          <path
+            d="M24 8
+               C14 12 8 22 8 34
+               C8 46 14 54 24 56
+               C30 57 34 52 34 46
+               C34 40 30 36 26 36
+               C23 36 22 38 22 40"
+            stroke="#C75B12"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            fill="none"
+          />
+          <!-- Right paisley curve (mirrored) -->
+          <path
+            d="M40 8
+               C50 12 56 22 56 34
+               C56 46 50 54 40 56
+               C34 57 30 52 30 46
+               C30 40 34 36 38 36
+               C41 36 42 38 42 40"
+            stroke="#C75B12"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            fill="none"
+          />
+          <!-- Gold bindu at intersection -->
+          <circle cx="32" cy="46" r="3" fill="#D4A843" />
+          <circle cx="32" cy="46" r="1.2" fill="#E8C96A" />
+          <!-- Top connecting arc -->
+          <path
+            d="M24 8 C28 6 36 6 40 8"
+            stroke="#D4A843"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            fill="none"
+            opacity="0.5"
+          />
+        </svg>
+      </div>
+
+      <div class="wordmark-row">
+        <svg width="32" height="32" viewBox="0 0 64 64" fill="none">
+          <path d="M24 8 C14 12 8 22 8 34 C8 46 14 54 24 56 C30 57 34 52 34 46 C34 40 30 36 26 36 C23 36 22 38 22 40" stroke="#C75B12" stroke-width="3" stroke-linecap="round" fill="none"/>
+          <path d="M40 8 C50 12 56 22 56 34 C56 46 50 54 40 56 C34 57 30 52 30 46 C30 40 34 36 38 36 C41 36 42 38 42 40" stroke="#C75B12" stroke-width="3" stroke-linecap="round" fill="none"/>
+          <circle cx="32" cy="46" r="3" fill="#D4A843"/>
+        </svg>
+        <span class="wordmark">mi<span class="accent">rasi</span></span>
+      </div>
+
+      <div class="icon-previews">
+        <div class="icon-preview">
+          <div class="icon-box dark">
+            <svg width="32" height="32" viewBox="0 0 64 64" fill="none">
+              <path d="M24 8 C14 12 8 22 8 34 C8 46 14 54 24 56 C30 57 34 52 34 46 C34 40 30 36 26 36 C23 36 22 38 22 40" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+              <path d="M40 8 C50 12 56 22 56 34 C56 46 50 54 40 56 C34 57 30 52 30 46 C30 40 34 36 38 36 C41 36 42 38 42 40" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+              <circle cx="32" cy="46" r="3" fill="#D4A843"/>
+            </svg>
+          </div>
+          <span>Dark</span>
+        </div>
+        <div class="icon-preview">
+          <div class="icon-box saffron">
+            <svg width="32" height="32" viewBox="0 0 64 64" fill="none">
+              <path d="M24 8 C14 12 8 22 8 34 C8 46 14 54 24 56 C30 57 34 52 34 46 C34 40 30 36 26 36 C23 36 22 38 22 40" stroke="white" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+              <path d="M40 8 C50 12 56 22 56 34 C56 46 50 54 40 56 C34 57 30 52 30 46 C30 40 34 36 38 36 C41 36 42 38 42 40" stroke="white" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+              <circle cx="32" cy="46" r="3" fill="#D4A843"/>
+            </svg>
+          </div>
+          <span>Saffron</span>
+        </div>
+        <div class="icon-preview">
+          <div class="icon-box gold-bg">
+            <svg width="32" height="32" viewBox="0 0 64 64" fill="none">
+              <path d="M24 8 C14 12 8 22 8 34 C8 46 14 54 24 56 C30 57 34 52 34 46 C34 40 30 36 26 36 C23 36 22 38 22 40" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+              <path d="M40 8 C50 12 56 22 56 34 C56 46 50 54 40 56 C34 57 30 52 30 46 C30 40 34 36 38 36 C41 36 42 38 42 40" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+              <circle cx="32" cy="46" r="3" fill="#D4A843"/>
+            </svg>
+          </div>
+          <span>Navy</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- CONCEPT 5: Paisley Drop                        -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="concept-card">
+      <div class="concept-header">
+        <span class="concept-number">5</span>
+        <h2>Paisley Drop</h2>
+      </div>
+      <p class="concept-desc">The paisley distilled to its purest form — a single teardrop/mango shape with a flowing internal spiral line. Ultra-clean, works at 16px favicon size. The tip curls like a flame rising upward.</p>
+
+      <div class="logo-display">
+        <svg width="120" height="120" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Teardrop/mango outer shape -->
+          <path
+            d="M32 6
+               C32 6 14 18 14 36
+               C14 50 22 58 32 58
+               C42 58 50 50 50 36
+               C50 18 32 6 32 6Z"
+            stroke="#C75B12"
+            stroke-width="2.5"
+            fill="none"
+          />
+          <!-- Curling tip at top -->
+          <path
+            d="M32 6 C30 8 27 8 25 7"
+            stroke="#C75B12"
+            stroke-width="2"
+            stroke-linecap="round"
+            fill="none"
+          />
+          <!-- Internal spiral -->
+          <path
+            d="M32 18
+               C24 20 20 28 20 36
+               C20 44 26 50 32 50
+               C38 50 42 44 42 38
+               C42 32 38 28 34 28
+               C31 28 30 31 30 34"
+            stroke="#C75B12"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            fill="none"
+            opacity="0.7"
+          />
+          <!-- Gold bindu -->
+          <circle cx="32" cy="34" r="2.5" fill="#D4A843" />
+        </svg>
+      </div>
+
+      <div class="wordmark-row">
+        <svg width="32" height="32" viewBox="0 0 64 64" fill="none">
+          <path d="M32 6 C32 6 14 18 14 36 C14 50 22 58 32 58 C42 58 50 50 50 36 C50 18 32 6 32 6Z" stroke="#C75B12" stroke-width="3" fill="none"/>
+          <path d="M32 6 C30 8 27 8 25 7" stroke="#C75B12" stroke-width="2" stroke-linecap="round" fill="none"/>
+          <path d="M32 18 C24 20 20 28 20 36 C20 44 26 50 32 50 C38 50 42 44 42 38 C42 32 38 28 34 28 C31 28 30 31 30 34" stroke="#C75B12" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.7"/>
+          <circle cx="32" cy="34" r="2.5" fill="#D4A843"/>
+        </svg>
+        <span class="wordmark">mi<span class="accent">rasi</span></span>
+      </div>
+
+      <div class="icon-previews">
+        <div class="icon-preview">
+          <div class="icon-box dark">
+            <svg width="32" height="32" viewBox="0 0 64 64" fill="none">
+              <path d="M32 6 C32 6 14 18 14 36 C14 50 22 58 32 58 C42 58 50 50 50 36 C50 18 32 6 32 6Z" stroke="#C75B12" stroke-width="3.5" fill="none"/>
+              <path d="M32 6 C30 8 27 8 25 7" stroke="#C75B12" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+              <path d="M32 18 C24 20 20 28 20 36 C20 44 26 50 32 50 C38 50 42 44 42 38 C42 32 38 28 34 28 C31 28 30 31 30 34" stroke="#C75B12" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.7"/>
+              <circle cx="32" cy="34" r="2.5" fill="#D4A843"/>
+            </svg>
+          </div>
+          <span>Dark</span>
+        </div>
+        <div class="icon-preview">
+          <div class="icon-box saffron">
+            <svg width="32" height="32" viewBox="0 0 64 64" fill="none">
+              <path d="M32 6 C32 6 14 18 14 36 C14 50 22 58 32 58 C42 58 50 50 50 36 C50 18 32 6 32 6Z" stroke="white" stroke-width="3.5" fill="none"/>
+              <path d="M32 6 C30 8 27 8 25 7" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+              <path d="M32 18 C24 20 20 28 20 36 C20 44 26 50 32 50 C38 50 42 44 42 38 C42 32 38 28 34 28 C31 28 30 31 30 34" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.7"/>
+              <circle cx="32" cy="34" r="2.5" fill="#D4A843"/>
+            </svg>
+          </div>
+          <span>Saffron</span>
+        </div>
+        <div class="icon-preview">
+          <div class="icon-box gold-bg">
+            <svg width="32" height="32" viewBox="0 0 64 64" fill="none">
+              <path d="M32 6 C32 6 14 18 14 36 C14 50 22 58 32 58 C42 58 50 50 50 36 C50 18 32 6 32 6Z" stroke="#C75B12" stroke-width="3.5" fill="none"/>
+              <path d="M32 6 C30 8 27 8 25 7" stroke="#C75B12" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+              <path d="M32 18 C24 20 20 28 20 36 C20 44 26 50 32 50 C38 50 42 44 42 38 C42 32 38 28 34 28 C31 28 30 31 30 34" stroke="#C75B12" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.7"/>
+              <circle cx="32" cy="34" r="2.5" fill="#D4A843"/>
+            </svg>
+          </div>
+          <span>Navy</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- CONCEPT 6: Geometric Paisley                   -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <div class="concept-card">
+      <div class="concept-header">
+        <span class="concept-number">6</span>
+        <h2>Geometric Paisley</h2>
+      </div>
+      <p class="concept-desc">The paisley abstracted into pure geometric forms — concentric arcs and a perfect circle. Ultra-modern, tech-forward, scales flawlessly from 12px to billboard. Think Spotify meets Indian heritage.</p>
+
+      <div class="logo-display">
+        <svg width="120" height="120" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Outermost arc -->
+          <path
+            d="M32 8 A26 26 0 1 1 18 54"
+            stroke="#C75B12"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            fill="none"
+          />
+          <!-- Middle arc -->
+          <path
+            d="M32 16 A18 18 0 1 1 22 48"
+            stroke="#C75B12"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            fill="none"
+          />
+          <!-- Inner arc -->
+          <path
+            d="M32 24 A10 10 0 1 1 26 42"
+            stroke="#C75B12"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            fill="none"
+          />
+          <!-- Gold center dot -->
+          <circle cx="32" cy="32" r="3.5" fill="#D4A843" />
+          <circle cx="31" cy="31" r="1.2" fill="#E8C96A" opacity="0.5" />
+          <!-- Tip accent connecting the arcs -->
+          <path
+            d="M18 54 L22 48"
+            stroke="#D4A843"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            opacity="0.6"
+          />
+          <path
+            d="M22 48 L26 42"
+            stroke="#D4A843"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            opacity="0.6"
+          />
+        </svg>
+      </div>
+
+      <div class="wordmark-row">
+        <svg width="32" height="32" viewBox="0 0 64 64" fill="none">
+          <path d="M32 8 A26 26 0 1 1 18 54" stroke="#C75B12" stroke-width="3" stroke-linecap="round" fill="none"/>
+          <path d="M32 16 A18 18 0 1 1 22 48" stroke="#C75B12" stroke-width="3" stroke-linecap="round" fill="none"/>
+          <path d="M32 24 A10 10 0 1 1 26 42" stroke="#C75B12" stroke-width="3" stroke-linecap="round" fill="none"/>
+          <circle cx="32" cy="32" r="3.5" fill="#D4A843"/>
+        </svg>
+        <span class="wordmark">mi<span class="accent">rasi</span></span>
+      </div>
+
+      <div class="icon-previews">
+        <div class="icon-preview">
+          <div class="icon-box dark">
+            <svg width="32" height="32" viewBox="0 0 64 64" fill="none">
+              <path d="M32 8 A26 26 0 1 1 18 54" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+              <path d="M32 16 A18 18 0 1 1 22 48" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+              <path d="M32 24 A10 10 0 1 1 26 42" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+              <circle cx="32" cy="32" r="3.5" fill="#D4A843"/>
+            </svg>
+          </div>
+          <span>Dark</span>
+        </div>
+        <div class="icon-preview">
+          <div class="icon-box saffron">
+            <svg width="32" height="32" viewBox="0 0 64 64" fill="none">
+              <path d="M32 8 A26 26 0 1 1 18 54" stroke="white" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+              <path d="M32 16 A18 18 0 1 1 22 48" stroke="white" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+              <path d="M32 24 A10 10 0 1 1 26 42" stroke="white" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+              <circle cx="32" cy="32" r="3.5" fill="#D4A843"/>
+            </svg>
+          </div>
+          <span>Saffron</span>
+        </div>
+        <div class="icon-preview">
+          <div class="icon-box gold-bg">
+            <svg width="32" height="32" viewBox="0 0 64 64" fill="none">
+              <path d="M32 8 A26 26 0 1 1 18 54" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+              <path d="M32 16 A18 18 0 1 1 22 48" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+              <path d="M32 24 A10 10 0 1 1 26 42" stroke="#C75B12" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+              <circle cx="32" cy="32" r="3.5" fill="#D4A843"/>
+            </svg>
+          </div>
+          <span>Navy</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    <p>Mirasi — <strong>"Every face tells a legend"</strong></p>
+    <p style="margin-top:8px;">Pick a number (1–6) to finalize your logo. The chosen design will be used across the app, favicon, and PWA icons.</p>
+  </div>
+
+</body>
+</html>
