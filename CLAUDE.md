@@ -207,6 +207,28 @@ NEXT_PUBLIC_APP_URL=
 - **Next.js 16 middleware deprecation**: Using middleware.ts for Supabase auth refresh. Proxy convention doesn't support this pattern yet.
 - **Serwist + Turbopack**: Not compatible. Must use webpack. Follow https://github.com/serwist/serwist/issues/54
 
+## AI Pipeline (Dual Architecture)
+- **Human portraits → Kontext Pro** (`fal-ai/flux-pro/kontext`) — best identity preservation ($0.04/image)
+- **Pet portraits → Kontext LoRA** (`fal-ai/flux-kontext-lora`) — custom-trained style LoRAs ($0.035/MP)
+- **Fallback**: If no LoRA trained for a style, pets also use Kontext Pro
+- **Prompt pattern**: "Transform this portrait into..." with explicit identity preservation clauses
+- **15 Kontext-optimized prompts** in `src/lib/fal/prompts.ts` — per-style guidance_scale (3.5–5.5), separate human/pet prompts
+- **LoRA trigger words**: `mrs_<style>` convention (e.g., `mrs_warli`, `mrs_madhubani`)
+
+## Training Scripts (`scripts/`)
+- `setup-training-dirs.ts` — Create dataset directory structure for all 15 styles
+- `generate-training-pairs.ts` — Generate before/after pairs using Kontext Pro for LoRA training data
+- `train-lora.ts` — Upload dataset + submit training job to fal-ai/flux-kontext-trainer
+- `integrate-lora.ts` — Update prompts.ts with trained LoRA URL and trigger word
+- `test-lora-quality.ts` — A/B test: Kontext Pro vs LoRA with quality scorecard
+- `test-prompts.ts` — Quick prompt testing across all 15 styles
+
+## LoRA Training Priority
+- **P0** (train first): warli-art, madhubani-art, tanjore-heritage
+- **P1**: kerala-mural, pichwai-art, bollywood-retro
+- **P2**: rajasthani-royal, pahari-mountain, bengal-renaissance, maratha-heritage
+- **P3** (train last): mysore-palace, punjab-royal, deccani-royal, miniature-art, anime-portrait
+
 ## Phase Plan
 - [x] Phase A: Project scaffolding, Supabase, Auth, PWA, Layout
 - [x] Phase B: Landing page + static pages (Gallery & Pricing done, landing carousel done)
@@ -215,3 +237,5 @@ NEXT_PUBLIC_APP_URL=
 - [x] Phase E: User dashboard + DPDP compliance
 - [x] Phase F: SEO + performance optimization
 - [x] Phase G: Polish + deploy to Vercel
+- [ ] Phase H: LoRA training for pet styles (P0 → P3)
+- [ ] Phase I: Production deployment + monitoring
