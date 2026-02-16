@@ -102,7 +102,10 @@ export async function GET(
       });
     }
 
-    const falStatus = await checkGenerationStatus(generation.fal_request_id);
+    const subjectType = (generation.subject_type || "human") as "human" | "pet";
+    // TODO: Once LoRAs are trained, check if this style has a LoRA configured
+    const hasLora = false;
+    const falStatus = await checkGenerationStatus(generation.fal_request_id, subjectType, hasLora);
 
     // Still processing
     if (
@@ -139,7 +142,7 @@ export async function GET(
 
     try {
       // Fetch the generated result
-      const result = await getGenerationResult(generation.fal_request_id);
+      const result = await getGenerationResult(generation.fal_request_id, subjectType, hasLora);
 
       if (!result.images || result.images.length === 0) {
         throw new Error("No images returned from AI.");

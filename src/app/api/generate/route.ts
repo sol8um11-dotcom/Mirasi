@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { submitGeneration } from "@/lib/fal";
+import { submitGeneration, type GenerationParams } from "@/lib/fal";
 import type { ApiResponse } from "@/types";
 import { MAX_GENERATIONS_PER_DAY } from "@/lib/constants";
+import { buildPrompt, getStyleConfig } from "@/lib/fal/prompts";
 
 /**
  * POST /api/generate
@@ -112,27 +113,26 @@ export async function POST(
       );
     }
 
-    // 6. Build prompt from style template
+    // 6. Build prompt and get style-specific generation config
     const style = generation.style;
-    let prompt = style.prompt_template || "";
+    const subjectType = generation.subject_type as "human" | "pet";
+    const styleConfig = getStyleConfig(style.slug);
+    const prompt = buildPrompt(style.slug, subjectType, style.prompt_template);
 
-    // Replace placeholder tokens in the prompt template
-    const subjectLabel =
-      generation.subject_type === "pet" ? "pet animal" : "person";
-    prompt = prompt
-      .replace(/\{subject\}/gi, subjectLabel)
-      .replace(/\{subject_type\}/gi, generation.subject_type);
+    // 7. Submit to the appropriate fal.ai pipeline
+    const genParams: GenerationParams = {
+      imageUrl: signedUrlData.signedUrl,
+      prompt,
+      subjectType,
+      guidanceScale: styleConfig.guidanceScale,
+      numInferenceSteps: styleConfig.numInferenceSteps,
+      // Pet LoRA (when trained and deployed, add URL here)
+      ...(subjectType === "pet" && styleConfig.loraUrl
+        ? { loraUrl: styleConfig.loraUrl, loraScale: styleConfig.loraScale }
+        : {}),
+    };
 
-    // Fallback if prompt template is empty
-    if (!prompt.trim()) {
-      prompt = `Transform this photo of a ${subjectLabel} into ${style.name} style Indian art. Maintain the subject's likeness and features while applying the traditional art style.`;
-    }
-
-    // 7. Submit to fal.ai queue
-    const requestId = await submitGeneration(
-      signedUrlData.signedUrl,
-      prompt
-    );
+    const requestId = await submitGeneration(genParams);
 
     // 8. Update generation record
     const { error: updateError } = await admin
