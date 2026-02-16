@@ -42,3 +42,8 @@ next-env.d.ts
 
 # test outputs
 /test-outputs
+
+
+# training data (large files, not for git)
+/datasets
+/training-runs

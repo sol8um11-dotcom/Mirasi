@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useRef } from "react";
 import { cn } from "@/lib/utils";
 import { STYLES_DATA } from "@/lib/constants/styles-data";
@@ -15,25 +16,6 @@ const categoryLabels: Record<string, string> = {
   royal: "Royal Heritage",
   folk: "Folk Art",
   modern: "Modern",
-};
-
-// Gradient patterns per style (matching gallery style-card)
-const styleGradients: Record<string, string> = {
-  "rajasthani-royal": "from-red-800/30 via-amber-600/20 to-yellow-500/30",
-  "maratha-heritage": "from-red-900/30 via-amber-800/20 to-yellow-600/30",
-  "tanjore-heritage": "from-amber-700/30 via-yellow-500/20 to-orange-400/30",
-  "mysore-palace": "from-emerald-800/30 via-yellow-600/20 to-amber-500/30",
-  "punjab-royal": "from-orange-600/30 via-amber-500/20 to-red-500/30",
-  "bengal-renaissance": "from-amber-600/30 via-stone-400/20 to-yellow-700/30",
-  "kerala-mural": "from-yellow-600/30 via-red-600/20 to-green-700/30",
-  "pahari-mountain": "from-pink-300/30 via-sky-300/20 to-green-400/30",
-  "deccani-royal": "from-blue-900/30 via-emerald-700/20 to-amber-600/30",
-  "miniature-art": "from-amber-700/30 via-blue-600/20 to-red-600/30",
-  "madhubani-art": "from-red-600/30 via-yellow-500/20 to-blue-600/30",
-  "warli-art": "from-amber-800/30 via-orange-700/20 to-amber-900/30",
-  "pichwai-art": "from-blue-900/30 via-pink-400/20 to-amber-500/30",
-  "anime-portrait": "from-pink-400/30 via-blue-400/20 to-purple-400/30",
-  "bollywood-retro": "from-red-500/30 via-yellow-400/20 to-orange-500/30",
 };
 
 export function StyleCarousel() {
@@ -97,60 +79,29 @@ export function StyleCarousel() {
         ref={scrollRef}
         className="scroll-snap-x flex gap-4 px-1 pb-4"
       >
-        {STYLES_DATA.map((style) => {
-          const gradient =
-            styleGradients[style.slug] || "from-gray-200/30 to-gray-300/30";
-
-          return (
+        {STYLES_DATA.map((style) => (
             <Link
               key={style.slug}
               href={`/create?style=${style.slug}`}
               className="scroll-snap-item group block w-[260px] sm:w-[280px]"
             >
               <div className="overflow-hidden rounded-xl border border-border bg-card shadow-card transition-all duration-200 hover:shadow-card-hover hover:-translate-y-0.5">
-                {/* Preview gradient */}
-                <div
-                  className={cn(
-                    "relative flex h-36 items-center justify-center bg-gradient-to-br",
-                    gradient
-                  )}
-                >
-                  {/* Paisley motif */}
-                  <svg
-                    width="56"
-                    height="56"
-                    viewBox="0 0 64 64"
-                    fill="none"
-                    className="text-foreground/8"
-                  >
-                    <path
-                      d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33"
-                      stroke="currentColor"
-                      strokeWidth="3.5"
-                      strokeLinecap="round"
-                      fill="none"
-                    />
-                    <path
-                      d="M53 33 C52 23 44 16 35 16 C26 17 20 24 20 32"
-                      stroke="currentColor"
-                      strokeWidth="2.8"
-                      strokeLinecap="round"
-                      fill="none"
-                    />
-                    <path
-                      d="M20 32 C20 40 26 46 34 45 C40 44 44 39 43 34 C41.5 30 38 28 35 28.5 C33 29 31 29.5 29.5 31"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      fill="none"
-                    />
-                    <circle cx="34" cy="31.5" r="2" fill="currentColor" />
-                  </svg>
+                {/* Preview with real AI-generated sample */}
+                <div className="relative h-36 overflow-hidden">
+                  <Image
+                    src={`/samples/${style.slug}.jpg`}
+                    alt={`${style.name} style sample`}
+                    fill
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    sizes="280px"
+                  />
+                  {/* Subtle dark overlay for text readability */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-black/10" />
 
                   {/* Category badge */}
                   <span
                     className={cn(
-                      "absolute top-2.5 left-2.5 rounded-full px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide",
+                      "absolute top-2.5 left-2.5 rounded-full px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide backdrop-blur-sm",
                       categoryColors[style.category]
                     )}
                   >
@@ -193,8 +144,7 @@ export function StyleCarousel() {
                 </div>
               </div>
             </Link>
-          );
-        })}
+        ))}
       </div>
 
       {/* Scroll hint gradient — fade edges */}
