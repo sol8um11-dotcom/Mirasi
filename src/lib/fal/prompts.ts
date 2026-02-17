@@ -35,7 +35,7 @@ export interface StyleConfig {
 /**
  * Per-style generation configs — V2 Identity-Preserving Prompts
  *
- * Trained LoRAs are available for: warli-art, madhubani-art.
+ * Trained LoRAs are available for: warli-art, madhubani-art, tanjore-heritage.
  * Other styles use Kontext Pro (no LoRA) — train via fal-ai/flux-kontext-trainer
  * and paste the diffusers_lora_file URLs here when ready.
  */
@@ -92,10 +92,10 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
 
   "tanjore-heritage": {
     guidanceScale: 4.0,
-    numInferenceSteps: 50,
-    loraUrl: null,
-    loraScale: 0.85,
-    loraTrigger: null,
+    numInferenceSteps: 28,
+    loraUrl: "https://v3b.fal.media/files/b/0a8ed157/F77SIFKQEWb94CrH4Gh6s_adapter_model.safetensors",
+    loraScale: 0.9,
+    loraTrigger: "mrs_tanjore",
     humanPrompt:
       "Keep the exact same face, eyes, nose, jawline, skin tone, and expression of this person — " +
       "do not alter any facial features. Make the skin look smooth and subtly flattering. " +
