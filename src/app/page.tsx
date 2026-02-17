@@ -1,23 +1,18 @@
 import Link from "next/link";
 import { StyleCarousel } from "@/components/landing/style-carousel";
-import { HeroHeadline } from "@/components/landing/hero-headline";
+import { HeroSpiral } from "@/components/landing/hero-spiral";
 import { WebsiteJsonLd } from "@/components/seo/json-ld";
 
 export default function HomePage() {
   return (
     <div className="mx-auto max-w-5xl px-4">
       <WebsiteJsonLd />
-      {/* Hero Section */}
-      <section className="flex flex-col items-center py-16 text-center md:py-24">
-        <p className="mb-4 text-xs font-semibold uppercase tracking-[0.25em] text-gold md:text-sm">
-          Every face tells a legend
-        </p>
-        <HeroHeadline />
-        <p className="mb-10 max-w-lg text-base text-muted md:text-lg">
-          AI-powered portraits inspired by 15 authentic Indian art traditions.
-          From Rajasthani Miniatures to Madhubani Folk Art.
-        </p>
-        <div className="flex flex-col gap-3 sm:flex-row">
+      {/* Hero Section — Spiral animation with dot-written art names */}
+      <section className="relative overflow-hidden">
+        <HeroSpiral />
+
+        {/* CTA Buttons — positioned below the spiral hero content */}
+        <div className="relative z-10 -mt-8 mb-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
           <Link
             href="/create"
             className="rounded-xl bg-saffron px-8 py-4 text-base font-semibold text-white raised-3d hover:bg-saffron-dark"
@@ -31,8 +26,8 @@ export default function HomePage() {
             View Gallery
           </Link>
         </div>
-        <p className="mt-5 text-sm text-muted">
-          Starting at just <span className="font-semibold text-saffron">Rs 49</span>
+        <p className="relative z-10 -mt-2 mb-12 text-center text-sm text-muted">
+          Starting at just <span className="font-semibold text-saffron">{"\u20B9"}49</span>
         </p>
       </section>
 
@@ -156,7 +151,7 @@ export default function HomePage() {
             href="/create"
             className="inline-block rounded-xl bg-saffron px-8 py-4 text-base font-semibold text-white raised-3d hover:bg-saffron-dark"
           >
-            Get Started - From Rs 49
+            Get Started - From {"\u20B9"}49
           </Link>
         </div>
       </section>

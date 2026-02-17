@@ -192,6 +192,37 @@ dialog::backdrop {
   100% { background-position: 200% 0; }
 }
 
+/* ── Hero Spiral Animation ── */
+.hero-spiral-stroke {
+  stroke-dasharray: 1600;
+  stroke-dashoffset: 1600;
+  animation: spiral-draw 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes spiral-draw {
+  0% {
+    stroke-dashoffset: 1600;
+    opacity: 0.15;
+  }
+  50% {
+    stroke-dashoffset: 0;
+    opacity: 0.4;
+  }
+  80% {
+    stroke-dashoffset: -800;
+    opacity: 0.2;
+  }
+  100% {
+    stroke-dashoffset: -1600;
+    opacity: 0.1;
+  }
+}
+
+.hero-gold-dot {
+  filter: drop-shadow(0 0 6px rgba(212, 168, 67, 0.6));
+  transition: r 0.3s ease;
+}
+
 /* 3D Engraved Metal Effect — reusable utility for buttons & CTAs.
    Matches the logo spiral's bevel style: subtle highlight on top edge,
    dark shadow on bottom, inset ridges for that stamped-metal feel. */
