@@ -7,11 +7,10 @@ import { cn } from "@/lib/utils";
 import { formatFileSize } from "@/lib/utils";
 import { compressImage, createPreviewUrl } from "@/lib/image/compress";
 import { STYLES_DATA, type StyleInfo } from "@/lib/constants/styles-data";
-import { STYLE_CATEGORIES } from "@/lib/constants";
+import { STYLE_CATEGORIES, LIVE_STYLES, PRICING } from "@/lib/constants";
 import { useGeneration } from "@/hooks/use-generation";
 import { useUser } from "@/hooks/use-user";
 import { useRazorpay } from "@/hooks/use-razorpay";
-import { PRICING } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import type { CompressedImage, SubjectType, StyleCategory } from "@/types";
@@ -25,9 +24,6 @@ const categoryColors: Record<string, string> = {
   folk: "bg-success/10 text-success",
   modern: "bg-royal-blue/10 text-royal-blue",
 };
-
-/** P0 styles that are live (have trained LoRAs or are ready for generation) */
-const LIVE_STYLES = new Set(["warli-art", "madhubani-art", "tanjore-heritage"]);
 
 // ─── Main Component ──────────────────────────────────────────────────────────
 
@@ -49,6 +45,7 @@ export function CreateFlow() {
   const [categoryFilter, setCategoryFilter] = useState<
     StyleCategory | "all"
   >("all");
+  const [consentChecked, setConsentChecked] = useState(false);
 
   // Polling hook
   const generation = useGeneration(
@@ -149,6 +146,12 @@ export function CreateFlow() {
       const generateJson = await generateRes.json();
 
       if (generateJson.error) {
+        // Handle free generation limit — redirect to pricing
+        if (generateJson.error.status === 402 || generateJson.error.code === "FREE_LIMIT_REACHED") {
+          setError("You've used your free preview! Purchase a portrait pack to keep creating.");
+          setUploading(false);
+          return;
+        }
         throw new Error(generateJson.error.message);
       }
 
@@ -171,6 +174,7 @@ export function CreateFlow() {
     setGenerationId(null);
     setError(null);
     setUploading(false);
+    setConsentChecked(false);
   }, [localPreviewUrl]);
 
   // ── Filtered styles ──
@@ -189,6 +193,14 @@ export function CreateFlow() {
       {error && step !== "result" && (
         <div className="mb-6 rounded-lg bg-error/10 px-4 py-3 text-sm text-error">
           {error}
+          {error.includes("free preview") && (
+            <a
+              href="/pricing"
+              className="ml-2 inline-block rounded-lg bg-saffron px-3 py-1 text-xs font-semibold text-white hover:bg-saffron-dark transition-colors"
+            >
+              View Pricing
+            </a>
+          )}
           <button
             onClick={() => setError(null)}
             className="ml-2 font-medium underline hover:no-underline"
@@ -421,16 +433,42 @@ export function CreateFlow() {
           )}
 
           {user && uploadedImage && (
-            <div className="mt-6">
+            <div className="mt-6 space-y-4">
+              {/* DPDP / Compliance consent */}
+              <label className="flex items-start gap-3 cursor-pointer rounded-xl border border-border bg-card p-4 shadow-card transition-all hover:border-saffron/30">
+                <input
+                  type="checkbox"
+                  checked={consentChecked}
+                  onChange={(e) => setConsentChecked(e.target.checked)}
+                  className="mt-0.5 h-4 w-4 rounded border-border text-saffron accent-saffron flex-shrink-0"
+                />
+                <span className="text-xs text-muted leading-relaxed">
+                  I consent to my photo being processed by AI for art generation.
+                  I understand my photo will be stored securely, EXIF/GPS data is stripped on upload,
+                  and my data will be auto-deleted after 30 days per the{" "}
+                  <a href="/privacy" className="text-saffron underline hover:no-underline">
+                    DPDP Act 2023
+                  </a>{" "}
+                  compliance policy. I confirm I have the right to use this photo.
+                </span>
+              </label>
+
               <Button
                 variant="primary"
                 size="lg"
                 loading={uploading}
+                disabled={!consentChecked}
                 onClick={handleUploadAndGenerate}
                 className="w-full sm:w-auto"
               >
                 Generate Portrait
               </Button>
+
+              {!consentChecked && (
+                <p className="text-xs text-muted">
+                  Please check the consent box above to proceed.
+                </p>
+              )}
             </div>
           )}
         </div>
@@ -977,7 +1015,7 @@ function ResultView({
           >
             {purchaseState === "checkout-open"
               ? "Complete Payment..."
-              : `Buy HD Version \u2014 Rs ${priceRs}`}
+              : `Buy HD Version \u2014 \u20B9${priceRs}`}
           </Button>
         )}
 

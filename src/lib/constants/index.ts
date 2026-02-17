@@ -50,6 +50,13 @@ export const REGIONS = [
   "Bollywood",
 ] as const;
 
+// Styles that are live (trained LoRAs ready or generation-ready)
+export const LIVE_STYLES = new Set([
+  "warli-art",
+  "madhubani-art",
+  "tanjore-heritage",
+]);
+
 // DPDP compliance
 export const DPDP_PHOTO_RETENTION_DAYS = 30;
 export const DPDP_CONSENT_VERSION = "1.0";
@@ -60,4 +67,5 @@ export const WATERMARK_OPACITY = 0.3;
 
 // Rate limiting
 export const MAX_GENERATIONS_PER_DAY = 10;
+export const MAX_FREE_GENERATIONS = 1; // Free preview generations before payment required
 export const MAX_UPLOADS_PER_HOUR = 20;

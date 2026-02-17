@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { submitGeneration, type GenerationParams } from "@/lib/fal";
 import type { ApiResponse } from "@/types";
-import { MAX_GENERATIONS_PER_DAY } from "@/lib/constants";
+import { MAX_GENERATIONS_PER_DAY, MAX_FREE_GENERATIONS } from "@/lib/constants";
 import { buildPrompt, getStyleConfig } from "@/lib/fal/prompts";
 
 /**
@@ -96,6 +96,37 @@ export async function POST(
           },
         },
         { status: 429 }
+      );
+    }
+
+    // 4b. Free generation limit: count total non-failed generations (all-time)
+    // Users get MAX_FREE_GENERATIONS free preview(s), then must purchase
+    const { count: totalCount } = await admin
+      .from("generations")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .neq("status", "failed");
+
+    // Check if user has any verified payments (purchased packs grant more generations)
+    const { count: paidCount } = await admin
+      .from("payments")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .eq("verified", true);
+
+    const hasPaid = (paidCount ?? 0) > 0;
+    const freeUsed = totalCount ?? 0;
+
+    if (!hasPaid && freeUsed >= MAX_FREE_GENERATIONS) {
+      return NextResponse.json(
+        {
+          error: {
+            message: "You've used your free preview. Purchase a portrait pack to continue creating.",
+            status: 402,
+            code: "FREE_LIMIT_REACHED",
+          },
+        },
+        { status: 402 }
       );
     }
 

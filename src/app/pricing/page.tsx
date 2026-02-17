@@ -5,7 +5,7 @@ import { FAQJsonLd } from "@/components/seo/json-ld";
 export const metadata = {
   title: "Pricing",
   description:
-    "Affordable AI art portraits starting at Rs 49. Digital downloads and premium print options available. No subscriptions.",
+    "Affordable AI art portraits starting at \u20B949. Digital downloads and premium print options available. No subscriptions.",
 };
 
 const plans = [
@@ -34,7 +34,7 @@ const plans = [
       "3 AI portrait generations",
       "Mix & match any styles",
       "HD digital downloads (1024px)",
-      "Save Rs 48 vs buying individually",
+      "Save \u20B948 vs buying individually",
       "Re-generate each once",
     ],
     cta: "Get 3 Portraits",
@@ -50,7 +50,7 @@ const plans = [
       "5 AI portrait generations",
       "All 15 styles available",
       "HD digital downloads (1024px)",
-      "Save Rs 96 vs buying individually",
+      "Save \u20B996 vs buying individually",
       "Priority generation queue",
     ],
     cta: "Get 5 Portraits",
@@ -127,11 +127,11 @@ export default function PricingPage() {
               <p className="text-sm text-muted">{plan.description}</p>
             </div>
 
-            <div className="mb-6">
+            <div className="mb-6 flex items-baseline gap-1">
               <span className="text-3xl font-bold text-foreground">
-                Rs {plan.price}
+                <span className="text-saffron">{"\u20B9"}</span>{plan.price}
               </span>
-              <span className="ml-1 text-sm text-muted">/{plan.period}</span>
+              <span className="text-sm text-muted">/{plan.period}</span>
             </div>
 
             <ul className="mb-6 flex-1 space-y-3">

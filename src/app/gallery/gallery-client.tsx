@@ -4,6 +4,7 @@ import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { StyleCard } from "@/components/gallery/style-card";
 import { STYLES_DATA } from "@/lib/constants/styles-data";
+import { LIVE_STYLES } from "@/lib/constants";
 import type { StyleCategory } from "@/types";
 
 type FilterCategory = "all" | StyleCategory;
@@ -22,6 +23,13 @@ export function GalleryClient() {
     activeFilter === "all"
       ? STYLES_DATA
       : STYLES_DATA.filter((s) => s.category === activeFilter);
+
+  // Sort: live styles first, then coming soon
+  const sortedStyles = [...filteredStyles].sort((a, b) => {
+    const aLive = LIVE_STYLES.has(a.slug) ? 0 : 1;
+    const bLive = LIVE_STYLES.has(b.slug) ? 0 : 1;
+    return aLive - bLive;
+  });
 
   return (
     <>
@@ -51,9 +59,9 @@ export function GalleryClient() {
         ))}
       </div>
 
-      {/* Styles grid */}
+      {/* Styles grid — live styles first, then Coming Soon */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {filteredStyles.map((style, i) => (
+        {sortedStyles.map((style, i) => (
           <StyleCard
             key={style.slug}
             name={style.name}
@@ -65,6 +73,7 @@ export function GalleryClient() {
             supportsCats={style.supportsCats}
             supportsHumans={style.supportsHumans}
             index={i}
+            isLive={LIVE_STYLES.has(style.slug)}
           />
         ))}
       </div>
