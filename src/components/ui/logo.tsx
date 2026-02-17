@@ -143,20 +143,21 @@ interface LogoProps {
 }
 
 /**
- * Gold dot — positioned above the dotless "ı" to mimic the tittle.
- * Uses a fixed pixel size per logo variant so both dots are identical.
+ * Gold dot — positioned above the dotless "ı" to mimic the font's tittle.
+ * Sized in em so it scales with the text naturally (like a real "i" dot).
+ * 0.11em ≈ natural tittle diameter in most sans-serif bold fonts.
  */
-function GoldDot({ dotPx }: { dotPx: number }) {
+function GoldDot() {
   return (
     <span
       className="absolute block rounded-full"
       style={{
-        width: `${dotPx}px`,
-        height: `${dotPx}px`,
+        width: "0.11em",
+        height: "0.11em",
         backgroundColor: "#D4A843",
-        top: "0.05em",
+        top: "0.08em",
         left: "50%",
-        marginLeft: `${-dotPx / 2}px`, // exact center — avoids sub-pixel jitter from translateX
+        transform: "translateX(-50%)",
       }}
       aria-hidden="true"
     />
@@ -175,9 +176,6 @@ export function Logo({ size = "md", showIcon = true, className }: LogoProps) {
   const iconSize = size === "sm" ? 22 : size === "md" ? 28 : 36;
   const textSize =
     size === "sm" ? "text-base" : size === "md" ? "text-lg" : "text-2xl";
-  // Fixed dot diameter in whole pixels per size — matches natural font tittle proportions
-  const dotPx = size === "sm" ? 3 : size === "md" ? 4 : 5;
-
   // Characters: m·ı·r·a·s·ı (dotless i at positions 1 and 5)
   const chars = ["m", "\u0131", "r", "a", "s", "\u0131"] as const;
 
@@ -195,7 +193,7 @@ export function Logo({ size = "md", showIcon = true, className }: LogoProps) {
         {chars.map((char, idx) => (
           <span key={idx} className="relative inline-block">
             {char}
-            {(idx === 1 || idx === 5) && <GoldDot dotPx={dotPx} />}
+            {(idx === 1 || idx === 5) && <GoldDot />}
           </span>
         ))}
       </span>

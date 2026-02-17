@@ -45,14 +45,15 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
   // ═══════════════════════════════════════════════════════════════════════════
 
   "rajasthani-royal": {
-    guidanceScale: 3.5,
+    guidanceScale: 3.0,
     numInferenceSteps: 50,
     loraUrl: null,
     loraScale: 0.85,
     loraTrigger: null,
     humanPrompt:
-      "Keep the exact same face, eyes, nose, jawline, skin tone, and expression of this person — " +
-      "do not alter any facial features. Make the skin look smooth and subtly flattering. " +
+      "Keep the exact same face, eyes, nose, jawline, skin tone, age, and expression of this person — " +
+      "do not alter any facial features or make the person look older or younger. " +
+      "Make the skin look smooth and subtly flattering. " +
       "Restyle the image as a Rajasthani Mewar miniature painting with flat perspective, " +
       "ornate golden border frame, rich jewel tones of deep red, gold, and emerald green. " +
       "Add a palace courtyard background with arched pillars, jali patterns, and traditional " +
@@ -68,14 +69,15 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
   },
 
   "maratha-heritage": {
-    guidanceScale: 3.5,
+    guidanceScale: 3.0,
     numInferenceSteps: 50,
     loraUrl: null,
     loraScale: 0.85,
     loraTrigger: null,
     humanPrompt:
-      "Keep the exact same face, eyes, nose, jawline, skin tone, and expression of this person — " +
-      "do not alter any facial features. Make the skin look smooth and subtly flattering. " +
+      "Keep the exact same face, eyes, nose, jawline, skin tone, age, and expression of this person — " +
+      "do not alter any facial features or make the person look older or younger. " +
+      "Make the skin look smooth and subtly flattering. " +
       "Restyle the image as a Maratha Peshwa-era court painting with bold composition, " +
       "deep maroon and gold color palette. Add a fort rampart or durbar hall background " +
       "with stone pillars and draped textiles. Use Peshwa painting style with strong " +
@@ -97,8 +99,9 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
     loraScale: 0.9,
     loraTrigger: "mrs_tanjore",
     humanPrompt:
-      "Keep the exact same face, eyes, nose, jawline, skin tone, and expression of this person — " +
-      "do not alter any facial features. Make the skin look smooth and subtly flattering. " +
+      "Keep the exact same face, eyes, nose, jawline, skin tone, age, and expression of this person — " +
+      "do not alter any facial features or make the person look older or younger. " +
+      "Make the skin look smooth and subtly flattering. " +
       "Restyle the image as a Tanjore Thanjavur painting with rich vibrant colors, " +
       "prominent gold leaf embellishments, and gem-studded details. Frame the subject " +
       "in an ornate arch with South Indian temple pillars. Add traditional jewelry, " +
@@ -121,8 +124,9 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
     loraScale: 0.85,
     loraTrigger: null,
     humanPrompt:
-      "Keep the exact same face, eyes, nose, jawline, skin tone, and expression of this person — " +
-      "do not alter any facial features. Make the skin look smooth and subtly flattering. " +
+      "Keep the exact same face, eyes, nose, jawline, skin tone, age, and expression of this person — " +
+      "do not alter any facial features or make the person look older or younger. " +
+      "Make the skin look smooth and subtly flattering. " +
       "Restyle the image as a Mysore painting in the Wodeyar court tradition with elegant " +
       "composition, muted gold tones, and deep green accents. Add a palatial interior " +
       "with carved wooden pillars and delicate curtain draping. Use refined brushwork " +
@@ -138,14 +142,15 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
   },
 
   "punjab-royal": {
-    guidanceScale: 3.5,
+    guidanceScale: 3.0,
     numInferenceSteps: 50,
     loraUrl: null,
     loraScale: 0.85,
     loraTrigger: null,
     humanPrompt:
-      "Keep the exact same face, eyes, nose, jawline, skin tone, and expression of this person — " +
-      "do not alter any facial features. Make the skin look smooth and subtly flattering. " +
+      "Keep the exact same face, eyes, nose, jawline, skin tone, age, and expression of this person — " +
+      "do not alter any facial features or make the person look older or younger. " +
+      "Make the skin look smooth and subtly flattering. " +
       "Restyle the image as a Sikh court painting from the Punjab tradition with vibrant " +
       "rich colors and ornate textiles featuring detailed embroidery patterns. " +
       "Add a Lahore darbar hall background with marble pillars, chandeliers, and rich carpet. " +
@@ -167,8 +172,9 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
     loraScale: 0.85,
     loraTrigger: null,
     humanPrompt:
-      "Keep the exact same face, eyes, nose, jawline, skin tone, and expression of this person — " +
-      "do not alter any facial features. Make the skin look smooth and subtly flattering. " +
+      "Keep the exact same face, eyes, nose, jawline, skin tone, age, and expression of this person — " +
+      "do not alter any facial features or make the person look older or younger. " +
+      "Make the skin look smooth and subtly flattering. " +
       "Restyle the image as a Bengal School painting in the style of Abanindranath Tagore " +
       "with soft watercolor wash technique, flowing graceful lines, and earthy muted " +
       "color palette with subtle golden undertones. Add a dreamy atmospheric background " +
@@ -190,8 +196,9 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
     loraScale: 0.85,
     loraTrigger: null,
     humanPrompt:
-      "Keep the exact same face, eyes, nose, jawline, skin tone, and expression of this person — " +
-      "do not alter any facial features. Make the skin look smooth and subtly flattering. " +
+      "Keep the exact same face, eyes, nose, jawline, skin tone, age, and expression of this person — " +
+      "do not alter any facial features or make the person look older or younger. " +
+      "Make the skin look smooth and subtly flattering. " +
       "Restyle the image as a Kerala Panchavarna mural painting with bold thick black " +
       "outlines and the five traditional colors: yellow ochre, red, green, blue, and white. " +
       "Add decorative floral borders and lotus motifs. Use flat perspective with ornate " +
@@ -213,8 +220,9 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
     loraScale: 0.85,
     loraTrigger: null,
     humanPrompt:
-      "Keep the exact same face, eyes, nose, jawline, skin tone, and expression of this person — " +
-      "do not alter any facial features. Make the skin look smooth and subtly flattering. " +
+      "Keep the exact same face, eyes, nose, jawline, skin tone, age, and expression of this person — " +
+      "do not alter any facial features or make the person look older or younger. " +
+      "Make the skin look smooth and subtly flattering. " +
       "Restyle the image as a Pahari miniature painting in the Kangra school tradition " +
       "with delicate fine brushwork, soft pastel colors, and rich accent tones. " +
       "Add a Himalayan mountain landscape background with flowering trees and gentle " +
@@ -230,14 +238,15 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
   },
 
   "deccani-royal": {
-    guidanceScale: 3.5,
+    guidanceScale: 3.0,
     numInferenceSteps: 50,
     loraUrl: null,
     loraScale: 0.85,
     loraTrigger: null,
     humanPrompt:
-      "Keep the exact same face, eyes, nose, jawline, skin tone, and expression of this person — " +
-      "do not alter any facial features. Make the skin look smooth and subtly flattering. " +
+      "Keep the exact same face, eyes, nose, jawline, skin tone, age, and expression of this person — " +
+      "do not alter any facial features or make the person look older or younger. " +
+      "Make the skin look smooth and subtly flattering. " +
       "Restyle the image as a Deccani painting from the Bijapur-Golconda tradition with " +
       "rich luxurious colors and Persian-influenced composition. Add an ornate background " +
       "with Islamic domes, pointed arches, and geometric tile patterns. Include gold " +
@@ -253,14 +262,15 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
   },
 
   "miniature-art": {
-    guidanceScale: 3.5,
+    guidanceScale: 3.0,
     numInferenceSteps: 50,
     loraUrl: null,
     loraScale: 0.85,
     loraTrigger: null,
     humanPrompt:
-      "Keep the exact same face, eyes, nose, jawline, skin tone, and expression of this person — " +
-      "do not alter any facial features. Make the skin look smooth and subtly flattering. " +
+      "Keep the exact same face, eyes, nose, jawline, skin tone, age, and expression of this person — " +
+      "do not alter any facial features or make the person look older or younger. " +
+      "Make the skin look smooth and subtly flattering. " +
       "Restyle the image as an Indo-Islamic miniature painting with intricate detailed " +
       "brushwork and an ornate decorative border filled with floral arabesque patterns. " +
       "Add a palace garden background with cypress trees, fountains, and blooming flowers. " +
@@ -286,8 +296,9 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
     loraScale: 0.9,
     loraTrigger: "mrs_madhubani",
     humanPrompt:
-      "Keep the exact same face, eyes, nose, jawline, skin tone, and expression of this person — " +
-      "do not alter any facial features. Make the skin look smooth and subtly flattering. " +
+      "Keep the exact same face, eyes, nose, jawline, skin tone, age, and expression of this person — " +
+      "do not alter any facial features or make the person look older or younger. " +
+      "Make the skin look smooth and subtly flattering. " +
       "Restyle the image as a Madhubani Mithila painting with bold black ink outlines " +
       "and geometric patterns filling every surface. Use vibrant primary colors — " +
       "red, yellow, blue, green. Add fish, peacock, and lotus border motifs. Fill the " +
@@ -327,14 +338,15 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
   },
 
   "pichwai-art": {
-    guidanceScale: 3.5,
+    guidanceScale: 3.0,
     numInferenceSteps: 50,
     loraUrl: null,
     loraScale: 0.85,
     loraTrigger: null,
     humanPrompt:
-      "Keep the exact same face, eyes, nose, jawline, skin tone, and expression of this person — " +
-      "do not alter any facial features. Make the skin look smooth and subtly flattering. " +
+      "Keep the exact same face, eyes, nose, jawline, skin tone, age, and expression of this person — " +
+      "do not alter any facial features or make the person look older or younger. " +
+      "Make the skin look smooth and subtly flattering. " +
       "Restyle the image as a Pichwai painting from the Nathdwara tradition with intricate " +
       "lotus flower patterns throughout the composition. Use a rich dark blue or black " +
       "background with detailed gold accents. Add cow motifs and decorative floral " +
@@ -354,15 +366,15 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
   // ═══════════════════════════════════════════════════════════════════════════
 
   "anime-portrait": {
-    guidanceScale: 3.5,
+    guidanceScale: 3.0,
     numInferenceSteps: 40,
     loraUrl: null,
     loraScale: 0.85,
     loraTrigger: null,
     humanPrompt:
-      "Keep the exact same face shape, eyes, nose, jawline, hairstyle, and expression " +
-      "of this person — do not alter any facial features. Make the person look slightly " +
-      "more attractive with clearer skin. " +
+      "Keep the exact same face shape, eyes, nose, jawline, hairstyle, age, and expression " +
+      "of this person — do not alter any facial features or make the person look older or younger. " +
+      "Make the person look slightly more attractive with clearer skin. " +
       "Restyle the image as Japanese anime art with expressive eyes, clean precise " +
       "linework, and vibrant saturated colors. Render detailed hair with strand highlights. " +
       "Add a Studio Ghibli inspired atmospheric background with soft bokeh lighting. " +
@@ -378,14 +390,15 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
   },
 
   "bollywood-retro": {
-    guidanceScale: 3.5,
+    guidanceScale: 3.0,
     numInferenceSteps: 50,
     loraUrl: null,
     loraScale: 0.85,
     loraTrigger: null,
     humanPrompt:
-      "Keep the exact same face, eyes, nose, jawline, skin tone, and expression of this person — " +
-      "do not alter any facial features. Make the person look glamorous with enhanced skin. " +
+      "Keep the exact same face, eyes, nose, jawline, skin tone, age, and expression of this person — " +
+      "do not alter any facial features or make the person look older or younger. " +
+      "Make the person look glamorous with enhanced skin. " +
       "Restyle the image as a vintage hand-painted Bollywood movie poster from the 1970s " +
       "with bold saturated colors and visible painted brushstroke texture. Create dramatic " +
       "composition with retro Indian cinema aesthetic — dramatic side lighting and " +
@@ -404,13 +417,14 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
 // ─── Default fallback config ─────────────────────────────────────────────────
 
 const DEFAULT_CONFIG: StyleConfig = {
-  guidanceScale: 3.5,
+  guidanceScale: 3.0,
   numInferenceSteps: 50,
   loraUrl: null,
   loraScale: 0.85,
   loraTrigger: null,
   humanPrompt:
-    "Keep the exact same face, eyes, nose, jawline, skin tone, and expression of this person. " +
+    "Keep the exact same face, eyes, nose, jawline, skin tone, age, and expression of this person — " +
+    "do not alter any facial features or make the person look older or younger. " +
     "Restyle the image as a traditional Indian art style painting with rich colors, " +
     "ornate details, and traditional artistic techniques.",
   petPrompt:
