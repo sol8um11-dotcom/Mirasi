@@ -1,23 +1,19 @@
 /**
- * V5 Prompts — Research-Backed Identity-First Style Transfer
+ * V6 Prompts — Full Style Blending with Face Recognition
  *
- * Based on comprehensive research of:
- * - Black Forest Labs official prompting guide (docs.bfl.ai)
- * - fal.ai API documentation (Kontext Pro default guidance_scale: 3.5)
- * - Community best practices for face preservation
+ * KEY CHANGES FROM V5:
+ * 1. FULL ARTISTIC RENDERING: The entire portrait (face + body + background)
+ *    is rendered in the art style — not just the background
+ * 2. FACE RECOGNITION, NOT PHOTOREALISM: "The face should be recognizable as
+ *    the same person" rather than "keep the face photorealistic"
+ * 3. STYLE BLENDING: "Transform this entire portrait into X style" — the
+ *    subject should look like they were PAINTED in that tradition
+ * 4. STILL PRESERVE IDENTITY: Same face structure, gender, expression —
+ *    but rendered artistically, not as a photo pasted on a painting
  *
- * KEY CHANGES FROM V4:
- * 1. INSTRUCTIONAL VERB FORMAT: "Apply X to the background while keeping Y"
- *    per BFL prompting guide — not "CRITICAL:" preamble
- * 2. SPECIFIC SUBJECT REFERENCES: "the person in the photo" not pronouns
- * 3. KONTEXT PRO FOR ALL HUMANS: guidance_scale 3.5 (API default) — was 2.0-2.5
- *    which was TOO LOW causing the model to ignore identity instructions
- * 4. COMPOSITION LOCKING: "keep the exact same position, scale, and framing"
- * 5. NATURAL PRESERVATION LANGUAGE: "while maintaining the same facial features,
- *    expression, hairstyle, and gender" — what BFL recommends
- * 6. LORA ONLY FOR PETS: Human portraits NEVER use LoRA pipeline
- *    (pet-trained LoRAs were destroying human identity/gender)
- * 7. SHORTER PROMPTS: Max 512 tokens per Kontext API limit
+ * The user's goal: output should look like an authentic piece of Indian art
+ * that happens to feature the person's recognizable face — not a photo
+ * with a fancy background.
  */
 
 // ─── Style-Specific Configuration ────────────────────────────────────────────
@@ -31,393 +27,375 @@ export interface StyleConfig {
   loraUrl: string | null;
   /** LoRA weight scale (0-2, default 1.0 per API docs) */
   loraScale: number;
-  /** Human prompt template — instructional format for Kontext Pro */
+  /** Human prompt template */
   humanPrompt: string;
-  /** Pet prompt template — breed/feature preservation focus */
+  /** Pet prompt template */
   petPrompt: string;
   /** LoRA trigger word (for trained LoRAs) */
   loraTrigger: string | null;
 }
 
-// ─── V5 Shared prompt fragments ─────────────────────────────────────────────
-// BFL recommends: be specific about identity markers, use descriptive subject
-// references (not pronouns), and explicitly state what stays consistent.
+// ─── V6 Shared prompt fragments ─────────────────────────────────────────────
+// Goal: blend subject INTO the art style. Face should be recognizable but
+// artistically rendered — not a photorealistic cutout on a styled background.
 
-const FACE_KEEP =
-  "while maintaining the exact same facial features, expression, skin tone, " +
-  "hairstyle, facial hair, and gender of the person in the photo. " +
-  "Keep the person in the exact same position, scale, and camera angle.";
+const BLEND_FACE =
+  "The face must be recognizable as the same person — same face structure, " +
+  "gender, skin tone, and expression — but rendered in the artistic style, " +
+  "not as a photograph. The entire image should look like one cohesive artwork.";
 
-const PET_KEEP =
-  "while maintaining the exact same breed, fur color, markings, eye color, " +
-  "and body proportions of the animal in the photo. " +
-  "Keep the animal in the exact same position and framing.";
+const PET_BLEND =
+  "The animal must be recognizable as the same breed and individual — same fur color, " +
+  "markings, and features — but rendered in the artistic style. " +
+  "The entire image should look like one cohesive artwork.";
 
 /**
- * Per-style generation configs — V5 Research-Backed
+ * Per-style generation configs — V6 Full Style Blending
  *
- * HUMAN portraits: guidance_scale 3.5 (Kontext Pro default) — this is the
- * sweet spot where the model both follows the prompt AND preserves identity.
- * Values below 3.0 caused identity instructions to be partially ignored.
+ * HUMAN portraits: guidance_scale 4.0 — slightly above default 3.5 to
+ * push stronger style application while Kontext preserves identity.
  *
- * PET portraits with LoRA: guidance_scale 2.5 (Kontext LoRA default),
- * loraScale 1.0 (API default for maximum style adherence).
+ * PET portraits with LoRA: guidance_scale 2.5, loraScale 1.0 (API defaults).
  */
 const STYLE_CONFIGS: Record<string, StyleConfig> = {
   // ═══════════════════════════════════════════════════════════════════════════
-  // ROYAL STYLES (10) — Kontext Pro only (no LoRA for humans)
-  // guidance_scale: 3.5 (API default — optimal identity + prompt balance)
+  // ROYAL STYLES (10) — Kontext Pro, full style rendering
   // ═══════════════════════════════════════════════════════════════════════════
 
   "rajasthani-royal": {
-    guidanceScale: 3.5,
+    guidanceScale: 4.0,
     numInferenceSteps: 50,
     loraUrl: null,
     loraScale: 1.0,
     loraTrigger: null,
     humanPrompt:
-      "Apply Rajasthani Mewar miniature painting style to the background and border of this portrait, " +
-      FACE_KEEP +
-      " Add an ornate golden border frame with rich jewel tones of deep red, gold, and emerald. " +
-      "Place a palace courtyard background with arched pillars and jali patterns. " +
-      "Use Mewar fine brushwork with visible ink outlines on background elements only.",
-
+      "Transform this entire portrait into a Rajasthani Mewar miniature painting. " +
+      "Render the person in the classic Mewar court style with fine ink outlines, " +
+      "flat color fills, and visible brushwork across the entire image including the face. " +
+      "Use rich jewel tones of deep red, gold, and emerald. " +
+      "Add an ornate golden border frame, palace courtyard with arched pillars and jali patterns. " +
+      BLEND_FACE,
     petPrompt:
-      "Apply Rajasthani Mewar miniature painting style to the background and frame of this photo, " +
-      PET_KEEP +
-      " Add ornate golden border frame with rich jewel tones of deep red and gold. " +
-      "Place an ornate cushion beneath the animal in a palace courtyard with arched pillars. " +
-      "Use Mewar fine brushwork with ink outlines and intricate floral patterns on background only.",
+      "Transform this entire photo into a Rajasthani Mewar miniature painting. " +
+      "Render the animal in the classic Mewar style with fine ink outlines and flat color fills. " +
+      "Use rich jewel tones of deep red and gold. Add an ornate golden border, " +
+      "palace courtyard with arched pillars and intricate floral patterns. " +
+      PET_BLEND,
   },
 
   "maratha-heritage": {
-    guidanceScale: 3.5,
+    guidanceScale: 4.0,
     numInferenceSteps: 50,
     loraUrl: null,
     loraScale: 1.0,
     loraTrigger: null,
     humanPrompt:
-      "Apply Maratha Peshwa-era court painting style to the background and composition of this portrait, " +
-      FACE_KEEP +
-      " Use a deep maroon and gold color palette. Add a fort rampart or durbar hall background " +
-      "with stone pillars and draped textiles. Apply Peshwa painting style with strong " +
-      "outlines and flat color fills to background elements only.",
-
+      "Transform this entire portrait into a Maratha Peshwa-era court painting. " +
+      "Render the person in the Peshwa painting tradition with strong outlines, " +
+      "flat color fills, and the deep maroon and gold color palette. " +
+      "Place in a fort rampart or durbar hall with stone pillars and draped textiles. " +
+      "The entire image should look like an authentic Peshwa court artwork. " +
+      BLEND_FACE,
     petPrompt:
-      "Apply Maratha Peshwa-era court painting style to the background and setting of this photo, " +
-      PET_KEEP +
-      " Use deep maroon and gold colors. Place the animal in a regal fort setting with stone pillars and " +
-      "draped textiles. Apply Peshwa style outlines to background elements and add Maratha motif borders.",
+      "Transform this entire photo into a Maratha Peshwa-era court painting. " +
+      "Render the animal in the Peshwa painting style with strong outlines and flat fills. " +
+      "Use deep maroon and gold colors. Place in a regal fort setting. " +
+      PET_BLEND,
   },
 
   "tanjore-heritage": {
-    guidanceScale: 3.5,
+    guidanceScale: 4.0,
     numInferenceSteps: 50,
     loraUrl: "https://v3b.fal.media/files/b/0a8ed157/F77SIFKQEWb94CrH4Gh6s_adapter_model.safetensors",
     loraScale: 1.0,
     loraTrigger: "mrs_tanjore",
     humanPrompt:
-      "Apply Tanjore Thanjavur painting style to the arch frame and background of this portrait, " +
-      FACE_KEEP +
-      " Add rich vibrant colors, prominent gold leaf embellishments, and gem-studded arch details " +
-      "framing the subject. Use South Indian temple pillars in the background. " +
-      "Apply semi-raised gold surface texture and vivid warm colors on the frame and background only. " +
-      "Do not add any accessories or jewelry to the person.",
-
+      "Transform this entire portrait into a Tanjore Thanjavur painting. " +
+      "Render the person in the rich Tanjore tradition with vibrant colors, " +
+      "prominent gold leaf embellishments, and the characteristic semi-raised surface texture. " +
+      "Frame the subject in an ornate gem-studded arch with South Indian temple pillars. " +
+      "The entire image — face, body, and background — should have the Tanjore aesthetic. " +
+      BLEND_FACE,
     petPrompt:
-      "mrs_tanjore style. Apply Tanjore Thanjavur painting style to the frame and background, " +
-      PET_KEEP +
-      " Add rich vibrant colors, prominent gold leaf embellishments. Frame the animal in an ornate arch " +
-      "with South Indian decorative pillars. Add gold-bordered cushion and floral garland details. " +
-      "Use semi-raised gold textures and vivid warm colors.",
+      "mrs_tanjore style. Transform this entire photo into a Tanjore Thanjavur painting. " +
+      "Render the animal in the Tanjore style with vibrant colors, gold leaf embellishments. " +
+      "Frame in an ornate arch with South Indian pillars and gem-studded details. " +
+      PET_BLEND,
   },
 
   "mysore-palace": {
-    guidanceScale: 3.5,
+    guidanceScale: 4.0,
     numInferenceSteps: 50,
     loraUrl: null,
     loraScale: 1.0,
     loraTrigger: null,
     humanPrompt:
-      "Apply Mysore Wodeyar court painting style to the background and frame of this portrait, " +
-      FACE_KEEP +
-      " Use elegant composition with muted gold tones and deep green accents. Add a palatial interior " +
-      "background with carved wooden pillars and delicate curtain draping. " +
-      "Apply refined brushwork with subtle gesso preparation and thin gold lines on decorative elements only.",
-
+      "Transform this entire portrait into a Mysore Wodeyar court painting. " +
+      "Render the person in the elegant Mysore tradition with refined brushwork, " +
+      "muted gold tones, and deep green accents. Place in a palatial interior " +
+      "with carved wooden pillars and delicate curtain draping. " +
+      "Apply the Mysore gesso-work aesthetic across the entire composition. " +
+      BLEND_FACE,
     petPrompt:
-      "Apply Mysore Wodeyar court painting style to the background and setting of this photo, " +
-      PET_KEEP +
-      " Use elegant composition with muted gold tones and deep green accents. Place the animal in a " +
-      "palatial setting with carved wooden pillars. Use refined brushwork with " +
-      "subtle gold lines and the Mysore court aesthetic on background only.",
+      "Transform this entire photo into a Mysore Wodeyar court painting. " +
+      "Render the animal in the elegant Mysore style with refined brushwork, " +
+      "muted gold tones, and deep green accents. Place in a palatial setting. " +
+      PET_BLEND,
   },
 
   "punjab-royal": {
-    guidanceScale: 3.5,
+    guidanceScale: 4.0,
     numInferenceSteps: 50,
     loraUrl: null,
     loraScale: 1.0,
     loraTrigger: null,
     humanPrompt:
-      "Apply Sikh court painting style from the Punjab tradition to the background and setting of this portrait, " +
-      FACE_KEEP +
-      " Use vibrant rich colors and ornate textile backdrop with embroidery patterns. " +
-      "Add a Lahore darbar hall background with marble pillars, chandeliers, and rich carpet. " +
-      "Use bold Punjabi royal color palette with warm golden lighting on background only.",
-
+      "Transform this entire portrait into a Sikh court painting from the Punjab tradition. " +
+      "Render the person in the bold Punjabi royal style with vibrant rich colors " +
+      "and ornate textile patterns. Place in a Lahore darbar hall with marble pillars, " +
+      "chandeliers, and rich carpet. Apply warm golden lighting and the Sikh court " +
+      "painting aesthetic to the entire image. " +
+      BLEND_FACE,
     petPrompt:
-      "Apply Sikh court painting style from the Punjab tradition to the background of this photo, " +
-      PET_KEEP +
-      " Use vibrant rich colors and ornate textile backdrop with embroidery patterns. " +
-      "Place the animal on a cushioned throne in a darbar hall with marble pillars. " +
-      "Use bold Punjabi royal color palette with warm golden lighting.",
+      "Transform this entire photo into a Sikh court painting from the Punjab tradition. " +
+      "Render the animal in the bold Punjabi royal style. Place on a cushioned throne " +
+      "in a darbar hall with marble pillars and warm golden lighting. " +
+      PET_BLEND,
   },
 
   "bengal-renaissance": {
-    guidanceScale: 3.5,
+    guidanceScale: 4.0,
     numInferenceSteps: 50,
     loraUrl: null,
     loraScale: 1.0,
     loraTrigger: null,
     humanPrompt:
-      "Apply Bengal School painting style in the tradition of Abanindranath Tagore to the background of this portrait, " +
-      FACE_KEEP +
-      " Use soft watercolor wash technique, flowing graceful lines, and earthy muted " +
-      "color palette with subtle golden undertones on the background. Add a dreamy atmospheric background " +
-      "with soft gradients. Apply delicate brushstrokes to non-face areas only.",
-
+      "Transform this entire portrait into a Bengal School painting in the tradition " +
+      "of Abanindranath Tagore. Render the person using soft watercolor wash technique, " +
+      "flowing graceful lines, and earthy muted tones with subtle golden undertones. " +
+      "Create a dreamy atmospheric quality with soft gradients. " +
+      "The entire image should look like a Bengal Renaissance watercolor artwork. " +
+      BLEND_FACE,
     petPrompt:
-      "Apply Bengal School watercolor painting style to the background of this photo, " +
-      PET_KEEP +
-      " Use soft wash technique, flowing graceful lines, and earthy muted tones with golden undertones. " +
-      "Add a dreamy atmospheric background. Apply delicate brushstrokes " +
-      "characteristic of the Bengal Renaissance style to background only.",
+      "Transform this entire photo into a Bengal School watercolor painting. " +
+      "Render the animal using soft wash technique, flowing lines, and earthy muted tones. " +
+      "Create a dreamy atmospheric quality throughout the image. " +
+      PET_BLEND,
   },
 
   "kerala-mural": {
-    guidanceScale: 3.5,
+    guidanceScale: 4.0,
     numInferenceSteps: 50,
     loraUrl: null,
     loraScale: 1.0,
     loraTrigger: null,
     humanPrompt:
-      "Apply Kerala Panchavarna mural painting style to the background and decorative frame of this portrait, " +
-      FACE_KEEP +
-      " Use bold thick black outlines and the five traditional colors: yellow ochre, red, green, blue, and white " +
-      "on the background and border elements. Add decorative floral borders and lotus motifs. " +
-      "Place a palace wall fresco background. Do not change the person's face or features.",
-
+      "Transform this entire portrait into a Kerala Panchavarna mural painting. " +
+      "Render the person with bold thick black outlines and the five traditional colors: " +
+      "yellow ochre, red, green, blue, and white. Use the flat Kerala mural style " +
+      "across the entire image. Add decorative floral borders, lotus motifs, " +
+      "and a palace wall fresco background. " +
+      BLEND_FACE,
     petPrompt:
-      "Apply Kerala Panchavarna mural painting style to the background and decorative frame of this photo, " +
-      PET_KEEP +
-      " Use bold thick black outlines and five traditional colors: yellow ochre, red, green, blue, and white. " +
-      "Add decorative floral borders and lotus motifs. Use flat perspective with " +
-      "ornate details characteristic of Kerala mural art on background only.",
+      "Transform this entire photo into a Kerala Panchavarna mural painting. " +
+      "Render the animal with bold thick black outlines and the five traditional colors. " +
+      "Add decorative floral borders, lotus motifs, and flat perspective. " +
+      PET_BLEND,
   },
 
   "pahari-mountain": {
-    guidanceScale: 3.5,
+    guidanceScale: 4.0,
     numInferenceSteps: 50,
     loraUrl: null,
     loraScale: 1.0,
     loraTrigger: null,
     humanPrompt:
-      "Apply Pahari Kangra school miniature painting style to the background and frame of this portrait, " +
-      FACE_KEEP +
-      " Use delicate fine brushwork, soft pastel colors, and rich accent tones on the setting. " +
-      "Add a Himalayan mountain landscape background with flowering trees and gentle " +
-      "streams. Include ornamental painted border with floral patterns around the portrait.",
-
+      "Transform this entire portrait into a Pahari Kangra school miniature painting. " +
+      "Render the person with delicate fine brushwork, soft pastel colors, and rich accents. " +
+      "Place in a lyrical Himalayan mountain landscape with flowering trees and gentle streams. " +
+      "Include an ornamental painted border with floral patterns. " +
+      "The entire composition should feel like an authentic Kangra miniature. " +
+      BLEND_FACE,
     petPrompt:
-      "Apply Pahari Kangra miniature painting style to the background of this photo, " +
-      PET_KEEP +
-      " Use delicate fine brushwork, soft pastel colors, and rich accents. Place the animal in a lyrical " +
-      "Himalayan mountain landscape with flowering trees. Add ornamental painted border " +
-      "with floral patterns and a serene mood.",
+      "Transform this entire photo into a Pahari Kangra miniature painting. " +
+      "Render the animal with delicate fine brushwork and soft pastel colors. " +
+      "Place in a Himalayan mountain landscape with flowering trees. " +
+      "Add ornamental border with floral patterns. " +
+      PET_BLEND,
   },
 
   "deccani-royal": {
-    guidanceScale: 3.5,
+    guidanceScale: 4.0,
     numInferenceSteps: 50,
     loraUrl: null,
     loraScale: 1.0,
     loraTrigger: null,
     humanPrompt:
-      "Apply Deccani painting style from the Bijapur-Golconda tradition to the background and frame of this portrait, " +
-      FACE_KEEP +
-      " Use rich luxurious colors and Persian-influenced composition. Add an ornate background " +
-      "with Islamic domes, pointed arches, and geometric tile patterns. Include gold " +
-      "accent details and refined courtly patterns on the border only.",
-
+      "Transform this entire portrait into a Deccani painting from the Bijapur-Golconda tradition. " +
+      "Render the person in the rich Deccani style with luxurious colors and " +
+      "Persian-influenced composition. Add an ornate background with Islamic domes, " +
+      "pointed arches, geometric tile patterns, and gold accents. " +
+      "The entire artwork should blend Indian and Persian artistic sensibilities. " +
+      BLEND_FACE,
     petPrompt:
-      "Apply Deccani painting style from the Bijapur tradition to the background of this photo, " +
-      PET_KEEP +
-      " Use rich luxurious colors and Persian-influenced composition. Place the animal in an ornate " +
-      "setting with Islamic arches and geometric patterns. Add gold accents blending " +
-      "Indian and Persian artistic elements on background only.",
+      "Transform this entire photo into a Deccani painting from the Bijapur tradition. " +
+      "Render the animal in the Deccani style with rich colors and Persian-influenced composition. " +
+      "Place in an ornate setting with Islamic arches and geometric patterns. " +
+      PET_BLEND,
   },
 
   "miniature-art": {
-    guidanceScale: 3.5,
+    guidanceScale: 4.0,
     numInferenceSteps: 50,
     loraUrl: null,
     loraScale: 1.0,
     loraTrigger: null,
     humanPrompt:
-      "Apply Indo-Islamic miniature painting style to the background and decorative border of this portrait, " +
-      FACE_KEEP +
-      " Add intricate detailed brushwork and an ornate border filled with floral arabesque patterns. " +
-      "Place a palace garden background with cypress trees, fountains, and blooming flowers. " +
-      "Use rich colors with gold leaf accents and classical flat perspective on non-face elements only.",
-
+      "Transform this entire portrait into an Indo-Islamic miniature painting. " +
+      "Render the person in the classic miniature style with intricate detailed brushwork, " +
+      "rich colors, gold leaf accents, and flat perspective. " +
+      "Place in a palace garden with cypress trees, fountains, and blooming flowers. " +
+      "Add an ornate border filled with floral arabesque patterns. " +
+      BLEND_FACE,
     petPrompt:
-      "Apply Indo-Islamic miniature painting style to the background and border of this photo, " +
-      PET_KEEP +
-      " Add intricate brushwork and ornate floral arabesque border. Place the animal in a palace garden " +
-      "with cypress trees and flowers. Use rich colors with gold accents and flat perspective " +
-      "characteristic of Mughal miniature art on background only.",
+      "Transform this entire photo into an Indo-Islamic miniature painting. " +
+      "Render the animal in miniature style with intricate brushwork and gold accents. " +
+      "Place in a palace garden with cypress trees and flowers. " +
+      "Add ornate floral arabesque border. " +
+      PET_BLEND,
   },
 
   // ═══════════════════════════════════════════════════════════════════════════
   // FOLK STYLES (3) — LoRA for pets only, Kontext Pro for humans
-  // Human: guidance_scale 3.5 (Kontext Pro)
-  // Pet LoRA: guidance_scale 2.5, loraScale 1.0 (API defaults)
   // ═══════════════════════════════════════════════════════════════════════════
 
   "madhubani-art": {
-    guidanceScale: 3.5,
+    guidanceScale: 4.0,
     numInferenceSteps: 30,
     loraUrl: "https://v3b.fal.media/files/b/0a8ec276/jx30OuCdAxTZ1paR_qbuw_adapter_model.safetensors",
     loraScale: 1.0,
     loraTrigger: "mrs_madhubani",
     humanPrompt:
-      "Apply Madhubani Mithila painting style to the background and decorative border of this portrait, " +
-      FACE_KEEP +
-      " Add bold black ink outlines and geometric patterns filling the background frame. " +
-      "Use vibrant primary colors — red, yellow, blue, green. " +
-      "Add fish, peacock, and lotus border motifs around the portrait. " +
-      "Fill the background with dense geometric and floral Madhubani patterns. " +
-      "Do not change or add anything to the person's face, hair, or body.",
-
+      "Transform this entire portrait into a Madhubani Mithila painting. " +
+      "Render the person in the Madhubani folk art style with bold black ink outlines, " +
+      "dense geometric patterns, and vibrant primary colors — red, yellow, blue, green. " +
+      "Fill the entire composition with characteristic Madhubani patterns including " +
+      "fish, peacock, and lotus motifs. The face and body should be stylized in " +
+      "the Madhubani tradition while remaining recognizable. " +
+      BLEND_FACE,
     petPrompt:
-      "mrs_madhubani style. Apply Madhubani Mithila folk art painting style to the background and borders, " +
-      PET_KEEP +
-      " Add bold black ink outlines and geometric patterns filling the background. Use vibrant primary colors " +
-      "— red, yellow, blue, green. Add fish, peacock, and lotus border motifs. " +
-      "Fill the background with dense Madhubani patterns.",
+      "mrs_madhubani style. Transform this entire photo into a Madhubani Mithila painting. " +
+      "Render the animal in the Madhubani folk art style with bold black ink outlines " +
+      "and vibrant primary colors. Fill the background with dense geometric patterns, " +
+      "fish, peacock, and lotus motifs. " +
+      PET_BLEND,
   },
 
   "warli-art": {
-    guidanceScale: 3.5,
+    guidanceScale: 4.0,
     numInferenceSteps: 30,
     loraUrl: "https://v3b.fal.media/files/b/0a8ec235/pCzgeZ2OXUEjTnY4hjH7d_adapter_model.safetensors",
     loraScale: 1.0,
     loraTrigger: "mrs_warli",
     humanPrompt:
-      "Apply Warli tribal art style to the background and border frame of this portrait only, " +
-      FACE_KEEP +
-      " The face and body must remain fully photorealistic — this is the most important requirement. " +
-      "Create a dark terracotta brown background filled with traditional white Warli motifs: " +
-      "circular sun, triangular mountains, dancing figure chains, and nature scenes in " +
-      "white rice-paste line art. Add a Warli-patterned border frame around the portrait. " +
-      "Never convert the face to painted, stylized, or stick figure style.",
-
+      "Transform this entire portrait into Warli tribal art. " +
+      "Render the person blended into the Warli painting tradition — the face should be " +
+      "recognizable but artistically rendered, not a photograph. " +
+      "Use a dark terracotta brown background filled with traditional white Warli motifs: " +
+      "circular sun, triangular mountains, dancing figure chains, and nature scenes " +
+      "in white rice-paste line art. Add a Warli-patterned border frame. " +
+      "The person's features should harmonize with the Warli aesthetic. " +
+      BLEND_FACE,
     petPrompt:
-      "mrs_warli style. Apply Warli tribal art style to the background and border frame only, " +
-      PET_KEEP +
-      " Keep the animal fully photorealistic. " +
-      "Create a dark terracotta brown background filled with traditional white Warli motifs: " +
-      "circular sun, triangular mountains, dancing figures, and nature scenes in white line art. " +
-      "Add a Warli-patterned border frame. Never convert the animal to stick figures.",
+      "mrs_warli style. Transform this entire photo into Warli tribal art. " +
+      "Render the animal blended into the Warli style on a dark terracotta brown background " +
+      "filled with traditional white Warli motifs: circular sun, triangular mountains, " +
+      "dancing figures, and nature scenes in white line art. " +
+      PET_BLEND,
   },
 
   "pichwai-art": {
-    guidanceScale: 3.5,
+    guidanceScale: 4.0,
     numInferenceSteps: 50,
     loraUrl: null,
     loraScale: 1.0,
     loraTrigger: null,
     humanPrompt:
-      "Apply Pichwai Nathdwara painting style to the background and decorative frame of this portrait, " +
-      FACE_KEEP +
-      " Add intricate lotus flower patterns throughout the background. Use a rich dark blue or black " +
-      "background with detailed gold accents. Add cow motifs and decorative floral " +
-      "garlands in the border. Use Pichwai ornate floral style with fine brushwork on background only.",
-
+      "Transform this entire portrait into a Pichwai Nathdwara painting. " +
+      "Render the person in the ornate Pichwai style with intricate lotus flower patterns, " +
+      "rich dark blue or black background, and detailed gold accents throughout. " +
+      "Add cow motifs, decorative floral garlands, and fine Pichwai brushwork " +
+      "across the entire composition. " +
+      BLEND_FACE,
     petPrompt:
-      "Apply Pichwai Nathdwara painting style to the background and frame of this photo, " +
-      PET_KEEP +
-      " Add intricate lotus flower patterns. Use rich dark blue or black background with gold accents. " +
-      "Add decorative floral garlands and cow motifs in the border. " +
-      "Use Pichwai ornate floral style with fine brushwork on background only.",
+      "Transform this entire photo into a Pichwai Nathdwara painting. " +
+      "Render the animal in the Pichwai style with intricate lotus patterns, " +
+      "rich dark blue background, gold accents, and decorative floral garlands. " +
+      PET_BLEND,
   },
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // MODERN STYLES (2) — Kontext Pro only, guidance_scale 3.5
+  // MODERN STYLES (2)
   // ═══════════════════════════════════════════════════════════════════════════
 
   "anime-portrait": {
-    guidanceScale: 3.5,
+    guidanceScale: 4.0,
     numInferenceSteps: 50,
     loraUrl: null,
     loraScale: 1.0,
     loraTrigger: null,
     humanPrompt:
-      "Convert this portrait to anime art style, " +
-      "while maintaining the same recognizable facial features, expression, hairstyle, and gender " +
-      "of the person in the photo. Keep the exact same position and framing. " +
-      "Use clean precise linework, vibrant saturated colors, and cel-shading. " +
-      "Render detailed hair with strand highlights. " +
+      "Transform this entire portrait into anime art style. " +
+      "Render the person as an anime character with clean precise linework, " +
+      "vibrant saturated colors, cel-shading, and detailed hair with strand highlights. " +
+      "The face proportions and features must match the original person but in anime style. " +
       "Add a Studio Ghibli inspired atmospheric background with soft bokeh lighting. " +
-      "The face proportions, eye shape, nose, and jawline must match the original photo.",
-
+      BLEND_FACE,
     petPrompt:
-      "Convert this photo to Japanese anime art style, " +
-      PET_KEEP +
-      " Use expressive cute eyes, clean precise linework, and vibrant colors. " +
-      "Apply cel-shading with dynamic composition and soft atmospheric background. " +
-      "Make the animal adorable in anime style while keeping its exact breed features and coloring.",
+      "Transform this entire photo into Japanese anime art style. " +
+      "Render the animal as an anime character with expressive cute eyes, " +
+      "clean precise linework, vibrant colors, and cel-shading. " +
+      "Add a dynamic atmospheric background. " +
+      PET_BLEND,
   },
 
   "bollywood-retro": {
-    guidanceScale: 3.5,
+    guidanceScale: 4.0,
     numInferenceSteps: 50,
     loraUrl: null,
     loraScale: 1.0,
     loraTrigger: null,
     humanPrompt:
-      "Apply vintage 1970s hand-painted Bollywood movie poster style to the background of this portrait, " +
-      FACE_KEEP +
-      " Use bold saturated colors and visible painted brushstroke texture on the background. " +
-      "Create dramatic composition with retro Indian cinema aesthetic — dramatic side lighting and " +
-      "dramatic sky background. The face must remain a recognizable photorealistic likeness.",
-
+      "Transform this entire portrait into a vintage 1970s hand-painted Bollywood movie poster. " +
+      "Render the person in the classic hand-painted poster style with bold saturated colors, " +
+      "visible painted brushstroke texture, dramatic side lighting, and a dramatic sky. " +
+      "The entire image should look like an authentic 70s Bollywood poster — " +
+      "the face should be recognizable but painted, not photographic. " +
+      BLEND_FACE,
     petPrompt:
-      "Apply vintage 1970s Bollywood movie poster style to the background of this photo, " +
-      PET_KEEP +
-      " Use bold saturated colors and painted brushstroke texture. Create dramatic " +
-      "composition with retro cinema lighting and dramatic sky background. " +
-      "Use hand-painted poster style with oil paint texture on background only.",
+      "Transform this entire photo into a vintage 1970s Bollywood movie poster style. " +
+      "Render the animal with bold saturated colors, painted brushstroke texture, " +
+      "dramatic composition, and retro cinema lighting. " +
+      PET_BLEND,
   },
 };
 
 // ─── Default fallback config ─────────────────────────────────────────────────
 
 const DEFAULT_CONFIG: StyleConfig = {
-  guidanceScale: 3.5,
+  guidanceScale: 4.0,
   numInferenceSteps: 50,
   loraUrl: null,
   loraScale: 1.0,
   loraTrigger: null,
   humanPrompt:
-    "Apply a traditional Indian art style to the background and decorative frame of this portrait, " +
-    FACE_KEEP +
-    " Use rich colors, ornate details, and traditional artistic techniques on background only.",
+    "Transform this entire portrait into a traditional Indian art painting. " +
+    "Render the person in the artistic style with rich colors and ornate details. " +
+    BLEND_FACE,
   petPrompt:
-    "Apply a traditional Indian art style to the background and frame of this photo, " +
-    PET_KEEP +
-    " Use rich colors, ornate details, and traditional artistic techniques on background only.",
+    "Transform this entire photo into a traditional Indian art painting. " +
+    "Render the animal in the artistic style with rich colors and ornate details. " +
+    PET_BLEND,
 };
 
 // ─── Public API ──────────────────────────────────────────────────────────────
@@ -432,11 +410,8 @@ export function getStyleConfig(slug: string): StyleConfig {
 /**
  * Build the final prompt for a generation.
  *
- * V5: Human prompts NEVER include LoRA trigger words (humans use Kontext Pro).
+ * V6: Human prompts NEVER include LoRA trigger words (humans use Kontext Pro).
  * Pet prompts include the trigger word when a LoRA is available.
- *
- * Falls back to DB prompt_template with {subject} replacement if no
- * Kontext prompt is configured (for future styles added via Supabase).
  */
 export function buildPrompt(
   slug: string,
@@ -447,10 +422,8 @@ export function buildPrompt(
 
   if (config) {
     if (subjectType === "pet") {
-      // Pet prompts already have trigger word baked in (in petPrompt text)
       return config.petPrompt;
     }
-    // Human prompts — pure Kontext Pro, no trigger words
     return config.humanPrompt;
   }
 
@@ -462,7 +435,7 @@ export function buildPrompt(
       .replace(/\{subject_type\}/gi, subjectType);
   }
 
-  // Last resort fallback
+  // Last resort
   const label = subjectType === "pet" ? "pet" : "person";
-  return `Apply traditional Indian art style to the background and frame of this photo while maintaining the exact same facial features, expression, and gender of the ${label}. Keep the ${label} photorealistic.`;
+  return `Transform this entire portrait into traditional Indian art. Render the ${label} in the artistic style while keeping the face recognizable as the same individual. The entire image should look like one cohesive artwork.`;
 }

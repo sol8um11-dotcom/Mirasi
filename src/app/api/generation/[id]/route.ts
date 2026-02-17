@@ -103,9 +103,11 @@ export async function GET(
       });
     }
 
-    // Check if this style has a trained LoRA (determines which fal.ai endpoint to poll)
+    // Determine which fal.ai endpoint was used for this generation.
+    // LoRA is ONLY used for pet subjects with a trained LoRA — humans always use Kontext Pro.
     const styleSlug = generation.style?.slug;
-    const hasLora = styleSlug ? !!getStyleConfig(styleSlug).loraUrl : false;
+    const styleHasLora = styleSlug ? !!getStyleConfig(styleSlug).loraUrl : false;
+    const hasLora = styleHasLora && generation.subject_type === "pet";
     const falStatus = await checkGenerationStatus(generation.fal_request_id, hasLora);
 
     // Still processing
