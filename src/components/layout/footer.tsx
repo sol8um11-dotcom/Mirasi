@@ -11,9 +11,11 @@ export function Footer() {
             <div className="mb-2">
               <Logo size="md" />
             </div>
-            <p className="text-sm text-muted">
-              AI-powered Indian art portraits. Transform your photos into
-              masterpieces.
+            <p className="text-sm italic text-gold">
+              Every face tells a legend
+            </p>
+            <p className="mt-1 text-xs text-muted">
+              AI-powered Indian art portraits
             </p>
           </div>
 

@@ -87,8 +87,8 @@ export function LoginForm() {
       {/* Logo */}
       <Link href="/" className="mb-8 flex flex-col items-center text-center">
         <Logo size="lg" />
-        <p className="mt-1 text-sm text-muted">
-          Sign in to create your portrait
+        <p className="mt-1 text-sm italic text-gold">
+          Every face tells a legend
         </p>
       </Link>
 

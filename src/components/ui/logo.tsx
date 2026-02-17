@@ -144,21 +144,18 @@ interface LogoProps {
 
 /**
  * Full Mirasi Logo (icon + wordmark in Urbanist)
- * Wordmark is full saffron with gold dots replacing the native "i" dots,
- * matching the logo's gold eye pupil. Uses dotless "ı" (U+0131) so
- * only the gold dot is visible — no double dots.
+ * Wordmark renders "mirasi" in saffron with the font's native "i" dots.
+ * Tagline: "Every face tells a legend."
  */
 export function Logo({ size = "md", showIcon = true, className }: LogoProps) {
   const iconSize = size === "sm" ? 22 : size === "md" ? 28 : 36;
   const textSize =
     size === "sm" ? "text-base" : size === "md" ? "text-lg" : "text-2xl";
-  // Gold dot on "i" — sized proportionally to match the SVG pupil.
-  const dotSize = size === "sm" ? "0.2em" : size === "md" ? "0.2em" : "0.2em";
 
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-2 font-bold font-display leading-none",
+        "inline-flex items-center gap-2 font-bold font-display",
         textSize,
         className
       )}
@@ -166,27 +163,13 @@ export function Logo({ size = "md", showIcon = true, className }: LogoProps) {
     >
       {showIcon && <LogoIcon size={iconSize} />}
       {/*
-        Wordmark uses dotless "ı" (U+0131) for both "i" positions, with
-        gold dots positioned via CSS. Using leading-none on the parent
-        collapses ascender padding so the inline-block span tightly wraps
-        the glyph, making top-offset positioning predictable.
+        Wordmark renders "mirasi" with standard "i" characters so the
+        font's native tittle (dot) sits at the correct position. We use
+        CSS text-shadow to recolor the dots gold — no manual positioning
+        needed. Simple and bulletproof across all sizes.
       */}
-      <span className="text-saffron relative tracking-tight" aria-hidden="true">
-        {(["m", "\u0131", "r", "a", "s", "\u0131"] as const).map((char, i) => (
-          <span key={i} className="relative inline-block">
-            {char}
-            {(i === 1 || i === 5) && (
-              <span
-                className="absolute left-1/2 -translate-x-1/2 rounded-full bg-gold block"
-                style={{
-                  width: dotSize,
-                  height: dotSize,
-                  top: "0.05em",
-                }}
-              />
-            )}
-          </span>
-        ))}
+      <span className="text-saffron tracking-tight" aria-hidden="true">
+        mirasi
       </span>
     </span>
   );

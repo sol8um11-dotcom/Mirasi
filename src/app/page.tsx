@@ -8,6 +8,9 @@ export default function HomePage() {
       <WebsiteJsonLd />
       {/* Hero Section */}
       <section className="flex flex-col items-center py-12 text-center md:py-20">
+        <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-gold">
+          Every face tells a legend
+        </p>
         <h1 className="mb-4 max-w-2xl text-3xl font-bold leading-tight text-foreground md:text-5xl md:leading-tight">
           Transform Your Photos Into{" "}
           <span className="text-saffron">Indian Art</span> Masterpieces
