@@ -24,21 +24,21 @@ const styleNames = [
  */
 export function HeroHeadline() {
   return (
-    <h1 className="mb-5 max-w-3xl text-4xl font-bold leading-tight text-foreground md:text-5xl lg:text-6xl md:leading-tight">
+    <h1 className="mb-5 max-w-3xl text-3xl font-bold leading-snug text-foreground sm:text-4xl md:text-5xl lg:text-6xl">
       Transform{" "}
       <RotatingText
         texts={photoTypes}
         interval={3000}
         className="text-foreground"
       />
-      <br className="hidden sm:block" />{" "}
+      <br className="hidden md:block" />{" "}
       Into{" "}
       <RotatingText
         texts={styleNames}
         interval={3500}
         className="text-saffron"
       />
-      <br className="hidden sm:block" />{" "}
+      <br className="hidden md:block" />{" "}
       Masterpieces
     </h1>
   );

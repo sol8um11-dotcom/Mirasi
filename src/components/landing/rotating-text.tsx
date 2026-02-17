@@ -25,7 +25,7 @@ export function RotatingText({ texts, interval = 3000, className }: RotatingText
       setTimeout(() => {
         setIndex((prev) => (prev + 1) % texts.length);
         setVisible(true);
-      }, 400);
+      }, 300);
     }, interval);
 
     return () => clearInterval(timer);
@@ -33,7 +33,7 @@ export function RotatingText({ texts, interval = 3000, className }: RotatingText
 
   return (
     <span
-      className={`inline-block transition-all duration-400 ${
+      className={`inline-block transition-all duration-300 ease-in-out ${
         visible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2"
       } ${className ?? ""}`}
     >

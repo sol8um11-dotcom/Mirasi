@@ -175,8 +175,8 @@ export function Logo({ size = "md", showIcon = true, className }: LogoProps) {
   const iconSize = size === "sm" ? 22 : size === "md" ? 28 : 36;
   const textSize =
     size === "sm" ? "text-base" : size === "md" ? "text-lg" : "text-2xl";
-  // Fixed dot diameter in whole pixels per size — avoids sub-pixel rendering differences
-  const dotPx = size === "sm" ? 2 : size === "md" ? 3 : 4;
+  // Fixed dot diameter in whole pixels per size — matches natural font tittle proportions
+  const dotPx = size === "sm" ? 3 : size === "md" ? 4 : 5;
 
   // Characters: m·ı·r·a·s·ı (dotless i at positions 1 and 5)
   const chars = ["m", "\u0131", "r", "a", "s", "\u0131"] as const;
