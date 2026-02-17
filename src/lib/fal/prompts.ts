@@ -1,17 +1,22 @@
 /**
  * Kontext-optimized prompt templates and style configuration.
  *
- * V3 Prompts — Maximum Identity Preservation
+ * V4 Prompts — Gender-Preserving Identity-First
+ *
+ * Key fixes from V3:
+ * 1. GENDER PRESERVATION: Explicit "Do NOT change gender" + "same person" clauses
+ * 2. REMOVED gendered style cues: No more "jewelry, silk garments, zari borders" —
+ *    these caused the model to feminize male subjects
+ * 3. NEUTRAL clothing terms: "traditional royal attire" not gendered items
+ * 4. LOWER LoRA scales: 0.5 for LoRA styles (was 0.6-0.7) — LoRA training data
+ *    was biased toward female subjects in traditional art
+ * 5. STRONGER opening clause: Face + gender as the very first instruction
  *
  * Key principles for Flux Kontext Pro style transfer:
- * 1. IDENTITY FIRST: Triple-reinforced preservation clause at start AND end of prompt
- * 2. Use "Apply artistic style to background/clothing/border" not "Restyle the image"
- *    (keeps the face untouched, modifies everything else)
- * 3. Explicit facial feature checklist REPEATED: face shape, eyes, nose, jawline, skin tone, age
- * 4. CRITICAL block: "The face must be a photorealistic likeness"
- * 5. Very low guidance_scale (2.0–2.5) for non-LoRA = minimal identity drift
- * 6. LoRA styles: guidance 3.0, scale 0.7 (lower LoRA influence to protect identity)
- * 7. Warli: hybrid approach — photorealistic portrait with Warli decorative frame/background
+ * 1. IDENTITY FIRST: Gender + face preservation as opening sentence
+ * 2. "Apply artistic style to background/border ONLY" — not clothing if possible
+ * 3. Very low guidance_scale (2.0) for non-LoRA = minimal identity drift
+ * 4. LoRA styles: guidance 2.5, scale 0.5 (much lower LoRA to protect identity)
  */
 
 // ─── Style-Specific Configuration ────────────────────────────────────────────
@@ -33,17 +38,19 @@ export interface StyleConfig {
   loraTrigger: string | null;
 }
 
-// ─── Shared prompt fragments (V3: triple-reinforced identity) ────────────────
+// ─── V4 Shared prompt fragments: gender-preserving identity ──────────────────
 
 const IDENTITY_PREFIX =
-  "CRITICAL: This is a portrait — the person's face must remain a photorealistic, recognizable likeness. " +
-  "Preserve the EXACT same face, eye shape, eye color, nose shape, lip shape, jawline, cheekbones, " +
-  "skin tone, skin texture, facial hair, age, and expression. Do NOT alter, age, de-age, or idealize " +
-  "any facial features. The face must look like the same real person. ";
+  "CRITICAL: Keep this EXACT same person — same gender, same face, same age. " +
+  "Do NOT change the person's gender, sex, or physical appearance in any way. " +
+  "Preserve the EXACT face: eye shape, eye color, nose, lips, jawline, cheekbones, " +
+  "skin tone, facial hair (beard/stubble if present), hairstyle, and expression. " +
+  "The face must remain a photorealistic likeness of the original person. ";
 
 const IDENTITY_SUFFIX =
-  " IMPORTANT: The face and head must remain photorealistic and identical to the input photo. " +
-  "Only the background, clothing, borders, and artistic treatment should change — never the face.";
+  " IMPORTANT: The person's face, gender, and identity must be UNCHANGED. " +
+  "Only the background, borders, and artistic treatment should change. " +
+  "The output must look like the SAME person from the input photo.";
 
 const PET_PREFIX =
   "CRITICAL: Keep the EXACT same animal — same breed, fur color pattern, markings, eye color, " +
@@ -53,11 +60,11 @@ const PET_SUFFIX =
   " IMPORTANT: The animal must remain photorealistic and identical to the input photo.";
 
 /**
- * Per-style generation configs — V3 Maximum Identity Preservation
+ * Per-style generation configs — V4 Gender-Preserving Identity-First
  *
- * Trained LoRAs are available for: warli-art, madhubani-art, tanjore-heritage.
- * Other styles use Kontext Pro (no LoRA) — train via fal-ai/flux-kontext-trainer
- * and paste the diffusers_lora_file URLs here when ready.
+ * Trained LoRAs: warli-art, madhubani-art, tanjore-heritage.
+ * LoRA scale reduced to 0.5 (from 0.6-0.7) to prevent gender-swapping
+ * caused by LoRA training data bias toward female subjects.
  */
 const STYLE_CONFIGS: Record<string, StyleConfig> = {
   // ═══════════════════════════════════════════════════════════════════════════
@@ -72,15 +79,16 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
     loraTrigger: null,
     humanPrompt:
       IDENTITY_PREFIX +
-      "Apply the artistic style of a Rajasthani Mewar miniature painting to the clothing, background, and frame only. " +
-      "Add an ornate golden border frame, rich jewel tones of deep red, gold, and emerald green. " +
-      "Place a palace courtyard background with arched pillars, jali patterns, and traditional " +
-      "Rajput ornaments. Use Mewar fine brushwork with visible ink outlines on the background elements." +
+      "Apply Rajasthani Mewar miniature painting style to the background and border ONLY. " +
+      "Add an ornate golden border frame with rich jewel tones of deep red, gold, and emerald. " +
+      "Place a palace courtyard background with arched pillars and jali patterns. " +
+      "Use Mewar fine brushwork with visible ink outlines on the background elements. " +
+      "Keep the person's clothing simple and gender-appropriate." +
       IDENTITY_SUFFIX,
 
     petPrompt:
       PET_PREFIX +
-      "Apply the artistic style of a Rajasthani Mewar miniature painting to the background and frame. " +
+      "Apply Rajasthani Mewar miniature painting style to the background and frame. " +
       "Add ornate golden border frame, rich jewel tones of deep red and gold. " +
       "Place the animal on an ornate cushion in a palace courtyard with arched pillars. " +
       "Use Mewar fine brushwork with ink outlines and intricate floral patterns." +
@@ -95,33 +103,33 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
     loraTrigger: null,
     humanPrompt:
       IDENTITY_PREFIX +
-      "Apply the artistic style of a Maratha Peshwa-era court painting to the clothing, background, and composition. " +
+      "Apply Maratha Peshwa-era court painting style to the background and composition. " +
       "Use a deep maroon and gold color palette. Add a fort rampart or durbar hall background " +
       "with stone pillars and draped textiles. Apply Peshwa painting style with strong " +
-      "outlines and flat color fills to background elements. Add traditional Maratha ornaments." +
+      "outlines and flat color fills to background elements." +
       IDENTITY_SUFFIX,
 
     petPrompt:
       PET_PREFIX +
-      "Apply the artistic style of a Maratha Peshwa-era court painting to the background and setting. " +
+      "Apply Maratha Peshwa-era court painting style to the background and setting. " +
       "Use deep maroon and gold colors. Place the animal in a regal fort setting with stone pillars and " +
       "draped textiles. Apply Peshwa style outlines to background elements and add Maratha motif borders." +
       PET_SUFFIX,
   },
 
   "tanjore-heritage": {
-    guidanceScale: 3.0,
+    guidanceScale: 2.5,
     numInferenceSteps: 28,
     loraUrl: "https://v3b.fal.media/files/b/0a8ed157/F77SIFKQEWb94CrH4Gh6s_adapter_model.safetensors",
-    loraScale: 0.7,
+    loraScale: 0.5,
     loraTrigger: "mrs_tanjore",
     humanPrompt:
       IDENTITY_PREFIX +
-      "Apply Tanjore Thanjavur painting style to the clothing, ornaments, arch frame, and background. " +
-      "Add rich vibrant colors, prominent gold leaf embellishments, and gem-studded details. Frame the subject " +
-      "in an ornate arch with South Indian temple pillars. Add traditional jewelry, " +
-      "silk garments with zari borders. Use semi-raised gold surface texture " +
-      "and vivid warm color palette on all non-face elements." +
+      "Apply Tanjore Thanjavur painting style to the arch frame and background ONLY. " +
+      "Add rich vibrant colors, prominent gold leaf embellishments, and gem-studded arch details. " +
+      "Frame the subject in an ornate arch with South Indian temple pillars. " +
+      "Use semi-raised gold surface texture and vivid warm color palette on the frame and background. " +
+      "Do NOT add feminine accessories, jewelry, or change the person's clothing style." +
       IDENTITY_SUFFIX,
 
     petPrompt:
@@ -141,7 +149,7 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
     loraTrigger: null,
     humanPrompt:
       IDENTITY_PREFIX +
-      "Apply Mysore painting style in the Wodeyar court tradition to the clothing, background, and frame. " +
+      "Apply Mysore painting style in the Wodeyar court tradition to the background and frame. " +
       "Use elegant composition, muted gold tones, and deep green accents. Add a palatial interior " +
       "with carved wooden pillars and delicate curtain draping. Use refined brushwork " +
       "with subtle gesso preparation and thin gold lines on the decorative elements." +
@@ -164,8 +172,8 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
     loraTrigger: null,
     humanPrompt:
       IDENTITY_PREFIX +
-      "Apply Sikh court painting style from the Punjab tradition to the clothing, background, and setting. " +
-      "Use vibrant rich colors and ornate textiles featuring detailed embroidery patterns. " +
+      "Apply Sikh court painting style from the Punjab tradition to the background and setting. " +
+      "Use vibrant rich colors and ornate textile backdrop with embroidery patterns. " +
       "Add a Lahore darbar hall background with marble pillars, chandeliers, and rich carpet. " +
       "Use bold Punjabi royal color palette with warm golden lighting." +
       IDENTITY_SUFFIX,
@@ -187,10 +195,10 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
     loraTrigger: null,
     humanPrompt:
       IDENTITY_PREFIX +
-      "Apply Bengal School painting style in the tradition of Abanindranath Tagore to the background and artistic treatment. " +
+      "Apply Bengal School painting style in the tradition of Abanindranath Tagore to the background. " +
       "Use soft watercolor wash technique, flowing graceful lines, and earthy muted " +
       "color palette with subtle golden undertones on the background. Add a dreamy atmospheric background " +
-      "with soft gradients. Apply delicate brushstrokes and poetic romantic composition to non-face elements." +
+      "with soft gradients. Apply delicate brushstrokes to non-face elements only." +
       IDENTITY_SUFFIX,
 
     petPrompt:
@@ -210,7 +218,7 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
     loraTrigger: null,
     humanPrompt:
       IDENTITY_PREFIX +
-      "Apply Kerala Panchavarna mural painting style to the clothing, ornaments, background, and decorative frame. " +
+      "Apply Kerala Panchavarna mural painting style to the background and decorative frame ONLY. " +
       "Use bold thick black outlines and the five traditional colors: yellow ochre, red, green, blue, and white " +
       "on the background and border elements. Add decorative floral borders and lotus motifs. " +
       "Place subject against a palace wall fresco background." +
@@ -256,10 +264,10 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
     loraTrigger: null,
     humanPrompt:
       IDENTITY_PREFIX +
-      "Apply Deccani painting style from the Bijapur-Golconda tradition to the clothing, background, and frame. " +
+      "Apply Deccani painting style from the Bijapur-Golconda tradition to the background and frame. " +
       "Use rich luxurious colors and Persian-influenced composition. Add an ornate background " +
       "with Islamic domes, pointed arches, and geometric tile patterns. Include gold " +
-      "accent details and refined courtly textile patterns." +
+      "accent details and refined courtly patterns on the border." +
       IDENTITY_SUFFIX,
 
     petPrompt:
@@ -279,7 +287,7 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
     loraTrigger: null,
     humanPrompt:
       IDENTITY_PREFIX +
-      "Apply Indo-Islamic miniature painting style to the clothing, background, and decorative border. " +
+      "Apply Indo-Islamic miniature painting style to the background and decorative border. " +
       "Use intricate detailed brushwork and an ornate border filled with floral arabesque patterns. " +
       "Add a palace garden background with cypress trees, fountains, and blooming flowers. " +
       "Use rich colors with gold leaf accents and classical flat perspective on non-face elements." +
@@ -295,22 +303,24 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
   },
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // FOLK STYLES (3) — LoRA styles use guidanceScale: 3.0, loraScale: 0.7
+  // FOLK STYLES (3) — LoRA: guidanceScale 2.5, loraScale 0.5
+  // Lower LoRA scale to prevent gender-swapping from training data bias
   // ═══════════════════════════════════════════════════════════════════════════
 
   "madhubani-art": {
-    guidanceScale: 3.0,
+    guidanceScale: 2.5,
     numInferenceSteps: 28,
     loraUrl: "https://v3b.fal.media/files/b/0a8ec276/jx30OuCdAxTZ1paR_qbuw_adapter_model.safetensors",
-    loraScale: 0.7,
+    loraScale: 0.5,
     loraTrigger: "mrs_madhubani",
     humanPrompt:
       IDENTITY_PREFIX +
-      "Apply Madhubani Mithila painting style to the background, clothing, and decorative borders only. " +
-      "Add bold black ink outlines and geometric patterns filling the background and frame. Use vibrant primary colors — " +
-      "red, yellow, blue, green. Add fish, peacock, and lotus border motifs. Fill the " +
-      "background with dense geometric and floral patterns leaving no empty space. " +
-      "The face must remain a clear photorealistic likeness." +
+      "Apply Madhubani Mithila painting style to the background and decorative border ONLY. " +
+      "Add bold black ink outlines and geometric patterns filling the background frame. " +
+      "Use vibrant primary colors — red, yellow, blue, green. " +
+      "Add fish, peacock, and lotus border motifs around the portrait. " +
+      "Fill the background with dense geometric and floral Madhubani patterns. " +
+      "Do NOT add feminine accessories, bindi, or change the person's appearance." +
       IDENTITY_SUFFIX,
 
     petPrompt:
@@ -323,20 +333,20 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
   },
 
   "warli-art": {
-    guidanceScale: 3.0,
+    guidanceScale: 2.5,
     numInferenceSteps: 28,
     loraUrl: "https://v3b.fal.media/files/b/0a8ec235/pCzgeZ2OXUEjTnY4hjH7d_adapter_model.safetensors",
-    loraScale: 0.6,
+    loraScale: 0.5,
     loraTrigger: "mrs_warli",
     humanPrompt:
       IDENTITY_PREFIX +
-      "Keep the face fully photorealistic — this is the most important requirement. " +
-      "Apply Warli tribal art style ONLY to the background, border, and decorative elements. " +
+      "Keep the face and body fully photorealistic — this is the most important requirement. " +
+      "Apply Warli tribal art style ONLY to the background and border frame. " +
       "Create a dark terracotta brown background filled with traditional white Warli motifs: " +
-      "circular sun, triangular mountains, dancing figure chains, and nature scenes painted in " +
-      "white rice-paste line art. Add an ornate Warli-patterned border frame around the portrait. " +
-      "The clothing can have Warli-inspired geometric patterns. " +
-      "The face and skin MUST remain photorealistic — never convert to stick figures or geometric shapes." +
+      "circular sun, triangular mountains, dancing figure chains, and nature scenes in " +
+      "white rice-paste line art. Add a Warli-patterned border frame around the portrait. " +
+      "Do NOT change the person's face, gender, clothing, or add any accessories. " +
+      "The face and skin MUST remain photorealistic — never convert to painted or stylized." +
       IDENTITY_SUFFIX,
 
     petPrompt:
@@ -358,8 +368,8 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
     loraTrigger: null,
     humanPrompt:
       IDENTITY_PREFIX +
-      "Apply Pichwai painting style from the Nathdwara tradition to the background, clothing, and decorative frame. " +
-      "Add intricate lotus flower patterns throughout the background composition. Use a rich dark blue or black " +
+      "Apply Pichwai painting style from the Nathdwara tradition to the background and decorative frame ONLY. " +
+      "Add intricate lotus flower patterns throughout the background. Use a rich dark blue or black " +
       "background with detailed gold accents. Add cow motifs and decorative floral " +
       "garlands in the border. Use Pichwai ornate floral style with fine brushwork on non-face areas." +
       IDENTITY_SUFFIX,
@@ -409,10 +419,10 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
     loraTrigger: null,
     humanPrompt:
       IDENTITY_PREFIX +
-      "Apply vintage 1970s hand-painted Bollywood movie poster style to the composition and background. " +
-      "Use bold saturated colors and visible painted brushstroke texture on the background elements. " +
+      "Apply vintage 1970s hand-painted Bollywood movie poster style to the background. " +
+      "Use bold saturated colors and visible painted brushstroke texture on the background. " +
       "Create dramatic composition with retro Indian cinema aesthetic — dramatic side lighting and " +
-      "dramatic sky background. The face must remain a recognizable photorealistic likeness of the person." +
+      "dramatic sky background. The face must remain a recognizable photorealistic likeness." +
       IDENTITY_SUFFIX,
 
     petPrompt:
@@ -435,7 +445,7 @@ const DEFAULT_CONFIG: StyleConfig = {
   loraTrigger: null,
   humanPrompt:
     IDENTITY_PREFIX +
-    "Apply a traditional Indian art style to the background, clothing, and decorative frame only. " +
+    "Apply a traditional Indian art style to the background and decorative frame only. " +
     "Use rich colors, ornate details, and traditional artistic techniques." +
     IDENTITY_SUFFIX,
   petPrompt:
@@ -491,5 +501,5 @@ export function buildPrompt(
 
   // Last resort fallback
   const label = subjectType === "pet" ? "pet" : "person";
-  return `Keep the exact same features of this ${label}. Apply traditional Indian art style to background and frame only. The face must remain photorealistic.`;
+  return `Keep the exact same features and gender of this ${label}. Apply traditional Indian art style to background and frame only. The face must remain photorealistic.`;
 }
