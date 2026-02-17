@@ -35,7 +35,7 @@ export async function compressImage(file: File): Promise<CompressedImage> {
 
   // Compress with browser-image-compression
   // This automatically strips EXIF data including GPS coordinates
-  const compressedFile = await imageCompression(file, {
+  const compressedBlob = await imageCompression(file, {
     maxWidthOrHeight: Math.max(COMPRESSED_MAX_WIDTH, COMPRESSED_MAX_HEIGHT),
     maxSizeMB: 1, // Target ~1MB after compression
     useWebWorker: true,
@@ -44,27 +44,34 @@ export async function compressImage(file: File): Promise<CompressedImage> {
     preserveExif: false, // DPDP: Strip all EXIF including GPS
   });
 
-  // Get dimensions
-  const dimensions = await getImageDimensions(compressedFile);
+  // Get dimensions from the compressed blob
+  const dimensions = await getImageDimensions(compressedBlob);
+
+  // Convert Blob to File for FormData upload
+  // Use arrayBuffer to avoid "Overload resolution failed" in some browsers
+  const buffer = await compressedBlob.arrayBuffer();
+  const compressedFile = new File([buffer], "photo.jpg", {
+    type: "image/jpeg",
+  });
 
   return {
-    file: new File([compressedFile], `photo.jpg`, { type: "image/jpeg" }),
+    file: compressedFile,
     width: dimensions.width,
     height: dimensions.height,
     originalSize,
-    compressedSize: compressedFile.size,
+    compressedSize: compressedBlob.size,
   };
 }
 
 /**
- * Get image dimensions from a File
+ * Get image dimensions from a Blob or File
  */
 function getImageDimensions(
-  file: File
+  blob: Blob
 ): Promise<{ width: number; height: number }> {
   return new Promise((resolve, reject) => {
-    const img = new Image();
-    const url = URL.createObjectURL(file);
+    const img = new globalThis.Image();
+    const url = URL.createObjectURL(blob);
 
     img.onload = () => {
       resolve({ width: img.naturalWidth, height: img.naturalHeight });
@@ -83,6 +90,6 @@ function getImageDimensions(
 /**
  * Create a preview URL for display (revoke with URL.revokeObjectURL when done)
  */
-export function createPreviewUrl(file: File): string {
+export function createPreviewUrl(file: Blob | File): string {
   return URL.createObjectURL(file);
 }
