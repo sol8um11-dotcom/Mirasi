@@ -15,14 +15,17 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-sm">
-      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
+      <div className="mx-auto flex h-16 max-w-5xl items-center px-4">
         {/* Logo */}
         <Link href="/" className="flex items-center">
           <Logo size="md" />
         </Link>
 
+        {/* Spacer pushes nav & CTA right */}
+        <div className="flex-1" />
+
         {/* Desktop nav */}
-        <nav className="hidden items-center gap-6 md:flex">
+        <nav className="hidden items-center gap-8 md:flex">
           {navItems.map((item) => (
             <Link
               key={item.href}
@@ -39,17 +42,20 @@ export function Header() {
           ))}
         </nav>
 
+        {/* Spacer */}
+        <div className="hidden flex-1 md:block" />
+
         {/* CTA + Auth */}
         <div className="flex items-center gap-3">
           <Link
             href="/create"
-            className="rounded-lg bg-saffron px-4 py-2 text-sm font-semibold text-white raised-3d hover:bg-saffron-dark"
+            className="rounded-lg bg-saffron px-4 py-2.5 text-sm font-semibold text-white raised-3d hover:bg-saffron-dark"
           >
             Create Portrait
           </Link>
           <Link
             href="/account"
-            className="hidden rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground/70 transition-colors hover:bg-sand md:block"
+            className="hidden rounded-lg border border-border px-3 py-2.5 text-sm font-medium text-foreground/70 transition-colors hover:bg-sand md:block"
             aria-label="My Account"
           >
             <svg

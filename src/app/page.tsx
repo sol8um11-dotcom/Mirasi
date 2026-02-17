@@ -7,33 +7,33 @@ export default function HomePage() {
     <div className="mx-auto max-w-5xl px-4">
       <WebsiteJsonLd />
       {/* Hero Section */}
-      <section className="flex flex-col items-center py-12 text-center md:py-20">
-        <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-gold">
+      <section className="flex flex-col items-center py-16 text-center md:py-24">
+        <p className="mb-4 text-xs font-semibold uppercase tracking-[0.25em] text-gold md:text-sm">
           Every face tells a legend
         </p>
-        <h1 className="mb-4 max-w-2xl text-3xl font-bold leading-tight text-foreground md:text-5xl md:leading-tight">
+        <h1 className="mb-5 max-w-3xl text-4xl font-bold leading-tight text-foreground md:text-5xl lg:text-6xl md:leading-tight">
           Transform Your Photos Into{" "}
           <span className="text-saffron">Indian Art</span> Masterpieces
         </h1>
-        <p className="mb-8 max-w-lg text-base text-muted md:text-lg">
+        <p className="mb-10 max-w-lg text-base text-muted md:text-lg">
           AI-powered portraits inspired by 15 authentic Indian art traditions.
           From Rajasthani Miniatures to Madhubani Folk Art.
         </p>
-        <div className="flex gap-3">
+        <div className="flex flex-col gap-3 sm:flex-row">
           <Link
             href="/create"
-            className="rounded-xl bg-saffron px-6 py-3.5 text-base font-semibold text-white raised-3d hover:bg-saffron-dark"
+            className="rounded-xl bg-saffron px-8 py-4 text-base font-semibold text-white raised-3d hover:bg-saffron-dark"
           >
             Create Your Portrait
           </Link>
           <Link
             href="/gallery"
-            className="rounded-xl border border-border bg-card px-6 py-3.5 text-base font-semibold text-foreground shadow-card transition-all hover:shadow-card-hover active:scale-[0.98]"
+            className="rounded-xl border border-border bg-card px-8 py-4 text-base font-semibold text-foreground shadow-card transition-all hover:shadow-card-hover active:scale-[0.98]"
           >
             View Gallery
           </Link>
         </div>
-        <p className="mt-4 text-sm text-muted">
+        <p className="mt-5 text-sm text-muted">
           Starting at just <span className="font-semibold text-saffron">Rs 49</span>
         </p>
       </section>

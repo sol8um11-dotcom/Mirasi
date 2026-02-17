@@ -144,13 +144,22 @@ interface LogoProps {
 
 /**
  * Full Mirasi Logo (icon + wordmark in Urbanist)
- * Wordmark renders "mirasi" in saffron with the font's native "i" dots.
+ *
+ * Gold "i" dots: We render the word using dotless "ı" (U+0131) in saffron,
+ * then overlay a gold-colored regular "i" at the same position. The gold "i"
+ * is clipped to only show its upper half (the dot area). Since the dotless ı
+ * has no dot, the gold dot shows through perfectly positioned by the font
+ * itself. Zero manual offset needed.
+ *
  * Tagline: "Every face tells a legend."
  */
 export function Logo({ size = "md", showIcon = true, className }: LogoProps) {
   const iconSize = size === "sm" ? 22 : size === "md" ? 28 : 36;
   const textSize =
     size === "sm" ? "text-base" : size === "md" ? "text-lg" : "text-2xl";
+
+  // Characters: m·ı·r·a·s·ı (dotless i at positions 1 and 5)
+  const chars = ["m", "\u0131", "r", "a", "s", "\u0131"] as const;
 
   return (
     <span
@@ -162,14 +171,23 @@ export function Logo({ size = "md", showIcon = true, className }: LogoProps) {
       aria-label="mirasi"
     >
       {showIcon && <LogoIcon size={iconSize} />}
-      {/*
-        Wordmark renders "mirasi" with standard "i" characters so the
-        font's native tittle (dot) sits at the correct position. We use
-        CSS text-shadow to recolor the dots gold — no manual positioning
-        needed. Simple and bulletproof across all sizes.
-      */}
       <span className="text-saffron tracking-tight" aria-hidden="true">
-        mirasi
+        {chars.map((char, idx) => (
+          <span key={idx} className="relative inline-block">
+            {/* Base character — saffron dotless ı (or regular letter) */}
+            {char}
+            {/* Gold dot overlay: render a gold "i" on top, clipped to upper 55%
+                so only the font-native dot is visible. The stem is hidden. */}
+            {(idx === 1 || idx === 5) && (
+              <span
+                className="absolute inset-0 text-gold overflow-hidden"
+                style={{ clipPath: "inset(0 0 45% 0)" }}
+              >
+                i
+              </span>
+            )}
+          </span>
+        ))}
       </span>
     </span>
   );
