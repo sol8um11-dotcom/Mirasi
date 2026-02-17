@@ -113,7 +113,16 @@ export function CreateFlow() {
   );
 
   const handleUploadAndGenerate = useCallback(async () => {
-    if (!uploadedImage || !selectedStyle || !user) return;
+    if (!uploadedImage || !selectedStyle) {
+      setError("Please select a style and upload a photo first.");
+      return;
+    }
+    if (!user) {
+      // Session expired or not loaded — redirect to login
+      window.location.href = `/auth/login?redirect=${encodeURIComponent("/create?style=" + selectedStyle.slug)}`;
+      return;
+    }
+
     setUploading(true);
     setError(null);
 
@@ -128,6 +137,19 @@ export function CreateFlow() {
         method: "POST",
         body: uploadForm,
       });
+
+      // If middleware redirected to login (session expired), the response
+      // will be HTML not JSON — detect via content-type or redirect URL
+      if (uploadRes.redirected || uploadRes.url.includes("/auth/login")) {
+        window.location.href = `/auth/login?redirect=${encodeURIComponent("/create?style=" + selectedStyle.slug)}`;
+        return;
+      }
+
+      if (!uploadRes.ok && uploadRes.status === 401) {
+        window.location.href = `/auth/login?redirect=${encodeURIComponent("/create?style=" + selectedStyle.slug)}`;
+        return;
+      }
+
       const uploadJson = await uploadRes.json();
 
       if (uploadJson.error) {
@@ -143,6 +165,12 @@ export function CreateFlow() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ generationId: genId }),
       });
+
+      if (generateRes.redirected || generateRes.url.includes("/auth/login")) {
+        window.location.href = `/auth/login?redirect=${encodeURIComponent("/create?style=" + selectedStyle.slug)}`;
+        return;
+      }
+
       const generateJson = await generateRes.json();
 
       if (generateJson.error) {
@@ -158,7 +186,8 @@ export function CreateFlow() {
       // Step 3: Switch to generating view (polling starts via useGeneration)
       setStep("generating");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.");
+      console.error("Generation error:", err);
+      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
     } finally {
       setUploading(false);
     }

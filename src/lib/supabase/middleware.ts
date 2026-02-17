@@ -42,6 +42,15 @@ export async function updateSession(request: NextRequest) {
   );
 
   if (isProtectedPath && !user) {
+    // For API routes: return 401 JSON (don't redirect — fetch() can't follow redirects usefully)
+    if (request.nextUrl.pathname.startsWith("/api/")) {
+      return NextResponse.json(
+        { error: { message: "Authentication required", status: 401 } },
+        { status: 401 }
+      );
+    }
+
+    // For page routes: redirect to login
     const url = request.nextUrl.clone();
     url.pathname = "/auth/login";
     url.searchParams.set("redirect", request.nextUrl.pathname);
