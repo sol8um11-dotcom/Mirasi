@@ -144,20 +144,19 @@ interface LogoProps {
 
 /**
  * Gold dot — positioned above the dotless "ı" to mimic the tittle.
- * Uses a real round element sized relative to the font for consistency.
+ * Uses a fixed pixel size per logo variant so both dots are identical.
  */
-function GoldDot({ fontSize }: { fontSize: number }) {
-  // Dot diameter ≈ 12% of font size (matches typical tittle proportions)
-  const dotSize = Math.max(2.5, fontSize * 0.12);
+function GoldDot({ dotPx }: { dotPx: number }) {
   return (
     <span
-      className="absolute left-1/2 block rounded-full"
+      className="absolute block rounded-full"
       style={{
-        width: dotSize,
-        height: dotSize,
+        width: `${dotPx}px`,
+        height: `${dotPx}px`,
         backgroundColor: "#D4A843",
         top: "0.05em",
-        transform: "translateX(-50%)",
+        left: "50%",
+        marginLeft: `${-dotPx / 2}px`, // exact center — avoids sub-pixel jitter from translateX
       }}
       aria-hidden="true"
     />
@@ -176,8 +175,8 @@ export function Logo({ size = "md", showIcon = true, className }: LogoProps) {
   const iconSize = size === "sm" ? 22 : size === "md" ? 28 : 36;
   const textSize =
     size === "sm" ? "text-base" : size === "md" ? "text-lg" : "text-2xl";
-  // Approximate pixel font size for dot calculations
-  const fontSize = size === "sm" ? 16 : size === "md" ? 18 : 24;
+  // Fixed dot diameter in whole pixels per size — avoids sub-pixel rendering differences
+  const dotPx = size === "sm" ? 2 : size === "md" ? 3 : 4;
 
   // Characters: m·ı·r·a·s·ı (dotless i at positions 1 and 5)
   const chars = ["m", "\u0131", "r", "a", "s", "\u0131"] as const;
@@ -196,7 +195,7 @@ export function Logo({ size = "md", showIcon = true, className }: LogoProps) {
         {chars.map((char, idx) => (
           <span key={idx} className="relative inline-block">
             {char}
-            {(idx === 1 || idx === 5) && <GoldDot fontSize={fontSize} />}
+            {(idx === 1 || idx === 5) && <GoldDot dotPx={dotPx} />}
           </span>
         ))}
       </span>
