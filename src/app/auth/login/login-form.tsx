@@ -33,22 +33,36 @@ export function LoginForm() {
     setLoading(true);
     setErrorMsg("");
     try {
+      const redirectTo = `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirect)}`;
+      console.log("[OAuth] Starting Google login, redirectTo:", redirectTo);
+      console.log("[OAuth] Supabase URL:", process.env.NEXT_PUBLIC_SUPABASE_URL);
+
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirect)}`,
+          redirectTo,
+          skipBrowserRedirect: true, // Get URL only, we'll redirect manually
         },
       });
+
       if (error) {
-        console.error("Google OAuth error:", error);
-        setErrorMsg(error.message);
+        console.error("[OAuth] signInWithOAuth error:", error);
+        setErrorMsg(`OAuth error: ${error.message}`);
         setLoading(false);
-      } else if (data?.url) {
-        // Supabase returns a URL to redirect to — do it manually if auto-redirect fails
+        return;
+      }
+
+      if (data?.url) {
+        console.log("[OAuth] Got redirect URL:", data.url.substring(0, 100) + "...");
+        // Redirect manually
         window.location.href = data.url;
+      } else {
+        console.error("[OAuth] No URL returned from signInWithOAuth, data:", data);
+        setErrorMsg("No redirect URL received. Check Supabase configuration.");
+        setLoading(false);
       }
     } catch (err) {
-      console.error("Google OAuth exception:", err);
+      console.error("[OAuth] Exception:", err);
       setErrorMsg(err instanceof Error ? err.message : "Failed to connect to Google. Please try again.");
       setLoading(false);
     }
