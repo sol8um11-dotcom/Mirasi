@@ -143,20 +143,41 @@ interface LogoProps {
 }
 
 /**
+ * Gold dot — positioned above the dotless "ı" to mimic the tittle.
+ * Uses a real round element sized relative to the font for consistency.
+ */
+function GoldDot({ fontSize }: { fontSize: number }) {
+  // Dot diameter ≈ 12% of font size (matches typical tittle proportions)
+  const dotSize = Math.max(2.5, fontSize * 0.12);
+  return (
+    <span
+      className="absolute left-1/2 block rounded-full"
+      style={{
+        width: dotSize,
+        height: dotSize,
+        backgroundColor: "#D4A843",
+        top: "0.05em",
+        transform: "translateX(-50%)",
+      }}
+      aria-hidden="true"
+    />
+  );
+}
+
+/**
  * Full Mirasi Logo (icon + wordmark in Urbanist)
  *
  * Gold "i" dots: We render the word using dotless "ı" (U+0131) in saffron,
- * then overlay a gold-colored regular "i" at the same position. The gold "i"
- * is clipped to only show its upper half (the dot area). Since the dotless ı
- * has no dot, the gold dot shows through perfectly positioned by the font
- * itself. Zero manual offset needed.
- *
- * Tagline: "Every face tells a legend."
+ * then place a small gold circle above each ı, perfectly centered.
+ * The dot size and position are derived from the font size so it looks
+ * consistent at sm / md / lg.
  */
 export function Logo({ size = "md", showIcon = true, className }: LogoProps) {
   const iconSize = size === "sm" ? 22 : size === "md" ? 28 : 36;
   const textSize =
     size === "sm" ? "text-base" : size === "md" ? "text-lg" : "text-2xl";
+  // Approximate pixel font size for dot calculations
+  const fontSize = size === "sm" ? 16 : size === "md" ? 18 : 24;
 
   // Characters: m·ı·r·a·s·ı (dotless i at positions 1 and 5)
   const chars = ["m", "\u0131", "r", "a", "s", "\u0131"] as const;
@@ -171,21 +192,11 @@ export function Logo({ size = "md", showIcon = true, className }: LogoProps) {
       aria-label="mirasi"
     >
       {showIcon && <LogoIcon size={iconSize} />}
-      <span className="text-saffron tracking-tight" aria-hidden="true">
+      <span className="text-saffron tracking-tight leading-none" aria-hidden="true">
         {chars.map((char, idx) => (
           <span key={idx} className="relative inline-block">
-            {/* Base character — saffron dotless ı (or regular letter) */}
             {char}
-            {/* Gold dot overlay: render a gold "i" on top, clipped to only
-                the top ~30% where the tittle (dot) sits. The stem is hidden. */}
-            {(idx === 1 || idx === 5) && (
-              <span
-                className="absolute inset-0 text-gold overflow-hidden"
-                style={{ clipPath: "inset(0 0 70% 0)" }}
-              >
-                i
-              </span>
-            )}
+            {(idx === 1 || idx === 5) && <GoldDot fontSize={fontSize} />}
           </span>
         ))}
       </span>
