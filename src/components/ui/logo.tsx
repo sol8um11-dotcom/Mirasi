@@ -143,19 +143,24 @@ interface LogoProps {
 }
 
 /**
- * Gold dot — positioned above the dotless "ı" to mimic the font's tittle.
- * Sized in em so it scales with the text naturally (like a real "i" dot).
- * 0.11em ≈ natural tittle diameter in most sans-serif bold fonts.
+ * Gold dot — the same #D4A843 gold as the logo icon's pupil circle.
+ *
+ * In the LogoIcon SVG (64×64 viewBox), the gold pupil is <circle r="2" />,
+ * giving a diameter of 4/64 = 6.25% of the icon. For the wordmark text we
+ * position a round dot exactly where the font would place a tittle on "i":
+ *   - diameter ≈ 0.09em  (matches typical tittle size for bold sans-serif)
+ *   - top ≈ 0.02em       (just above the "ı" ascender line)
+ *   - horizontally centered on the character
  */
 function GoldDot() {
   return (
     <span
       className="absolute block rounded-full"
       style={{
-        width: "0.11em",
-        height: "0.11em",
+        width: "0.09em",
+        height: "0.09em",
         backgroundColor: "#D4A843",
-        top: "0.08em",
+        top: "0.02em",
         left: "50%",
         transform: "translateX(-50%)",
       }}

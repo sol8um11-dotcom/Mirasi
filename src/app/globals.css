@@ -193,34 +193,51 @@ dialog::backdrop {
 }
 
 /* ── Hero Spiral Animation ── */
+
+/* Animated spiral stroke — breathes in/out like a living thing */
 .hero-spiral-stroke {
-  stroke-dasharray: 1600;
-  stroke-dashoffset: 1600;
-  animation: spiral-draw 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  stroke-dasharray: 1800;
+  stroke-dashoffset: 1800;
+  animation: spiral-draw 6s cubic-bezier(0.25, 0.1, 0.25, 1) infinite;
 }
 
 @keyframes spiral-draw {
   0% {
-    stroke-dashoffset: 1600;
-    opacity: 0.15;
+    stroke-dashoffset: 1800;
+    opacity: 0.1;
   }
-  50% {
+  40% {
+    stroke-dashoffset: 200;
+    opacity: 0.35;
+  }
+  60% {
     stroke-dashoffset: 0;
-    opacity: 0.4;
+    opacity: 0.25;
   }
   80% {
-    stroke-dashoffset: -800;
-    opacity: 0.2;
+    stroke-dashoffset: -600;
+    opacity: 0.15;
   }
   100% {
-    stroke-dashoffset: -1600;
-    opacity: 0.1;
+    stroke-dashoffset: -1800;
+    opacity: 0.08;
   }
 }
 
+/* The gold dot — artist's nib */
 .hero-gold-dot {
-  filter: drop-shadow(0 0 6px rgba(212, 168, 67, 0.6));
-  transition: r 0.3s ease;
+  filter: drop-shadow(0 0 4px rgba(212, 168, 67, 0.5))
+          drop-shadow(0 0 12px rgba(212, 168, 67, 0.2));
+}
+
+/* Luminous center eye — subtle pulse */
+.hero-center-pulse {
+  animation: center-pulse 4s ease-in-out infinite;
+}
+
+@keyframes center-pulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.08); }
 }
 
 /* 3D Engraved Metal Effect — reusable utility for buttons & CTAs.

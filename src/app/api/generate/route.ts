@@ -99,22 +99,25 @@ export async function POST(
       );
     }
 
-    // 4b. Free generation limit: count total non-failed generations (all-time)
-    // Users get MAX_FREE_GENERATIONS free preview(s), then must purchase
+    // 4b. Free generation limit: count completed/processing generations (all-time).
+    // Excludes the current pending generation (just created by /api/upload) so
+    // the very first attempt isn't blocked by its own "pending" record.
     const { count: totalCount } = await admin
       .from("generations")
       .select("id", { count: "exact", head: true })
       .eq("user_id", user.id)
-      .neq("status", "failed");
+      .neq("id", generationId)
+      .in("status", ["completed", "processing"]);
 
-    // Check if user has any verified payments (purchased packs grant more generations)
-    const { count: paidCount } = await admin
+    // Check if user has any verified payments (purchased packs grant more generations).
+    // Gracefully handle missing payments table (Phase D not yet deployed).
+    const { count: paidCount, error: paidError } = await admin
       .from("payments")
       .select("id", { count: "exact", head: true })
       .eq("user_id", user.id)
       .eq("verified", true);
 
-    const hasPaid = (paidCount ?? 0) > 0;
+    const hasPaid = !paidError && (paidCount ?? 0) > 0;
     const freeUsed = totalCount ?? 0;
 
     if (!hasPaid && freeUsed >= MAX_FREE_GENERATIONS) {

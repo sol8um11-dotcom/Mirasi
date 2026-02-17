@@ -39,16 +39,15 @@ export interface GenerationParams {
 export async function submitGeneration(
   params: GenerationParams
 ): Promise<string> {
-  // Portrait 3:4 aspect ratio — tall images for human portraits
-  const imageSize = { width: 768, height: 1024 };
+  // Note: Kontext image-to-image endpoints do NOT support image_size —
+  // they output at the input image's resolution. The client already
+  // compresses/resizes to 1024×1024 max, so output matches input.
 
   if (params.loraUrl) {
     // ─── LoRA pipeline: Kontext LoRA (for any subject type with trained LoRA) ───
-    // Cast input to bypass strict SDK types — image_size is supported at runtime
     const loraInput: Record<string, unknown> = {
       image_url: params.imageUrl,
       prompt: params.prompt,
-      image_size: imageSize,
       loras: [
         {
           path: params.loraUrl,
@@ -69,7 +68,6 @@ export async function submitGeneration(
     const kontextInput: Record<string, unknown> = {
       image_url: params.imageUrl,
       prompt: params.prompt,
-      image_size: imageSize,
       guidance_scale: params.guidanceScale ?? 4.0,
       num_inference_steps: params.numInferenceSteps ?? 50,
       output_format: "jpeg",

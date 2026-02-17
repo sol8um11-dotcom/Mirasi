@@ -46,15 +46,7 @@ const navItems = [
     label: "Pricing",
     href: "/pricing",
     icon: (
-      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-        <path
-          d="M11 3V19M7 7H14C15.6569 7 17 8.34315 17 10C17 11.6569 15.6569 13 14 13H7M7 13H15C16.6569 13 18 14.3431 18 16C18 17.6569 16.6569 19 15 19H7"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
+      <span className="text-[20px] font-semibold leading-none" aria-hidden="true">{"\u20B9"}</span>
     ),
   },
   {
