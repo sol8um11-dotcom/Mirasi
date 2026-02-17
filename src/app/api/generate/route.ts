@@ -154,15 +154,19 @@ export async function POST(
     const prompt = buildPrompt(style.slug, subjectType, style.prompt_template);
 
     // 7. Submit to the appropriate fal.ai pipeline
+    // IMPORTANT: LoRAs were trained on PET datasets only. Human portraits must
+    // ALWAYS go through Kontext Pro for maximum identity preservation. LoRA is
+    // only applied for pet subjects where trained style LoRAs improve adherence.
+    const useLora = subjectType === "pet" && !!styleConfig.loraUrl;
+
     const genParams: GenerationParams = {
       imageUrl: signedUrlData.signedUrl,
       prompt,
       subjectType,
       guidanceScale: styleConfig.guidanceScale,
-      numInferenceSteps: styleConfig.numInferenceSteps,
-      // Apply LoRA if available for this style (trained for both humans and pets)
-      ...(styleConfig.loraUrl
-        ? { loraUrl: styleConfig.loraUrl, loraScale: styleConfig.loraScale }
+      numInferenceSteps: useLora ? styleConfig.numInferenceSteps : 50,
+      ...(useLora
+        ? { loraUrl: styleConfig.loraUrl!, loraScale: styleConfig.loraScale }
         : {}),
     };
 

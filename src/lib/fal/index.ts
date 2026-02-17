@@ -6,10 +6,10 @@ fal.config({ credentials: process.env.FAL_KEY! });
 
 // ─── Model Endpoints ─────────────────────────────────────────────────────────
 
-/** Kontext Pro for humans — best identity preservation + style transfer ($0.04/image) */
+/** Kontext Pro — best identity preservation + style transfer ($0.04/image) */
 const KONTEXT_PRO = "fal-ai/flux-pro/kontext" as const;
 
-/** Kontext LoRA for pets — custom LoRA weights improve style adherence for animals ($0.035/MP) */
+/** Kontext LoRA — custom LoRA weights for pet style adherence ($0.035/MP) */
 const KONTEXT_LORA = "fal-ai/flux-kontext-lora" as const;
 
 // ─── Generation Parameters ───────────────────────────────────────────────────
@@ -18,13 +18,13 @@ export interface GenerationParams {
   imageUrl: string;
   prompt: string;
   subjectType: "human" | "pet";
-  /** LoRA URL for pet styles (used with KONTEXT_LORA endpoint) */
+  /** LoRA URL — ONLY used for pet subjects (pet-trained LoRAs) */
   loraUrl?: string;
-  /** LoRA weight scale (0-4, default 0.85) */
+  /** LoRA weight scale (0-2, default 1.0 per API docs) */
   loraScale?: number;
-  /** How strongly the model follows the prompt (default: 4.0 for humans, 3.5 for pets) */
+  /** How strongly the model follows the prompt (Kontext Pro default: 3.5, LoRA default: 2.5) */
   guidanceScale?: number;
-  /** Number of inference steps (default: 50 for humans, 30 for pets) */
+  /** Number of inference steps (Kontext Pro: up to 50, LoRA: 10-50 default 30) */
   numInferenceSteps?: number;
   /** Seed for reproducibility */
   seed?: number;
@@ -33,8 +33,13 @@ export interface GenerationParams {
 /**
  * Submit a generation job to the appropriate fal.ai pipeline.
  *
- * With LoRA  → Kontext LoRA (trained style LoRAs for both humans and pets)
- * No LoRA    → Kontext Pro  (best identity preservation + prompt-only style)
+ * ROUTING RULES:
+ * - Human portraits → ALWAYS Kontext Pro (maximum identity preservation)
+ * - Pet portraits with LoRA → Kontext LoRA (trained style LoRAs)
+ * - Pet portraits without LoRA → Kontext Pro (fallback)
+ *
+ * LoRAs were trained on PET datasets only. Applying them to human
+ * subjects destroys identity and causes gender-swapping artifacts.
  */
 export async function submitGeneration(
   params: GenerationParams
@@ -44,18 +49,19 @@ export async function submitGeneration(
   // compresses/resizes to 1024×1024 max, so output matches input.
 
   if (params.loraUrl) {
-    // ─── LoRA pipeline: Kontext LoRA (for any subject type with trained LoRA) ───
+    // ─── LoRA pipeline: Kontext LoRA (PET subjects only) ───
     const loraInput: Record<string, unknown> = {
       image_url: params.imageUrl,
       prompt: params.prompt,
       loras: [
         {
           path: params.loraUrl,
-          scale: params.loraScale ?? 0.85,
+          scale: params.loraScale ?? 1.0,
         },
       ],
-      guidance_scale: params.guidanceScale ?? 3.5,
-      num_inference_steps: params.numInferenceSteps ?? 28,
+      // Kontext LoRA API default guidance_scale is 2.5
+      guidance_scale: params.guidanceScale ?? 2.5,
+      num_inference_steps: params.numInferenceSteps ?? 30,
       output_format: "jpeg",
       ...(params.seed !== undefined && { seed: params.seed }),
     };
@@ -64,13 +70,15 @@ export async function submitGeneration(
     });
     return result.request_id;
   } else {
-    // ─── No LoRA: Kontext Pro (prompt-only style transfer) ───
+    // ─── No LoRA: Kontext Pro (human portraits + pet fallback) ───
     const kontextInput: Record<string, unknown> = {
       image_url: params.imageUrl,
       prompt: params.prompt,
-      guidance_scale: params.guidanceScale ?? 4.0,
+      // Kontext Pro API default guidance_scale is 3.5
+      guidance_scale: params.guidanceScale ?? 3.5,
       num_inference_steps: params.numInferenceSteps ?? 50,
       output_format: "jpeg",
+      // safety_tolerance 2 = moderate (1=strictest, 6=most permissive)
       safety_tolerance: "2",
       ...(params.seed !== undefined && { seed: params.seed }),
     };

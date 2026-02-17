@@ -67,5 +67,5 @@ export const WATERMARK_OPACITY = 0.3;
 
 // Rate limiting
 export const MAX_GENERATIONS_PER_DAY = 10;
-export const MAX_FREE_GENERATIONS = 1; // Free preview generations before payment required
+export const MAX_FREE_GENERATIONS = 999; // Temporarily unlimited for testing (was 1)
 export const MAX_UPLOADS_PER_HOUR = 20;
