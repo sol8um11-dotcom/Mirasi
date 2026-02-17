@@ -59,10 +59,14 @@ export async function submitGeneration(
           scale: params.loraScale ?? 1.0,
         },
       ],
-      // Kontext LoRA API default guidance_scale is 2.5
+      // Kontext LoRA API defaults: guidance_scale 2.5, steps 30, strength 0.88
       guidance_scale: params.guidanceScale ?? 2.5,
       num_inference_steps: params.numInferenceSteps ?? 30,
+      // strength: how much to transform the input (0.01-1.0, default 0.88)
+      // docs say "higher values are better for this model"
+      strength: 0.88,
       output_format: "jpeg",
+      resolution_mode: "match_input",
       ...(params.seed !== undefined && { seed: params.seed }),
     };
     const result = await fal.queue.submit(KONTEXT_LORA, {
@@ -71,12 +75,13 @@ export async function submitGeneration(
     return result.request_id;
   } else {
     // ─── No LoRA: Kontext Pro (human portraits + pet fallback) ───
+    // NOTE: Kontext Pro does NOT accept num_inference_steps — it handles
+    // step count internally. Only send supported params.
     const kontextInput: Record<string, unknown> = {
       image_url: params.imageUrl,
       prompt: params.prompt,
       // Kontext Pro API default guidance_scale is 3.5
       guidance_scale: params.guidanceScale ?? 3.5,
-      num_inference_steps: params.numInferenceSteps ?? 50,
       output_format: "jpeg",
       // safety_tolerance 2 = moderate (1=strictest, 6=most permissive)
       safety_tolerance: "2",
