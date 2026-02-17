@@ -66,6 +66,6 @@ export const WATERMARK_TEXT = "Mirasi";
 export const WATERMARK_OPACITY = 0.3;
 
 // Rate limiting
-export const MAX_GENERATIONS_PER_DAY = 10;
+export const MAX_GENERATIONS_PER_DAY = 999; // Temporarily unlimited for testing (was 10)
 export const MAX_FREE_GENERATIONS = 999; // Temporarily unlimited for testing (was 1)
 export const MAX_UPLOADS_PER_HOUR = 20;
