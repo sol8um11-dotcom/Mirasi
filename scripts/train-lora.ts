@@ -157,18 +157,15 @@ async function main() {
 
   console.log(`
 =======================================================
-  Mirasi LoRA Training
+  Mirasi LoRA Training (Kontext Trainer)
 =======================================================
-  Style:         ${slug}
-  Category:      ${styleConfig.category}
-  Trigger Word:  ${styleConfig.triggerWord}
-  Steps:         ${steps}
-  Rank:          ${rank}
-  Learning Rate: ${lr}
-  Autocaption:   ${autocaption}
-  Seed:          ${seed ?? "random"}
-  Dataset:       ${datasetPath}
-  Output Dir:    ${runDir}
+  Style:           ${slug}
+  Category:        ${styleConfig.category}
+  Trigger Word:    ${styleConfig.triggerWord}
+  Steps:           ${steps}
+  Learning Rate:   ${lr}
+  Dataset:         ${datasetPath}
+  Output Dir:      ${runDir}
 =======================================================
 `);
 
@@ -204,15 +201,14 @@ async function main() {
   console.log("Step 2/3: Submitting training job...");
   const startTrain = Date.now();
 
+  // Kontext trainer API: image_data_url (singular), steps, learning_rate, default_caption
+  // Dataset ZIP must have ROOT_start.EXT + ROOT_end.EXT pairs, optional ROOT.txt captions
+  const defaultCaption = `A ${styleConfig.triggerWord} style image`;
   const trainingInput: Record<string, unknown> = {
-    images_data_url: datasetUrl,
-    trigger_word: styleConfig.triggerWord,
+    image_data_url: datasetUrl,
     steps,
     learning_rate: lr,
-    rank,
-    resolution: "1024",
-    autocaption,
-    ...(seed !== undefined && { seed }),
+    default_caption: defaultCaption,
   };
 
   // Save training config
@@ -222,10 +218,8 @@ async function main() {
     triggerWord: styleConfig.triggerWord,
     category: styleConfig.category,
     steps,
-    rank,
     lr,
-    autocaption,
-    seed,
+    defaultCaption: `A ${styleConfig.triggerWord} style image`,
     datasetUrl,
     datasetPath,
     timestamp,

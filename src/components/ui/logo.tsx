@@ -152,39 +152,36 @@ export function Logo({ size = "md", showIcon = true, className }: LogoProps) {
   const iconSize = size === "sm" ? 22 : size === "md" ? 28 : 36;
   const textSize =
     size === "sm" ? "text-base" : size === "md" ? "text-lg" : "text-2xl";
-  // Gold dot on "i" — sized to match the SVG pupil visually.
-  // The pupil is r=2 (d=4) in a 64-unit viewBox. At rendered icon sizes:
-  //   sm(22px) → ~1.4px, md(28px) → ~1.75px, lg(36px) → ~2.25px
-  // We use fixed px values per size, minimum 3px for clear visibility.
-  const dotSize = size === "sm" ? 3 : size === "md" ? 3.5 : 4.5;
-  // Top offset: where Urbanist places the "i" tittle relative to span top.
-  // Measured from the inline-block span's top edge (which includes ascender space).
-  // Urbanist Bold "i" tittle sits ~0.15em above the x-height line.
-  const dotOffset = size === "sm" ? "0.12em" : size === "md" ? "0.1em" : "0.1em";
+  // Gold dot on "i" — sized proportionally to match the SVG pupil.
+  const dotSize = size === "sm" ? "0.2em" : size === "md" ? "0.2em" : "0.2em";
 
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-2 font-bold font-display",
+        "inline-flex items-center gap-2 font-bold font-display leading-none",
         textSize,
         className
       )}
       aria-label="mirasi"
     >
       {showIcon && <LogoIcon size={iconSize} />}
+      {/*
+        Wordmark uses dotless "ı" (U+0131) for both "i" positions, with
+        gold dots positioned via CSS. Using leading-none on the parent
+        collapses ascender padding so the inline-block span tightly wraps
+        the glyph, making top-offset positioning predictable.
+      */}
       <span className="text-saffron relative tracking-tight" aria-hidden="true">
-        {/* Render "m·ı·r·a·s·ı" — dotless ı (U+0131) for "i" slots */}
         {(["m", "\u0131", "r", "a", "s", "\u0131"] as const).map((char, i) => (
           <span key={i} className="relative inline-block">
             {char}
-            {/* Gold dot replaces native "i" tittle (positions 1 and 5) */}
             {(i === 1 || i === 5) && (
               <span
                 className="absolute left-1/2 -translate-x-1/2 rounded-full bg-gold block"
                 style={{
                   width: dotSize,
                   height: dotSize,
-                  top: dotOffset,
+                  top: "0.05em",
                 }}
               />
             )}

@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { formatFileSize } from "@/lib/utils";
 import { compressImage, createPreviewUrl } from "@/lib/image/compress";
@@ -18,26 +19,6 @@ import type { CompressedImage, SubjectType, StyleCategory } from "@/types";
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type CreateStep = "select-style" | "upload-photo" | "generating" | "result";
-
-// ─── Gradient map (reuse from landing carousel) ──────────────────────────────
-
-const styleGradients: Record<string, string> = {
-  "rajasthani-royal": "from-red-800/30 via-amber-600/20 to-yellow-500/30",
-  "maratha-heritage": "from-red-900/30 via-amber-800/20 to-yellow-600/30",
-  "tanjore-heritage": "from-amber-700/30 via-yellow-500/20 to-orange-400/30",
-  "mysore-palace": "from-emerald-800/30 via-yellow-600/20 to-amber-500/30",
-  "punjab-royal": "from-orange-600/30 via-amber-500/20 to-red-500/30",
-  "bengal-renaissance": "from-amber-600/30 via-stone-400/20 to-yellow-700/30",
-  "kerala-mural": "from-yellow-600/30 via-red-600/20 to-green-700/30",
-  "pahari-mountain": "from-pink-300/30 via-sky-300/20 to-green-400/30",
-  "deccani-royal": "from-blue-900/30 via-emerald-700/20 to-amber-600/30",
-  "miniature-art": "from-amber-700/30 via-blue-600/20 to-red-600/30",
-  "madhubani-art": "from-red-600/30 via-yellow-500/20 to-blue-600/30",
-  "warli-art": "from-amber-800/30 via-orange-700/20 to-amber-900/30",
-  "pichwai-art": "from-blue-900/30 via-pink-400/20 to-amber-500/30",
-  "anime-portrait": "from-pink-400/30 via-blue-400/20 to-purple-400/30",
-  "bollywood-retro": "from-red-500/30 via-yellow-400/20 to-orange-500/30",
-};
 
 const categoryColors: Record<string, string> = {
   royal: "bg-saffron/10 text-saffron",
@@ -253,48 +234,37 @@ export function CreateFlow() {
           {/* Style grid */}
           <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
             {filteredStyles.map((style) => {
-              const gradient =
-                styleGradients[style.slug] || "from-gray-200/30 to-gray-300/30";
-
               return (
                 <button
                   key={style.slug}
                   onClick={() => handleStyleSelect(style)}
                   className="group text-left rounded-xl border border-border bg-card shadow-card transition-all duration-200 hover:shadow-card-hover hover:-translate-y-0.5 overflow-hidden"
                 >
-                  {/* Gradient preview */}
-                  <div
-                    className={cn(
-                      "relative flex h-28 items-center justify-center bg-gradient-to-br",
-                      gradient
-                    )}
-                  >
-                    {/* Paisley icon */}
-                    <svg
-                      width="40"
-                      height="40"
-                      viewBox="0 0 64 64"
-                      fill="none"
-                      className="text-foreground/8"
-                    >
-                      <path
-                        d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33"
-                        stroke="currentColor"
-                        strokeWidth="3.5"
-                        strokeLinecap="round"
-                        fill="none"
-                      />
-                      <circle cx="34" cy="31.5" r="2" fill="currentColor" />
-                    </svg>
+                  {/* Style sample preview */}
+                  <div className="relative h-28 overflow-hidden">
+                    <Image
+                      src={`/samples/${style.slug}.jpg`}
+                      alt={`${style.name} style sample`}
+                      fill
+                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                    />
+                    {/* Subtle dark overlay for text readability */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-black/10" />
 
                     {/* Category badge */}
                     <span
                       className={cn(
-                        "absolute top-2 left-2 rounded-full px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide",
+                        "absolute top-2 left-2 rounded-full px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide backdrop-blur-sm",
                         categoryColors[style.category]
                       )}
                     >
                       {STYLE_CATEGORIES[style.category]?.label}
+                    </span>
+
+                    {/* Region badge */}
+                    <span className="absolute top-2 right-2 rounded-full bg-card/80 backdrop-blur-sm px-2 py-0.5 text-[9px] font-medium text-muted">
+                      {style.region}
                     </span>
                   </div>
 
@@ -364,29 +334,14 @@ export function CreateFlow() {
             </button>
 
             <div className="flex items-center gap-3">
-              <div
-                className={cn(
-                  "flex h-12 w-12 items-center justify-center rounded-lg bg-gradient-to-br",
-                  styleGradients[selectedStyle.slug] ||
-                    "from-gray-200/30 to-gray-300/30"
-                )}
-              >
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 64 64"
-                  fill="none"
-                  className="text-foreground/20"
-                >
-                  <path
-                    d="M32 7 C19 8 8 19 9 33 C10 47 20 57 33 56 C46 55 54 45 53 33"
-                    stroke="currentColor"
-                    strokeWidth="3.5"
-                    strokeLinecap="round"
-                    fill="none"
-                  />
-                  <circle cx="34" cy="31.5" r="2" fill="currentColor" />
-                </svg>
+              <div className="relative h-12 w-12 overflow-hidden rounded-lg">
+                <Image
+                  src={`/samples/${selectedStyle.slug}.jpg`}
+                  alt={selectedStyle.name}
+                  fill
+                  className="object-cover"
+                  sizes="48px"
+                />
               </div>
               <div>
                 <h1 className="text-xl font-bold text-foreground">

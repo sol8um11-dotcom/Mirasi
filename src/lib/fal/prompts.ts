@@ -35,8 +35,9 @@ export interface StyleConfig {
 /**
  * Per-style generation configs — V2 Identity-Preserving Prompts
  *
- * LoRA URLs are null for now — once you train style LoRAs via
- * fal-ai/flux-kontext-trainer, paste the diffusers_lora_file URLs here.
+ * Trained LoRAs are available for: warli-art, madhubani-art.
+ * Other styles use Kontext Pro (no LoRA) — train via fal-ai/flux-kontext-trainer
+ * and paste the diffusers_lora_file URLs here when ready.
  */
 const STYLE_CONFIGS: Record<string, StyleConfig> = {
   // ═══════════════════════════════════════════════════════════════════════════
@@ -280,10 +281,10 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
 
   "madhubani-art": {
     guidanceScale: 4.0,
-    numInferenceSteps: 50,
-    loraUrl: null,
+    numInferenceSteps: 28,
+    loraUrl: "https://v3b.fal.media/files/b/0a8ec276/jx30OuCdAxTZ1paR_qbuw_adapter_model.safetensors",
     loraScale: 0.9,
-    loraTrigger: null,
+    loraTrigger: "mrs_madhubani",
     humanPrompt:
       "Keep the exact same face, eyes, nose, jawline, skin tone, and expression of this person — " +
       "do not alter any facial features. Make the skin look smooth and subtly flattering. " +
@@ -304,10 +305,10 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
 
   "warli-art": {
     guidanceScale: 4.5,
-    numInferenceSteps: 50,
-    loraUrl: null,
+    numInferenceSteps: 28,
+    loraUrl: "https://v3b.fal.media/files/b/0a8ec235/pCzgeZ2OXUEjTnY4hjH7d_adapter_model.safetensors",
     loraScale: 0.9,
-    loraTrigger: null,
+    loraTrigger: "mrs_warli",
     humanPrompt:
       "Keep the recognizable face shape and proportions of this person. " +
       "Restyle the entire image as Warli tribal art — white geometric stick figures " +
@@ -446,8 +447,8 @@ export function buildPrompt(
     const basePrompt =
       subjectType === "pet" ? config.petPrompt : config.humanPrompt;
 
-    // If LoRA trigger word exists, prepend it
-    if (subjectType === "pet" && config.loraTrigger) {
+    // If LoRA trigger word exists, prepend it (for both humans and pets)
+    if (config.loraTrigger) {
       return `${config.loraTrigger} style. ${basePrompt}`;
     }
 

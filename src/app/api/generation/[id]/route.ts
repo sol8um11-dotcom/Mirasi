@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { checkGenerationStatus, getGenerationResult } from "@/lib/fal";
+import { getStyleConfig } from "@/lib/fal/prompts";
 import { watermarkImage } from "@/lib/image/watermark";
 import type { ApiResponse, GenerationStatus } from "@/types";
 
@@ -40,10 +41,10 @@ export async function GET(
 
     const admin = createAdminClient();
 
-    // 2. Fetch generation and verify ownership
+    // 2. Fetch generation (with style slug) and verify ownership
     const { data: generation, error: genError } = await admin
       .from("generations")
-      .select("*")
+      .select("*, style:styles(slug)")
       .eq("id", generationId)
       .single();
 
@@ -102,10 +103,10 @@ export async function GET(
       });
     }
 
-    const subjectType = (generation.subject_type || "human") as "human" | "pet";
-    // TODO: Once LoRAs are trained, check if this style has a LoRA configured
-    const hasLora = false;
-    const falStatus = await checkGenerationStatus(generation.fal_request_id, subjectType, hasLora);
+    // Check if this style has a trained LoRA (determines which fal.ai endpoint to poll)
+    const styleSlug = generation.style?.slug;
+    const hasLora = styleSlug ? !!getStyleConfig(styleSlug).loraUrl : false;
+    const falStatus = await checkGenerationStatus(generation.fal_request_id, hasLora);
 
     // Still processing
     if (
@@ -142,7 +143,7 @@ export async function GET(
 
     try {
       // Fetch the generated result
-      const result = await getGenerationResult(generation.fal_request_id, subjectType, hasLora);
+      const result = await getGenerationResult(generation.fal_request_id, hasLora);
 
       if (!result.images || result.images.length === 0) {
         throw new Error("No images returned from AI.");

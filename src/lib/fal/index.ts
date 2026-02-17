@@ -33,37 +33,33 @@ export interface GenerationParams {
 /**
  * Submit a generation job to the appropriate fal.ai pipeline.
  *
- * Human portraits → Kontext Pro (better facial identity preservation)
- * Pet portraits   → Kontext LoRA (custom style LoRAs for animal features)
- *                   Falls back to Kontext Pro if no LoRA is configured for the style
+ * With LoRA  → Kontext LoRA (trained style LoRAs for both humans and pets)
+ * No LoRA    → Kontext Pro  (best identity preservation + prompt-only style)
  */
 export async function submitGeneration(
   params: GenerationParams
 ): Promise<string> {
-  const useLora = params.subjectType === "pet" && params.loraUrl;
-
-  if (useLora) {
-    // ─── Pet pipeline: Kontext LoRA ───
+  if (params.loraUrl) {
+    // ─── LoRA pipeline: Kontext LoRA (for any subject type with trained LoRA) ───
     const result = await fal.queue.submit(KONTEXT_LORA, {
       input: {
         image_url: params.imageUrl,
         prompt: params.prompt,
         loras: [
           {
-            path: params.loraUrl!,
+            path: params.loraUrl,
             scale: params.loraScale ?? 0.85,
           },
         ],
         guidance_scale: params.guidanceScale ?? 3.5,
-        num_inference_steps: params.numInferenceSteps ?? 30,
+        num_inference_steps: params.numInferenceSteps ?? 28,
         output_format: "jpeg",
         ...(params.seed !== undefined && { seed: params.seed }),
       },
     });
     return result.request_id;
   } else {
-    // ─── Human pipeline (or pet fallback): Kontext Pro ───
-    // Cast input to bypass strict SDK types — the API accepts these params
+    // ─── No LoRA: Kontext Pro (prompt-only style transfer) ───
     const kontextInput: Record<string, unknown> = {
       image_url: params.imageUrl,
       prompt: params.prompt,
@@ -86,11 +82,9 @@ export async function submitGeneration(
  */
 export async function checkGenerationStatus(
   requestId: string,
-  subjectType: "human" | "pet" = "human",
   hasLora: boolean = false
 ): Promise<FalQueueResponse> {
-  const model =
-    subjectType === "pet" && hasLora ? KONTEXT_LORA : KONTEXT_PRO;
+  const model = hasLora ? KONTEXT_LORA : KONTEXT_PRO;
 
   const status = await fal.queue.status(model, {
     requestId,
@@ -110,11 +104,9 @@ export async function checkGenerationStatus(
  */
 export async function getGenerationResult(
   requestId: string,
-  subjectType: "human" | "pet" = "human",
   hasLora: boolean = false
 ): Promise<FalGenerationResult> {
-  const model =
-    subjectType === "pet" && hasLora ? KONTEXT_LORA : KONTEXT_PRO;
+  const model = hasLora ? KONTEXT_LORA : KONTEXT_PRO;
 
   const result = await fal.queue.result(model, {
     requestId,

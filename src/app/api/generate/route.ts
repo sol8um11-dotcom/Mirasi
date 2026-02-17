@@ -126,8 +126,8 @@ export async function POST(
       subjectType,
       guidanceScale: styleConfig.guidanceScale,
       numInferenceSteps: styleConfig.numInferenceSteps,
-      // Pet LoRA (when trained and deployed, add URL here)
-      ...(subjectType === "pet" && styleConfig.loraUrl
+      // Apply LoRA if available for this style (trained for both humans and pets)
+      ...(styleConfig.loraUrl
         ? { loraUrl: styleConfig.loraUrl, loraScale: styleConfig.loraScale }
         : {}),
     };
