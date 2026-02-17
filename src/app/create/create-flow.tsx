@@ -26,6 +26,9 @@ const categoryColors: Record<string, string> = {
   modern: "bg-royal-blue/10 text-royal-blue",
 };
 
+/** P0 styles that are live (have trained LoRAs or are ready for generation) */
+const LIVE_STYLES = new Set(["warli-art", "madhubani-art", "tanjore-heritage"]);
+
 // ─── Main Component ──────────────────────────────────────────────────────────
 
 export function CreateFlow() {
@@ -231,14 +234,26 @@ export function CreateFlow() {
             ))}
           </div>
 
-          {/* Style grid */}
+          {/* Style grid — live P0 styles first, then coming soon */}
           <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
-            {filteredStyles.map((style) => {
+            {[...filteredStyles].sort((a, b) => {
+              const aLive = LIVE_STYLES.has(a.slug) ? 0 : 1;
+              const bLive = LIVE_STYLES.has(b.slug) ? 0 : 1;
+              return aLive - bLive;
+            }).map((style) => {
+              const isLive = LIVE_STYLES.has(style.slug);
+
               return (
                 <button
                   key={style.slug}
-                  onClick={() => handleStyleSelect(style)}
-                  className="group text-left rounded-xl border border-border bg-card shadow-card transition-all duration-200 hover:shadow-card-hover hover:-translate-y-0.5 overflow-hidden"
+                  onClick={() => isLive ? handleStyleSelect(style) : undefined}
+                  disabled={!isLive}
+                  className={cn(
+                    "group text-left rounded-xl border border-border bg-card shadow-card overflow-hidden transition-all duration-200",
+                    isLive
+                      ? "hover:shadow-card-hover hover:-translate-y-0.5 cursor-pointer"
+                      : "opacity-70 cursor-not-allowed"
+                  )}
                 >
                   {/* Style sample preview */}
                   <div className="relative h-28 overflow-hidden">
@@ -246,11 +261,23 @@ export function CreateFlow() {
                       src={`/samples/${style.slug}.jpg`}
                       alt={`${style.name} style sample`}
                       fill
-                      className="object-cover transition-transform duration-300 group-hover:scale-105"
+                      className={cn(
+                        "object-cover transition-transform duration-300",
+                        isLive ? "group-hover:scale-105" : "grayscale-[30%]"
+                      )}
                       sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                     />
                     {/* Subtle dark overlay for text readability */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-black/10" />
+
+                    {/* Coming Soon overlay for non-live styles */}
+                    {!isLive && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                        <span className="rounded-full bg-card/90 backdrop-blur-sm px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-foreground">
+                          Coming Soon
+                        </span>
+                      </div>
+                    )}
 
                     {/* Category badge */}
                     <span
@@ -270,7 +297,10 @@ export function CreateFlow() {
 
                   {/* Info */}
                   <div className="p-3">
-                    <h3 className="mb-1 text-sm font-semibold text-foreground group-hover:text-saffron transition-colors">
+                    <h3 className={cn(
+                      "mb-1 text-sm font-semibold transition-colors",
+                      isLive ? "text-foreground group-hover:text-saffron" : "text-muted"
+                    )}>
                       {style.name}
                     </h3>
                     <p className="text-[11px] text-muted line-clamp-2 leading-relaxed">

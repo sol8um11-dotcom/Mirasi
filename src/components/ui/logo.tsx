@@ -176,12 +176,12 @@ export function Logo({ size = "md", showIcon = true, className }: LogoProps) {
           <span key={idx} className="relative inline-block">
             {/* Base character — saffron dotless ı (or regular letter) */}
             {char}
-            {/* Gold dot overlay: render a gold "i" on top, clipped to upper 55%
-                so only the font-native dot is visible. The stem is hidden. */}
+            {/* Gold dot overlay: render a gold "i" on top, clipped to only
+                the top ~30% where the tittle (dot) sits. The stem is hidden. */}
             {(idx === 1 || idx === 5) && (
               <span
                 className="absolute inset-0 text-gold overflow-hidden"
-                style={{ clipPath: "inset(0 0 45% 0)" }}
+                style={{ clipPath: "inset(0 0 70% 0)" }}
               >
                 i
               </span>

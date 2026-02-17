@@ -6,6 +6,15 @@ export async function GET(request: Request) {
   const code = searchParams.get("code");
   const next = searchParams.get("next") ?? "/";
 
+  // Handle OAuth error responses from Supabase (e.g. provider not configured)
+  const errorParam = searchParams.get("error");
+  const errorDesc = searchParams.get("error_description");
+  if (errorParam) {
+    console.error("OAuth callback error:", errorParam, errorDesc);
+    const msg = encodeURIComponent(errorDesc || errorParam);
+    return NextResponse.redirect(`${origin}/auth/login?error=auth_callback_error&message=${msg}`);
+  }
+
   if (code) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
@@ -19,6 +28,8 @@ export async function GET(request: Request) {
       } else {
         return NextResponse.redirect(`${origin}${next}`);
       }
+    } else {
+      console.error("Code exchange error:", error.message);
     }
   }
 

@@ -18,8 +18,13 @@ export function LoginForm() {
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
+  const callbackMessage = searchParams.get("message");
   const [errorMsg, setErrorMsg] = useState(
-    error === "auth_callback_error" ? "Authentication failed. Please try again." : ""
+    error === "auth_callback_error"
+      ? callbackMessage
+        ? decodeURIComponent(callbackMessage)
+        : "Authentication failed. Please try again."
+      : ""
   );
 
   const supabase = createClient();
@@ -27,14 +32,24 @@ export function LoginForm() {
   async function handleGoogleLogin() {
     setLoading(true);
     setErrorMsg("");
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirect)}`,
-      },
-    });
-    if (error) {
-      setErrorMsg(error.message);
+    try {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(redirect)}`,
+        },
+      });
+      if (error) {
+        console.error("Google OAuth error:", error);
+        setErrorMsg(error.message);
+        setLoading(false);
+      } else if (data?.url) {
+        // Supabase returns a URL to redirect to — do it manually if auto-redirect fails
+        window.location.href = data.url;
+      }
+    } catch (err) {
+      console.error("Google OAuth exception:", err);
+      setErrorMsg(err instanceof Error ? err.message : "Failed to connect to Google. Please try again.");
       setLoading(false);
     }
   }

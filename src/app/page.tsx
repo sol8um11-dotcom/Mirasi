@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { StyleCarousel } from "@/components/landing/style-carousel";
+import { HeroHeadline } from "@/components/landing/hero-headline";
 import { WebsiteJsonLd } from "@/components/seo/json-ld";
 
 export default function HomePage() {
@@ -11,10 +12,7 @@ export default function HomePage() {
         <p className="mb-4 text-xs font-semibold uppercase tracking-[0.25em] text-gold md:text-sm">
           Every face tells a legend
         </p>
-        <h1 className="mb-5 max-w-3xl text-4xl font-bold leading-tight text-foreground md:text-5xl lg:text-6xl md:leading-tight">
-          Transform Your Photos Into{" "}
-          <span className="text-saffron">Indian Art</span> Masterpieces
-        </h1>
+        <HeroHeadline />
         <p className="mb-10 max-w-lg text-base text-muted md:text-lg">
           AI-powered portraits inspired by 15 authentic Indian art traditions.
           From Rajasthani Miniatures to Madhubani Folk Art.
