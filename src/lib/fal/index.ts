@@ -6,8 +6,12 @@ fal.config({ credentials: process.env.FAL_KEY! });
 
 // ─── Model Endpoints ─────────────────────────────────────────────────────────
 
-/** Kontext Pro — best identity preservation + style transfer ($0.04/image) */
-const KONTEXT_PRO = "fal-ai/flux-pro/kontext" as const;
+/**
+ * Flux Dev img2img — FULL repaint with strength control ($0.03/MP)
+ * Used for human portraits and pet fallback. Regenerates the entire image
+ * at the specified strength level, producing true painterly artwork.
+ */
+const FLUX_DEV_IMG2IMG = "fal-ai/flux/dev/image-to-image" as const;
 
 /** Kontext LoRA — custom LoRA weights for pet style adherence ($0.035/MP) */
 const KONTEXT_LORA = "fal-ai/flux-kontext-lora" as const;
@@ -22,10 +26,12 @@ export interface GenerationParams {
   loraUrl?: string;
   /** LoRA weight scale (0-2, default 1.0 per API docs) */
   loraScale?: number;
-  /** How strongly the model follows the prompt (Kontext Pro default: 3.5, LoRA default: 2.5) */
+  /** How strongly the model follows the prompt */
   guidanceScale?: number;
-  /** Number of inference steps (Kontext Pro: up to 50, LoRA: 10-50 default 30) */
+  /** Number of inference steps */
   numInferenceSteps?: number;
+  /** Transformation intensity (0.01-1.0). Higher = more repaint. Only for Flux Dev img2img. */
+  strength?: number;
   /** Seed for reproducibility */
   seed?: number;
 }
@@ -33,10 +39,16 @@ export interface GenerationParams {
 /**
  * Submit a generation job to the appropriate fal.ai pipeline.
  *
- * ROUTING RULES:
- * - Human portraits → ALWAYS Kontext Pro (maximum identity preservation)
+ * ROUTING RULES (V9):
+ * - Human portraits → Flux Dev img2img (full repaint with strength control)
  * - Pet portraits with LoRA → Kontext LoRA (trained style LoRAs)
- * - Pet portraits without LoRA → Kontext Pro (fallback)
+ * - Pet portraits without LoRA → Flux Dev img2img (same as humans)
+ *
+ * WHY NOT KONTEXT PRO:
+ * Kontext Pro is an IMAGE EDITING model — it preserves the input photo by design.
+ * This produces "photo with accessories" instead of "fully transformed artwork."
+ * Flux Dev img2img with high strength (0.85-0.92) regenerates the ENTIRE image,
+ * producing true painterly output comparable to competitors like Fable.
  *
  * LoRAs were trained on PET datasets only. Applying them to human
  * subjects destroys identity and causes gender-swapping artifacts.
@@ -44,10 +56,6 @@ export interface GenerationParams {
 export async function submitGeneration(
   params: GenerationParams
 ): Promise<string> {
-  // Note: Kontext image-to-image endpoints do NOT support image_size —
-  // they output at the input image's resolution. The client already
-  // compresses/resizes to 1024×1024 max, so output matches input.
-
   if (params.loraUrl) {
     // ─── LoRA pipeline: Kontext LoRA (PET subjects only) ───
     const loraInput: Record<string, unknown> = {
@@ -62,8 +70,6 @@ export async function submitGeneration(
       // Kontext LoRA API defaults: guidance_scale 2.5, steps 30, strength 0.88
       guidance_scale: params.guidanceScale ?? 2.5,
       num_inference_steps: params.numInferenceSteps ?? 30,
-      // strength: how much to transform the input (0.01-1.0, default 0.88)
-      // docs say "higher values are better for this model"
       strength: 0.88,
       output_format: "jpeg",
       resolution_mode: "match_input",
@@ -74,21 +80,23 @@ export async function submitGeneration(
     });
     return result.request_id;
   } else {
-    // ─── No LoRA: Kontext Pro (human portraits + pet fallback) ───
-    // NOTE: Kontext Pro does NOT accept num_inference_steps — it handles
-    // step count internally. Only send supported params.
-    const kontextInput: Record<string, unknown> = {
+    // ─── Flux Dev img2img: Full repaint (humans + pet fallback) ───
+    // strength controls how much of the original image is preserved:
+    //   0.85 = heavy transformation, some composition preserved (good for naturalistic styles)
+    //   0.90 = near-total repaint (good for abstract/geometric styles like Warli)
+    //   0.95 = almost completely regenerated
+    const fluxInput: Record<string, unknown> = {
       image_url: params.imageUrl,
       prompt: params.prompt,
-      // Kontext Pro API default guidance_scale is 3.5
-      guidance_scale: params.guidanceScale ?? 3.5,
+      strength: params.strength ?? 0.87,
+      guidance_scale: params.guidanceScale ?? 7.0,
+      num_inference_steps: params.numInferenceSteps ?? 40,
       output_format: "jpeg",
-      // safety_tolerance 2 = moderate (1=strictest, 6=most permissive)
-      safety_tolerance: "2",
+      enable_safety_checker: true,
       ...(params.seed !== undefined && { seed: params.seed }),
     };
-    const result = await fal.queue.submit(KONTEXT_PRO, {
-      input: kontextInput as never,
+    const result = await fal.queue.submit(FLUX_DEV_IMG2IMG, {
+      input: fluxInput as never,
     });
     return result.request_id;
   }
@@ -102,7 +110,7 @@ export async function checkGenerationStatus(
   requestId: string,
   hasLora: boolean = false
 ): Promise<FalQueueResponse> {
-  const model = hasLora ? KONTEXT_LORA : KONTEXT_PRO;
+  const model = hasLora ? KONTEXT_LORA : FLUX_DEV_IMG2IMG;
 
   const status = await fal.queue.status(model, {
     requestId,
@@ -124,7 +132,7 @@ export async function getGenerationResult(
   requestId: string,
   hasLora: boolean = false
 ): Promise<FalGenerationResult> {
-  const model = hasLora ? KONTEXT_LORA : KONTEXT_PRO;
+  const model = hasLora ? KONTEXT_LORA : FLUX_DEV_IMG2IMG;
 
   const result = await fal.queue.result(model, {
     requestId,

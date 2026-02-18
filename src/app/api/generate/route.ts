@@ -164,7 +164,8 @@ export async function POST(
       prompt,
       subjectType,
       guidanceScale: styleConfig.guidanceScale,
-      numInferenceSteps: useLora ? styleConfig.numInferenceSteps : 50,
+      numInferenceSteps: styleConfig.numInferenceSteps,
+      strength: styleConfig.strength,
       ...(useLora
         ? { loraUrl: styleConfig.loraUrl!, loraScale: styleConfig.loraScale }
         : {}),
