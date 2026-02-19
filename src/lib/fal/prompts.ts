@@ -50,7 +50,7 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
   // ═══════════════════════════════════════════════════════════════════════════
 
   "madhubani-art": {
-    guidanceScale: 7.0,
+    guidanceScale: 3.5,
     numInferenceSteps: 40,
     strength: 0.88,
     loraUrl: "https://v3b.fal.media/files/b/0a8ec276/jx30OuCdAxTZ1paR_qbuw_adapter_model.safetensors",
@@ -77,7 +77,7 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
   },
 
   "warli-art": {
-    guidanceScale: 7.0,
+    guidanceScale: 3.5,
     numInferenceSteps: 40,
     strength: 0.92,
     loraUrl: "https://v3b.fal.media/files/b/0a8ec235/pCzgeZ2OXUEjTnY4hjH7d_adapter_model.safetensors",
@@ -105,7 +105,7 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
   },
 
   "pichwai-art": {
-    guidanceScale: 7.0,
+    guidanceScale: 3.5,
     numInferenceSteps: 40,
     strength: 0.88,
     loraUrl: null,
@@ -134,7 +134,7 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
   // ═══════════════════════════════════════════════════════════════════════════
 
   "tanjore-heritage": {
-    guidanceScale: 7.0,
+    guidanceScale: 3.5,
     numInferenceSteps: 40,
     strength: 0.88,
     loraUrl: "https://v3b.fal.media/files/b/0a8ed157/F77SIFKQEWb94CrH4Gh6s_adapter_model.safetensors",
@@ -162,7 +162,7 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
   },
 
   "mysore-palace": {
-    guidanceScale: 7.0,
+    guidanceScale: 3.5,
     numInferenceSteps: 40,
     strength: 0.87,
     loraUrl: null,
@@ -187,7 +187,7 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
   },
 
   "kerala-mural": {
-    guidanceScale: 7.0,
+    guidanceScale: 3.5,
     numInferenceSteps: 40,
     strength: 0.90,
     loraUrl: null,
@@ -218,7 +218,7 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
   // ═══════════════════════════════════════════════════════════════════════════
 
   "rajasthani-royal": {
-    guidanceScale: 7.0,
+    guidanceScale: 3.5,
     numInferenceSteps: 40,
     strength: 0.87,
     loraUrl: null,
@@ -245,7 +245,7 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
   },
 
   "miniature-art": {
-    guidanceScale: 7.0,
+    guidanceScale: 3.5,
     numInferenceSteps: 40,
     strength: 0.85,
     loraUrl: null,
@@ -271,7 +271,7 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
   },
 
   "pahari-mountain": {
-    guidanceScale: 7.0,
+    guidanceScale: 3.5,
     numInferenceSteps: 40,
     strength: 0.87,
     loraUrl: null,
@@ -297,7 +297,7 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
   },
 
   "deccani-royal": {
-    guidanceScale: 7.0,
+    guidanceScale: 3.5,
     numInferenceSteps: 40,
     strength: 0.87,
     loraUrl: null,
@@ -323,7 +323,7 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
   },
 
   "maratha-heritage": {
-    guidanceScale: 7.0,
+    guidanceScale: 3.5,
     numInferenceSteps: 40,
     strength: 0.87,
     loraUrl: null,
@@ -349,7 +349,7 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
   },
 
   "punjab-royal": {
-    guidanceScale: 7.0,
+    guidanceScale: 3.5,
     numInferenceSteps: 40,
     strength: 0.87,
     loraUrl: null,
@@ -376,7 +376,7 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
   },
 
   "bengal-renaissance": {
-    guidanceScale: 7.0,
+    guidanceScale: 3.5,
     numInferenceSteps: 40,
     strength: 0.88,
     loraUrl: null,
@@ -407,7 +407,7 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
   // ═══════════════════════════════════════════════════════════════════════════
 
   "anime-portrait": {
-    guidanceScale: 7.0,
+    guidanceScale: 3.5,
     numInferenceSteps: 40,
     strength: 0.87,
     loraUrl: null,
@@ -433,7 +433,7 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
   },
 
   "bollywood-retro": {
-    guidanceScale: 7.0,
+    guidanceScale: 3.5,
     numInferenceSteps: 40,
     strength: 0.85,
     loraUrl: null,
@@ -462,7 +462,7 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
 // ─── Default fallback ────────────────────────────────────────────────────────
 
 const DEFAULT_CONFIG: StyleConfig = {
-  guidanceScale: 7.0,
+  guidanceScale: 3.5,
   numInferenceSteps: 40,
   strength: 0.87,
   loraUrl: null,
