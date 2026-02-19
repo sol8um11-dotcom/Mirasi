@@ -154,9 +154,10 @@ export async function POST(
     const prompt = buildPrompt(style.slug, subjectType, style.prompt_template);
 
     // 7. Submit to the appropriate fal.ai pipeline
-    // IMPORTANT: LoRAs were trained on PET datasets only. Human portraits must
-    // ALWAYS go through Kontext Pro for maximum identity preservation. LoRA is
-    // only applied for pet subjects where trained style LoRAs improve adherence.
+    // ROUTING (V10):
+    // - Humans → PuLID Flux (identity-preserving generation from face reference)
+    // - Pets with LoRA → Kontext LoRA (trained style LoRAs)
+    // - Pets without LoRA → Kontext Pro (PuLID is for human faces only)
     const useLora = subjectType === "pet" && !!styleConfig.loraUrl;
 
     const genParams: GenerationParams = {
@@ -166,12 +167,13 @@ export async function POST(
       guidanceScale: styleConfig.guidanceScale,
       numInferenceSteps: styleConfig.numInferenceSteps,
       strength: styleConfig.strength,
+      idWeight: styleConfig.idWeight,
       ...(useLora
         ? { loraUrl: styleConfig.loraUrl!, loraScale: styleConfig.loraScale }
         : {}),
     };
 
-    const requestId = await submitGeneration(genParams);
+    const { requestId } = await submitGeneration(genParams);
 
     // 8. Update generation record
     const { error: updateError } = await admin

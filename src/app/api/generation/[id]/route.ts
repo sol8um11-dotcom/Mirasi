@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { checkGenerationStatus, getGenerationResult } from "@/lib/fal";
+import {
+  checkGenerationStatus,
+  getGenerationResult,
+  type PipelineType,
+} from "@/lib/fal";
 import { getStyleConfig } from "@/lib/fal/prompts";
 import { watermarkImage } from "@/lib/image/watermark";
 import type { ApiResponse, GenerationStatus } from "@/types";
@@ -10,6 +14,26 @@ interface GenerationStatusResponse {
   status: GenerationStatus;
   previewUrl?: string;
   error?: string;
+}
+
+/**
+ * Derive which fal.ai pipeline was used from the generation record.
+ * This is deterministic from subject_type + style LoRA availability.
+ */
+function derivePipeline(
+  subjectType: string,
+  styleSlug: string | undefined
+): PipelineType {
+  if (subjectType === "human") {
+    return "pulid";
+  }
+  if (subjectType === "pet" && styleSlug) {
+    const config = getStyleConfig(styleSlug);
+    if (config.loraUrl) {
+      return "kontext-lora";
+    }
+  }
+  return "kontext-pro";
 }
 
 /**
@@ -103,12 +127,15 @@ export async function GET(
       });
     }
 
-    // Determine which fal.ai endpoint was used for this generation.
-    // LoRA is ONLY used for pet subjects with a trained LoRA — humans always use Kontext Pro.
-    const styleSlug = generation.style?.slug;
-    const styleHasLora = styleSlug ? !!getStyleConfig(styleSlug).loraUrl : false;
-    const hasLora = styleHasLora && generation.subject_type === "pet";
-    const falStatus = await checkGenerationStatus(generation.fal_request_id, hasLora);
+    // Derive which pipeline was used from subject_type + style
+    const pipeline = derivePipeline(
+      generation.subject_type,
+      generation.style?.slug
+    );
+    const falStatus = await checkGenerationStatus(
+      generation.fal_request_id,
+      pipeline
+    );
 
     // Still processing
     if (
@@ -145,7 +172,10 @@ export async function GET(
 
     try {
       // Fetch the generated result
-      const result = await getGenerationResult(generation.fal_request_id, hasLora);
+      const result = await getGenerationResult(
+        generation.fal_request_id,
+        pipeline
+      );
 
       if (!result.images || result.images.length === 0) {
         throw new Error("No images returned from AI.");

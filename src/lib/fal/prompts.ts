@@ -1,26 +1,27 @@
 /**
- * V9 Prompts — Full Repaint Pipeline
+ * V10 Prompts — PuLID Flux Identity-Preserving Generation
  *
- * CRITICAL CHANGE: Humans now use Flux Dev img2img (NOT Kontext Pro).
- * Kontext Pro is an editing model that preserves the photo — it produces
- * "photo with accessories" instead of "fully transformed artwork."
- * Flux Dev img2img with high `strength` regenerates the ENTIRE image.
+ * CRITICAL CHANGE: Humans now use PuLID Flux (fal-ai/flux-pulid).
+ * PuLID GENERATES a new image from the text prompt while PRESERVING facial
+ * identity from the reference image. This gives us BOTH full painterly
+ * transformation AND identity preservation — what Kontext Pro and Flux Dev
+ * img2img couldn't do individually.
  *
- * KEY CHANGES FROM V8:
- * 1. Added `strength` param (0.0-1.0) — controls transformation depth
- *    - Flux Dev img2img: strength 0.85 = heavy repaint, 0.95 = near-total regeneration
- *    - Higher strength = more artistic but less identity preservation
- * 2. Raised guidance_scale to 7.0 for most styles (was 4.0-5.0)
- * 3. Prompts rewritten for FULL REPAINT — explicitly demand every pixel be painted
- *    - Added "No photographic elements should remain" type clauses
- *    - Describe texture/medium/substrate obsessively
- * 4. Prompt structure: [Complete transformation command] → [Medium/texture] →
- *    [Style elements] → [Colors] → [Composition] → [Face identity clause]
+ * KEY CHANGES FROM V9:
+ * 1. Added `idWeight` (0-1) per style — PuLID's identity vs style dial
+ *    - Higher idWeight = stronger identity (face more recognizable)
+ *    - Lower idWeight = stronger style transformation
+ *    - Naturalistic styles (Mughal, Bollywood): 0.75-0.8 (need clear face)
+ *    - Moderate styles (Tanjore, Rajasthani): 0.65-0.7
+ *    - Abstract styles (Warli): 0.5 (face becomes geometric)
+ * 2. guidance_scale tuned for PuLID (default 4.0, range 0-20)
+ * 3. Prompts describe the ARTWORK to generate (PuLID generates from prompt,
+ *    not edits an existing image)
  *
  * ROUTING:
- * - Humans → Flux Dev img2img (fal-ai/flux/dev/image-to-image) with strength control
+ * - Humans → PuLID Flux (fal-ai/flux-pulid) with id_weight per style
  * - Pets with LoRA → Kontext LoRA (unchanged)
- * - Pets without LoRA → Flux Dev img2img (same as humans)
+ * - Pets without LoRA → Kontext Pro (PuLID is for human faces)
  *
  * Reference: docs/CRITICAL_RESEARCH_FINDINGS.md, docs/style-foundations.md
  */
@@ -30,8 +31,10 @@
 export interface StyleConfig {
   guidanceScale: number;
   numInferenceSteps: number;
-  /** Transformation intensity for Flux Dev img2img (0.01-1.0). Higher = more repaint. */
+  /** Transformation intensity — used by LoRA pipeline (0.01-1.0). */
   strength: number;
+  /** PuLID identity weight (0-1). Higher = more identity, lower = more style. */
+  idWeight: number;
   loraUrl: string | null;
   loraScale: number;
   humanPrompt: string;
@@ -53,6 +56,7 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
     guidanceScale: 3.5,
     numInferenceSteps: 40,
     strength: 0.88,
+    idWeight: 0.6,
     loraUrl: "https://v3b.fal.media/files/b/0a8ec276/jx30OuCdAxTZ1paR_qbuw_adapter_model.safetensors",
     loraScale: 1.0,
     loraTrigger: "mrs_madhubani",
@@ -80,6 +84,7 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
     guidanceScale: 3.5,
     numInferenceSteps: 40,
     strength: 0.92,
+    idWeight: 0.5,
     loraUrl: "https://v3b.fal.media/files/b/0a8ec235/pCzgeZ2OXUEjTnY4hjH7d_adapter_model.safetensors",
     loraScale: 1.0,
     loraTrigger: "mrs_warli",
@@ -108,6 +113,7 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
     guidanceScale: 3.5,
     numInferenceSteps: 40,
     strength: 0.88,
+    idWeight: 0.65,
     loraUrl: null,
     loraScale: 1.0,
     loraTrigger: null,
@@ -137,6 +143,7 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
     guidanceScale: 3.5,
     numInferenceSteps: 40,
     strength: 0.88,
+    idWeight: 0.65,
     loraUrl: "https://v3b.fal.media/files/b/0a8ed157/F77SIFKQEWb94CrH4Gh6s_adapter_model.safetensors",
     loraScale: 1.0,
     loraTrigger: "mrs_tanjore",
@@ -165,6 +172,7 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
     guidanceScale: 3.5,
     numInferenceSteps: 40,
     strength: 0.87,
+    idWeight: 0.7,
     loraUrl: null,
     loraScale: 1.0,
     loraTrigger: null,
@@ -190,6 +198,7 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
     guidanceScale: 3.5,
     numInferenceSteps: 40,
     strength: 0.90,
+    idWeight: 0.55,
     loraUrl: null,
     loraScale: 1.0,
     loraTrigger: null,
@@ -221,6 +230,7 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
     guidanceScale: 3.5,
     numInferenceSteps: 40,
     strength: 0.87,
+    idWeight: 0.65,
     loraUrl: null,
     loraScale: 1.0,
     loraTrigger: null,
@@ -248,6 +258,7 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
     guidanceScale: 3.5,
     numInferenceSteps: 40,
     strength: 0.85,
+    idWeight: 0.75,
     loraUrl: null,
     loraScale: 1.0,
     loraTrigger: null,
@@ -274,6 +285,7 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
     guidanceScale: 3.5,
     numInferenceSteps: 40,
     strength: 0.87,
+    idWeight: 0.7,
     loraUrl: null,
     loraScale: 1.0,
     loraTrigger: null,
@@ -300,6 +312,7 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
     guidanceScale: 3.5,
     numInferenceSteps: 40,
     strength: 0.87,
+    idWeight: 0.7,
     loraUrl: null,
     loraScale: 1.0,
     loraTrigger: null,
@@ -326,6 +339,7 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
     guidanceScale: 3.5,
     numInferenceSteps: 40,
     strength: 0.87,
+    idWeight: 0.7,
     loraUrl: null,
     loraScale: 1.0,
     loraTrigger: null,
@@ -352,6 +366,7 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
     guidanceScale: 3.5,
     numInferenceSteps: 40,
     strength: 0.87,
+    idWeight: 0.7,
     loraUrl: null,
     loraScale: 1.0,
     loraTrigger: null,
@@ -379,6 +394,7 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
     guidanceScale: 3.5,
     numInferenceSteps: 40,
     strength: 0.88,
+    idWeight: 0.7,
     loraUrl: null,
     loraScale: 1.0,
     loraTrigger: null,
@@ -410,6 +426,7 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
     guidanceScale: 3.5,
     numInferenceSteps: 40,
     strength: 0.87,
+    idWeight: 0.7,
     loraUrl: null,
     loraScale: 1.0,
     loraTrigger: null,
@@ -436,6 +453,7 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
     guidanceScale: 3.5,
     numInferenceSteps: 40,
     strength: 0.85,
+    idWeight: 0.8,
     loraUrl: null,
     loraScale: 1.0,
     loraTrigger: null,
@@ -465,6 +483,7 @@ const DEFAULT_CONFIG: StyleConfig = {
   guidanceScale: 3.5,
   numInferenceSteps: 40,
   strength: 0.87,
+  idWeight: 0.7,
   loraUrl: null,
   loraScale: 1.0,
   loraTrigger: null,
