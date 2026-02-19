@@ -2,41 +2,38 @@
 
 ## Where We Left Off
 
-### Current State: QUALITY CRISIS — Root Cause IDENTIFIED
+### Current State: V11 — BACK TO BASICS (Kontext Pro + V2 Prompts)
 
-**ROOT CAUSE FOUND**: Flux Kontext Pro is an IMAGE EDITING model, not a STYLE TRANSFER model. It's architecturally designed to preserve the input photo — that's why we get "photo with necklace" instead of "fully painted artwork." No amount of prompt engineering can fix a fundamental model limitation.
+**KEY LESSON LEARNED**: The very first session (V2) produced the BEST results.
+Every subsequent "improvement" DEGRADED quality:
+- V3-V8: Longer, more aggressive prompts → worse style, identity drift
+- V9: Flux Dev img2img → destroyed facial identity at high strength
+- V10: PuLID Flux → beautiful style but ZERO facial resemblance
 
-### THE FIX — Model Switch Required
-**READ: `docs/CRITICAL_RESEARCH_FINDINGS.md`** for full research with sources.
+**V11 FIX**: Reverted to the original working formula:
+- Kontext Pro for ALL humans (proven identity preservation)
+- Short V2 identity-first prompts ("Keep exact same face..." + "Restyle as...")
+- guidance_scale 3.0-4.5 range (not 7.0!)
+- "Restyle" verb (gentler than "Transform")
 
-**Immediate options to test:**
-1. **`fal-ai/flux/dev/image-to-image`** with `strength: 0.85` — full repaint with composition preservation (available NOW on fal.ai)
-2. **`fal-ai/flux-pro/kontext/max`** — has `image_prompt_strength` parameter (0-1) that Kontext Pro lacks
-3. **Kontext Pro at `guidance_scale: 7.0`** with extreme prompts + iterative passes (cheapest fix)
-4. **Multi-step pipeline**: Generate painting → face-swap identity back → blend
+### Pipeline Routing (V11)
+- Humans → Kontext Pro (`fal-ai/flux-pro/kontext`)
+- Pets with LoRA → Kontext LoRA (`fal-ai/flux-kontext-lora`)
+- Pets without LoRA → Kontext Pro (fallback)
+
+### REMOVED Models
+- PuLID Flux (`fal-ai/flux-pulid`) — generated beautiful art but lost facial identity completely
+- Flux Dev img2img (`fal-ai/flux/dev/image-to-image`) — destroyed identity at strength 0.85+
 
 ### Fable Competitor Analysis (Complete)
 - Pet-first, human engine coming 2026
 - Likely uses Flux/SDXL + IP-Adapter + style LoRAs + high denoise img2img
 - $19 digital, $89+ prints
-- 4.6/5 Trustpilot (194 reviews)
-- Premium branding (Swedish fortress atelier), paid social ads acquisition
 - Full analysis in `docs/CRITICAL_RESEARCH_FINDINGS.md`
-
-### User's Systematic Plan
-1. Deep style foundation research per style ← 6 of 15 DONE
-2. UGC platform research on prompt engineering ← DONE (see CRITICAL_RESEARCH_FINDINGS.md)
-3. Fable competitor deep-dive ← DONE
-4. Build best prompt + settings per style × subject ← NEXT: must switch models first
 
 ### Style Foundation Files Status
 **COMPLETE (6 of 15)**:
-- Madhubani: `E:\Fable clone\Madhubani_Mithila_Style_Foundation.md`
-- Warli: `docs/warli-art-style-foundation.md`
-- Tanjore: `E:\Fable clone\Tanjore_Painting_Style_Foundation.md`
-- Kerala Mural: `docs/kerala-mural-style-foundation.md`
-- Mughal: `E:\Fable clone\Mughal_Miniature_Painting_Style_Foundation.md`
-- Rajasthani: `E:\Fable clone\Rajasthani_Miniature_Painting_Style_Foundation.md`
+- Madhubani, Warli, Tanjore, Kerala Mural, Mughal, Rajasthani
 
 **MISSING (9)**: Pichwai, Mysore, Pahari, Bengal, Deccani, Maratha, Punjab, Anime, Bollywood
 
@@ -44,17 +41,18 @@
 - mrs_madhubani, mrs_warli, mrs_tanjore
 
 ### Key Technical Facts
-- Humans → Kontext Pro (NEEDS REPLACEMENT)
-- Kontext Pro does NOT have strength/denoise parameter — this is the core problem
-- Flux Dev img2img HAS strength parameter (0-1) — key alternative
-- Kontext Max has `image_prompt_strength` — worth testing
-- guidance_scale 7.0 may help if staying on Kontext Pro (current 4.0-5.0 is too low)
-- BFL recommends iterative passes for dramatic transformations
-- Watermark needs complete redesign
+- Kontext Pro does NOT support num_inference_steps or strength params
+- Only guidance_scale controls style/identity balance on Kontext Pro
+- guidance_scale 7.0 causes over-saturation (sweet spot is 3.0-4.5)
+- LoRA pipeline (Kontext LoRA) DOES support strength and num_inference_steps
+- Rate limits set to 999 for testing
+- Watermark: sparse diagonal "mirasi" text
 
-### Previous Session Accomplishments
-- Fixed all MVP bugs (generation, auth, pricing, logo, spiral)
-- V4→V5→V6→V7→V8 prompt evolution
-- LoRA training for 3 P0 styles
-- Rate limits raised to 999 for testing
-- Deployed at https://mirasi.vercel.app/
+### Pending Tasks
+- Remove sign-in requirement for free preview generation
+- Complete remaining 9 style foundation files
+- Train remaining 12 LoRAs
+- Restore production rate limits when ready
+
+### Deployed at
+https://mirasi.vercel.app/

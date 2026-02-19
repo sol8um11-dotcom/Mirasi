@@ -1,48 +1,49 @@
 /**
- * V10 Prompts — PuLID Flux Identity-Preserving Generation
+ * V11 Prompts — Back to Basics: Kontext Pro + V2 Identity-First Prompts
  *
- * CRITICAL CHANGE: Humans now use PuLID Flux (fal-ai/flux-pulid).
- * PuLID GENERATES a new image from the text prompt while PRESERVING facial
- * identity from the reference image. This gives us BOTH full painterly
- * transformation AND identity preservation — what Kontext Pro and Flux Dev
- * img2img couldn't do individually.
+ * LESSON LEARNED: The very first session (V2) produced the BEST results.
+ * Every "improvement" since then degraded quality:
+ * - V3-V8: Longer, more aggressive prompts → worse style, identity drift
+ * - V9: Flux Dev img2img → destroyed facial identity
+ * - V10: PuLID Flux → beautiful style but ZERO facial resemblance
  *
- * KEY CHANGES FROM V9:
- * 1. Added `idWeight` (0-1) per style — PuLID's identity vs style dial
- *    - Higher idWeight = stronger identity (face more recognizable)
- *    - Lower idWeight = stronger style transformation
- *    - Naturalistic styles (Mughal, Bollywood): 0.75-0.8 (need clear face)
- *    - Moderate styles (Tanjore, Rajasthani): 0.65-0.7
- *    - Abstract styles (Warli): 0.5 (face becomes geometric)
- * 2. guidance_scale tuned for PuLID (default 4.0, range 0-20)
- * 3. Prompts describe the ARTWORK to generate (PuLID generates from prompt,
- *    not edits an existing image)
+ * THE FIX: Revert to what worked.
+ * - Kontext Pro for ALL humans (proven identity preservation)
+ * - Short, concise prompts (~4-5 sentences)
+ * - Identity-first: "Keep exact same face..." BEFORE style description
+ * - "Restyle" verb (gentler than "Transform")
+ * - guidance_scale 3.0-4.5 range
  *
  * ROUTING:
- * - Humans → PuLID Flux (fal-ai/flux-pulid) with id_weight per style
- * - Pets with LoRA → Kontext LoRA (unchanged)
- * - Pets without LoRA → Kontext Pro (PuLID is for human faces)
- *
- * Reference: docs/CRITICAL_RESEARCH_FINDINGS.md, docs/style-foundations.md
+ * - Humans → Kontext Pro (identity-preserving style transfer)
+ * - Pets with LoRA → Kontext LoRA (trained style LoRAs)
+ * - Pets without LoRA → Kontext Pro (fallback)
  */
 
 // ─── Style-Specific Configuration ────────────────────────────────────────────
 
 export interface StyleConfig {
+  /** Kontext guidance_scale — lower = better identity, higher = stronger style */
   guidanceScale: number;
+  /** Inference steps — more steps = better quality but slower */
   numInferenceSteps: number;
-  /** Transformation intensity — used by LoRA pipeline (0.01-1.0). */
+  /** Transformation intensity — used by LoRA pipeline only (0.01-1.0). */
   strength: number;
-  /** PuLID identity weight (0-1). Higher = more identity, lower = more style. */
+  /** PuLID identity weight — UNUSED in V11 (kept for interface compat) */
   idWeight: number;
+  /** LoRA URL for pet pipeline (null = use Kontext Pro fallback for pets) */
   loraUrl: string | null;
+  /** LoRA weight scale (0-4) */
   loraScale: number;
+  /** Human prompt template — identity-first approach */
   humanPrompt: string;
+  /** Pet prompt template — breed/feature preservation focus */
   petPrompt: string;
+  /** LoRA trigger word (for trained LoRAs) */
   loraTrigger: string | null;
 }
 
-// ─── V8 Shared constants ─────────────────────────────────────────────────────
+// ─── Shared constants ────────────────────────────────────────────────────────
 
 const PET_BLEND =
   "The animal must remain recognizable but fully rendered in the artistic style — same breed, markings, and coloring.";
@@ -53,85 +54,78 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
   // ═══════════════════════════════════════════════════════════════════════════
 
   "madhubani-art": {
-    guidanceScale: 3.5,
-    numInferenceSteps: 40,
+    guidanceScale: 4.0,
+    numInferenceSteps: 50,
     strength: 0.88,
-    idWeight: 0.6,
+    idWeight: 0.7,
     loraUrl: "https://v3b.fal.media/files/b/0a8ec276/jx30OuCdAxTZ1paR_qbuw_adapter_model.safetensors",
     loraScale: 1.0,
     loraTrigger: "mrs_madhubani",
     humanPrompt:
-      "A Madhubani Mithila painting in the Bharni (filled color) style, drawn with bamboo nibs and natural pigments on handmade paper. " +
-      "The entire image is a hand-painted artwork — thick visible brushstrokes, paper grain texture, natural pigment finish. " +
-      "No photographic elements remain — every pixel is painted. " +
-      "Bold black DOUBLE-LINE (do-rekha) outlines around every form — two parallel lines with intricate pattern fill between them. " +
-      "EVERY surface filled with dense decorative patterns — crosshatching, dots, geometric lattice — absolutely no empty space (horror vacui). " +
-      "Only traditional natural pigment colors: vermillion red, turmeric yellow, indigo blue, leaf green, black, white. " +
-      "Flat matte colors, zero shading or gradients. " +
-      "Background packed with Madhubani motifs: stylized fish pairs, peacocks with fanned tails, lotus flowers, concentric-circle sun and moon. " +
-      "Multi-band decorative border: outer chain pattern, middle floral vine (lata), inner geometric band. " +
-      "Face rendered in Madhubani convention: large almond-shaped kohl-lined eyes dominating the face, flat single-color skin, " +
-      "decorative rather than realistic — but the person's facial structure, nose shape, and features remain recognizable.",
+      "Keep the exact same face, eyes, nose, jawline, skin tone, and expression of this person — " +
+      "do not alter any facial features. Make the skin look smooth and subtly flattering. " +
+      "Restyle the image as a Madhubani Mithila painting with bold black ink outlines " +
+      "and geometric patterns filling every surface. Use vibrant primary colors — " +
+      "red, yellow, blue, green. Add fish, peacock, and lotus border motifs. Fill the " +
+      "background with dense geometric and floral patterns leaving no empty space. " +
+      "Use symmetrical folk art composition with hand-painted texture.",
     petPrompt:
-      "mrs_madhubani style. Transform this photo into a Madhubani Mithila painting in Bharni style. " +
-      "Bold black double-line outlines. Dense pattern fill on every surface — no empty space. " +
-      "Vermillion, turmeric yellow, indigo, leaf green palette. Fish, peacock, lotus motifs. " +
-      "Multi-band decorative border with chain and floral vine patterns. " +
+      "mrs_madhubani style. Keep the exact same animal — same breed, fur color, markings, eye color, ear shape, " +
+      "and body proportions. Do not change any physical features of the pet. " +
+      "Restyle the image as a Madhubani Mithila folk art painting with bold black ink " +
+      "outlines and geometric patterns filling every surface. Use vibrant primary colors " +
+      "— red, yellow, blue, green. Add fish, peacock, and lotus border motifs. " +
+      "Fill the background with dense Madhubani patterns. " +
       PET_BLEND,
   },
 
   "warli-art": {
-    guidanceScale: 3.5,
-    numInferenceSteps: 40,
+    guidanceScale: 4.5,
+    numInferenceSteps: 50,
     strength: 0.92,
-    idWeight: 0.5,
+    idWeight: 0.7,
     loraUrl: "https://v3b.fal.media/files/b/0a8ec235/pCzgeZ2OXUEjTnY4hjH7d_adapter_model.safetensors",
     loraScale: 1.0,
     loraTrigger: "mrs_warli",
     humanPrompt:
-      "A Warli tribal painting on a dark reddish-brown mud wall, painted with white rice paste using a bamboo stick. " +
-      "The entire image is a hand-painted mural — rough mud wall texture visible, paint applied unevenly as in authentic Warli art. " +
-      "No photographic elements remain — every pixel shows mud wall or white rice paste paint. " +
-      "The subject rendered as an enlarged central Warli figure using ONLY geometric shapes: " +
-      "circle for head, two joined triangles for torso, straight stick lines for limbs. " +
-      "ONLY two colors in the entire image: white rice paste on dark terracotta brown — no other colors. " +
-      "Lines are rough, slightly wobbly, textured bamboo-stick strokes — NOT clean vector art. " +
-      "Surrounding scene densely filled with traditional Warli motifs: " +
-      "spiral Tarpa dance chain of connected figures, concentric-circle sun with rays, triangular mountains, " +
-      "trees with dot-cluster leaves and perched birds, bullock carts, farming scenes, deer, peacocks. " +
-      "Geometric border: zigzag or comb-ladder pattern. " +
-      "The subject's general build, hairstyle silhouette, and posture remain recognizable through the geometric rendering.",
+      "Keep the recognizable face shape and proportions of this person. " +
+      "Restyle the entire image as Warli tribal art — white geometric stick figures " +
+      "and shapes on a dark terracotta brown background. Use Warli minimalist style " +
+      "with circles, triangles, and lines. Add traditional Warli motifs: circular sun, " +
+      "triangular mountains, dancing figure borders. Apply hand-painted rice-paste " +
+      "on mud-wall texture. The person should be recognizable in geometric Warli form.",
     petPrompt:
-      "mrs_warli style. Transform this photo into Warli tribal art. " +
-      "White rice paste on dark terracotta mud wall. Geometric shapes only — circles, triangles, lines. " +
-      "Surround with Tarpa dance spiral, sun circles, trees with birds, farming scenes. " +
-      "Rough bamboo-stick line quality. Zigzag border frame. " +
+      "mrs_warli style. Keep the recognizable shape and proportions of this animal. " +
+      "Restyle the entire image as Warli tribal art — white geometric shapes on a " +
+      "dark terracotta brown background. Use Warli minimalist style with circles, " +
+      "triangles, and lines to represent the animal. Add traditional Warli motifs: " +
+      "circular sun, triangular mountains, nature borders. Apply rice-paste on " +
+      "mud-wall texture. The animal should be clearly recognizable in Warli form. " +
       PET_BLEND,
   },
 
   "pichwai-art": {
     guidanceScale: 3.5,
-    numInferenceSteps: 40,
+    numInferenceSteps: 50,
     strength: 0.88,
-    idWeight: 0.65,
+    idWeight: 0.7,
     loraUrl: null,
     loraScale: 1.0,
     loraTrigger: null,
     humanPrompt:
-      "A Pichwai painting from the Nathdwara Shrinathji temple tradition, painted on starched cloth with natural mineral pigments and gold leaf. " +
-      "The entire image is a hand-painted artwork on cloth — visible fabric weave texture, thick mineral pigment strokes, gold leaf shimmer. " +
-      "No photographic elements remain — every pixel is painted with traditional Pichwai brushwork. " +
-      "EVERY surface covered with dense intricate lotus flower patterns — individually painted petals in pink, white, and gold on a deep indigo-black background. " +
-      "Ornate gold leaf accents throughout: clothing borders, jewelry, lotus highlights, elaborate multi-band border. " +
-      "Traditional Pichwai elements: sacred cows (kamadhenu), floral garlands (phool bangla), mango leaf torans. " +
-      "Strictly bilateral symmetry. " +
-      "Face rendered with Pichwai conventions: idealized round features, large almond eyes, " +
-      "flat rich colors with fine decorative brushwork — but the person's facial structure and features remain recognizable.",
+      "Keep the exact same face, eyes, nose, jawline, skin tone, and expression of this person — " +
+      "do not alter any facial features. Make the skin look smooth and subtly flattering. " +
+      "Restyle the image as a Pichwai painting from the Nathdwara tradition with intricate " +
+      "lotus flower patterns throughout the composition. Use a rich dark blue or black " +
+      "background with detailed gold accents. Add cow motifs and decorative floral " +
+      "garlands in the border. Use Pichwai ornate floral style with fine brushwork.",
     petPrompt:
-      "Transform this photo into a Pichwai Nathdwara temple painting. " +
-      "Dense lotus flower patterns covering every surface. Deep indigo-black background with gold leaf accents. " +
-      "Sacred cow motifs, floral garlands, mango leaf torans. Bilateral symmetry. " +
-      "Ornate multi-band border with fine Pichwai brushwork. " +
+      "Keep the exact same animal — same breed, fur color, markings, eye color, ear shape, " +
+      "and body proportions. Do not change any physical features of the pet. " +
+      "Restyle the image as a Pichwai painting from the Nathdwara tradition with intricate " +
+      "lotus flower patterns. Use rich dark blue or black background with gold accents. " +
+      "Add decorative floral garlands and cow motifs in the border. " +
+      "Use Pichwai ornate floral style with fine brushwork. " +
       PET_BLEND,
   },
 
@@ -140,85 +134,78 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
   // ═══════════════════════════════════════════════════════════════════════════
 
   "tanjore-heritage": {
-    guidanceScale: 3.5,
-    numInferenceSteps: 40,
+    guidanceScale: 4.0,
+    numInferenceSteps: 50,
     strength: 0.88,
-    idWeight: 0.65,
+    idWeight: 0.7,
     loraUrl: "https://v3b.fal.media/files/b/0a8ed157/F77SIFKQEWb94CrH4Gh6s_adapter_model.safetensors",
     loraScale: 1.0,
     loraTrigger: "mrs_tanjore",
     humanPrompt:
-      "A Tanjore (Thanjavur) painting on a wooden panel with raised gesso relief and gold foil, painted with mineral pigments. " +
-      "The entire image is a traditional painting — visible wood panel texture, thick gesso ridges, metallic gold leaf shimmer, mineral pigment surface. " +
-      "No photographic elements remain — every pixel is painted or gilded. " +
-      "EXTENSIVE metallic gold leaf covering 40-50% of the image: ornate prabhavali arch frame, " +
-      "elaborate South Indian jewelry (tiered kiritam crown, multiple haram necklaces, keyura armlets, oddiyanam waist belt), " +
-      "Dravidian temple pillar details, garment zari borders, lotus pedestal. " +
-      "Gold must look METALLIC and PHYSICALLY RAISED with embossed semi-3D texture, not flat yellow paint. " +
-      "Deep crimson red background. Rich saturated jewel-tone colors — emerald green, royal blue, white — applied flat within bold black outlines. " +
-      "Gem-studding effect: sparkling embedded colored stones on crown, necklace pendant, and arch. " +
-      "Multi-layered ornate border with mango-vine scrollwork and pearl-strand patterns. " +
-      "Face rendered with Tanjore conventions: round full features, large elongated kohl-lined almond eyes, " +
-      "serene half-smile — the person's identity, bone structure, and skin tone remain recognizable.",
+      "Keep the exact same face, eyes, nose, jawline, skin tone, and expression of this person — " +
+      "do not alter any facial features. Make the skin look smooth and subtly flattering. " +
+      "Restyle the image as a Tanjore Thanjavur painting with rich vibrant colors, " +
+      "prominent gold leaf embellishments, and gem-studded details. Frame the subject " +
+      "in an ornate arch with South Indian temple pillars. Add traditional jewelry, " +
+      "silk garments with zari borders. Use semi-raised gold surface texture " +
+      "and vivid warm color palette.",
     petPrompt:
-      "mrs_tanjore style. Transform this photo into a Tanjore Thanjavur painting. " +
-      "Extensive metallic gold leaf with raised gesso texture. Ornate prabhavali arch, temple pillars. " +
-      "Deep crimson background. Rich jewel-tone colors within bold outlines. " +
-      "Gem-studded crown and jewelry. Multi-layered border with mango-vine scrollwork. " +
+      "mrs_tanjore style. Keep the exact same animal — same breed, fur color, markings, eye color, ear shape, " +
+      "and body proportions. Do not change any physical features of the pet. " +
+      "Restyle the image as a Tanjore Thanjavur painting with rich vibrant colors, " +
+      "prominent gold leaf embellishments. Frame the animal in an ornate arch with " +
+      "South Indian decorative pillars. Add gold-bordered cushion and floral garland " +
+      "details. Use semi-raised gold textures and vivid warm colors. " +
       PET_BLEND,
   },
 
   "mysore-palace": {
-    guidanceScale: 3.5,
-    numInferenceSteps: 40,
+    guidanceScale: 3.0,
+    numInferenceSteps: 50,
     strength: 0.87,
     idWeight: 0.7,
     loraUrl: null,
     loraScale: 1.0,
     loraTrigger: null,
     humanPrompt:
-      "A refined Mysore painting in the Wodeyar court tradition, painted with gesso technique and mineral pigments on a wooden panel. " +
-      "The entire image is a traditional painting — visible wood grain, thin gesso relief, fine precise brushstrokes, matte pigment surface. " +
-      "No photographic elements remain — every pixel is painted by hand. " +
-      "Restrained gold leaf (10-20% coverage) with thin low-relief gesso — more subtle and refined than Tanjore. " +
-      "Muted warm palette: soft reds, sage greens, warm ochres, soft blues, ivory. " +
-      "Prabhavali arch with slender ornate rosewood-carved pillars in Mysore palace style. " +
-      "Palatial interior: silk curtains, sandalwood-toned backdrop, jasmine garlands, Dasara festival elements. " +
-      "Elegant multi-band border with refined floral patterns. Fine precise brushwork with gentle curves. " +
-      "Face rendered with South Indian conventions: rounded features, expressive kohl-lined eyes, " +
-      "flat opaque skin — the person's identity, gender, and facial structure remain recognizable.",
+      "Keep the exact same face, eyes, nose, jawline, skin tone, and expression of this person — " +
+      "do not alter any facial features. Make the skin look smooth and subtly flattering. " +
+      "Restyle the image as a Mysore painting in the Wodeyar court tradition with elegant " +
+      "composition, muted gold tones, and deep green accents. Add a palatial interior " +
+      "with carved wooden pillars and delicate curtain draping. Use refined brushwork " +
+      "with subtle gesso preparation and thin gold lines.",
     petPrompt:
-      "Transform this photo into a refined Mysore Wodeyar court painting. " +
-      "Restrained gold leaf, muted warm palette. Prabhavali arch with slender palace pillars. " +
-      "Sage green, soft red, ivory tones. Fine brushwork, jasmine garlands. Elegant border. " +
+      "Keep the exact same animal — same breed, fur color, markings, eye color, ear shape, " +
+      "and body proportions. Do not change any physical features of the pet. " +
+      "Restyle the image as a Mysore painting in the Wodeyar tradition with elegant " +
+      "composition, muted gold tones, and deep green accents. Place the animal in a " +
+      "palatial setting with carved wooden pillars. Use refined brushwork with " +
+      "subtle gold lines and the Mysore court aesthetic. " +
       PET_BLEND,
   },
 
   "kerala-mural": {
-    guidanceScale: 3.5,
-    numInferenceSteps: 40,
+    guidanceScale: 4.0,
+    numInferenceSteps: 50,
     strength: 0.90,
-    idWeight: 0.55,
+    idWeight: 0.7,
     loraUrl: null,
     loraScale: 1.0,
     loraTrigger: null,
     humanPrompt:
-      "A Kerala temple mural in the Panchavarna (five-color) tradition, painted with natural vegetable pigments on a prepared temple wall. " +
-      "The entire image is a wall painting — rough plaster texture visible, thick opaque pigments, visible brush marks on lime-washed surface. " +
-      "No photographic elements remain — every pixel is painted on temple wall. " +
-      "VERY BOLD thick black outlines around every element — 3-5 times thicker than other traditions, creating a stained-glass effect. " +
-      "ONLY five Panchavarna colors: yellow ochre (manayola), red oxide (chuvappu), deep green (pachha), blue-black (neela), white (velluppu). " +
-      "NO gold leaf, no other colors. Yellow ochre background. Completely flat, zero shadows. " +
-      "Elaborate tall kireedam (tiered crown) like Kathakali headpiece. " +
-      "Ornate jewelry: multiple necklaces, large kundalams earrings, keyura armlets. " +
-      "Border with padma-valli (lotus chain) pattern. " +
-      "Face rendered with Kerala mural conventions: round full face, ENORMOUS elongated fish-shaped (matsya-netra) eyes " +
-      "with dramatic kohl and upward tilt — the person's identity and gender remain recognizable within these conventions.",
+      "Keep the exact same face, eyes, nose, jawline, skin tone, and expression of this person — " +
+      "do not alter any facial features. Make the skin look smooth and subtly flattering. " +
+      "Restyle the image as a Kerala Panchavarna mural painting with bold thick black " +
+      "outlines and the five traditional colors: yellow ochre, red, green, blue, and white. " +
+      "Add decorative floral borders and lotus motifs. Use flat perspective with ornate " +
+      "details. Place subject against a palace wall fresco background.",
     petPrompt:
-      "Transform this photo into a Kerala temple mural in Panchavarna style. " +
-      "VERY bold thick black outlines. Only five colors: yellow ochre, red oxide, green, blue-black, white. " +
-      "Flat, zero shadows. Elaborate lotus-chain border. Ornate jewelry and crown. " +
-      "No gold leaf. Yellow ochre background. " +
+      "Keep the exact same animal — same breed, fur color, markings, eye color, ear shape, " +
+      "and body proportions. Do not change any physical features of the pet. " +
+      "Restyle the image as a Kerala Panchavarna mural painting with bold thick black " +
+      "outlines and five traditional colors: yellow ochre, red, green, blue, and white. " +
+      "Add decorative floral borders and lotus motifs. Use flat perspective with " +
+      "ornate details characteristic of Kerala mural art. " +
       PET_BLEND,
   },
 
@@ -228,193 +215,176 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
 
   "rajasthani-royal": {
     guidanceScale: 3.5,
-    numInferenceSteps: 40,
+    numInferenceSteps: 50,
     strength: 0.87,
-    idWeight: 0.65,
+    idWeight: 0.7,
     loraUrl: null,
     loraScale: 1.0,
     loraTrigger: null,
     humanPrompt:
-      "A Rajasthani Mewar school miniature painting, hand-painted with mineral pigments on burnished wasli paper. " +
-      "The entire image is a traditional miniature — smooth burnished paper surface, fine brushstrokes, shell gold shimmer, opaque mineral pigment finish. " +
-      "No photographic elements remain — every pixel is hand-painted on paper. " +
-      "Bold dark outlines defining every form with a stained-glass quality. " +
-      "Flat saturated jewel-tone colors: brilliant vermillion red background (signature Mewar color), " +
-      "deep ultramarine from lapis lazuli, malachite green, warm Indian yellow, shell gold accents. " +
-      "Subject framed within an ornate jharokha (cusped arched window) with slender pillars and lotus finial dome. " +
-      "Elaborate jewelry in shell gold: haar necklaces, sarpech turban ornament, bazuband armlets. " +
-      "Golden nimbus/halo behind the head. Ornate floral vine border on deep blue ground. " +
-      "Face rendered in Mewar convention with large frontal almond eye, small chin, strong nose line — " +
-      "the person's distinctive features and gender remain recognizable within that convention.",
+      "Keep the exact same face, eyes, nose, jawline, skin tone, and expression of this person — " +
+      "do not alter any facial features. Make the skin look smooth and subtly flattering. " +
+      "Restyle the image as a Rajasthani Mewar miniature painting with flat perspective, " +
+      "ornate golden border frame, rich jewel tones of deep red, gold, and emerald green. " +
+      "Add a palace courtyard background with arched pillars, jali patterns, and traditional " +
+      "Rajput ornaments. Use Mewar fine brushwork with visible ink outlines.",
     petPrompt:
-      "Transform this photo into a Rajasthani Mewar miniature painting. " +
-      "Bold outlines, flat vermillion red background, deep jewel tones. " +
-      "Jharokha window frame, shell gold accents, ornate floral vine border. " +
-      "Burnished wasli paper quality. " +
+      "Keep the exact same animal — same breed, fur color, markings, eye color, ear shape, " +
+      "and body proportions. Do not change any physical features of the pet. " +
+      "Restyle the image as a Rajasthani Mewar miniature painting with flat perspective, " +
+      "ornate golden border frame, rich jewel tones of deep red and gold. " +
+      "Place the animal on an ornate cushion in a palace courtyard with arched pillars. " +
+      "Use Mewar fine brushwork with ink outlines and intricate floral patterns. " +
       PET_BLEND,
   },
 
   "miniature-art": {
     guidanceScale: 3.5,
-    numInferenceSteps: 40,
+    numInferenceSteps: 50,
     strength: 0.85,
-    idWeight: 0.75,
+    idWeight: 0.7,
     loraUrl: null,
     loraScale: 1.0,
     loraTrigger: null,
     humanPrompt:
-      "A Mughal miniature painting from the Jahangir period, painted with ultra-fine squirrel-hair brushes and mineral pigments on burnished wasli paper. " +
-      "The entire image is a traditional miniature — smooth burnished paper, ultra-fine individual brush lines visible, gold leaf shimmer, opaque pigment surface. " +
-      "No photographic elements remain — every pixel is meticulously painted. " +
-      "INTRICATE fine brushwork — the hallmark of Mughal craft. " +
-      "Rich colors: lapis lazuli ultramarine, vermillion, malachite green, gold leaf accents, orpiment yellow, lead white. " +
-      "Three-quarter profile with a gold radiant nimbus behind the head. " +
-      "Elaborate hashiya border system: outermost color band, inner border with gold islimi arabesques on deep blue, innermost ruled gold lines. " +
-      "Background: Char Bagh palace garden with symmetrical cypress trees, marble fountain, blooming roses with individually painted petals. " +
-      "Face is the most naturalistic of any Indian tradition — subtle green underpaint for dimension, " +
-      "individualized features with fine detail — the person's exact likeness, bone structure, and expression remain recognizable.",
+      "Keep the exact same face, eyes, nose, jawline, skin tone, and expression of this person — " +
+      "do not alter any facial features. Make the skin look smooth and subtly flattering. " +
+      "Restyle the image as an Indo-Islamic miniature painting with intricate detailed " +
+      "brushwork and an ornate decorative border filled with floral arabesque patterns. " +
+      "Add a palace garden background with cypress trees, fountains, and blooming flowers. " +
+      "Use rich colors with gold leaf accents and classical flat perspective.",
     petPrompt:
-      "Transform this photo into a Mughal miniature painting from the Jahangir period. " +
-      "Ultra-fine brushwork, mineral pigments, burnished wasli paper. " +
-      "Gold leaf accents, nimbus, elaborate hashiya border with gold arabesques. " +
-      "Palace garden background with cypress trees and marble fountain. " +
+      "Keep the exact same animal — same breed, fur color, markings, eye color, ear shape, " +
+      "and body proportions. Do not change any physical features of the pet. " +
+      "Restyle the image as an Indo-Islamic miniature painting with intricate brushwork " +
+      "and ornate floral arabesque border. Place the animal in a palace garden with " +
+      "cypress trees and flowers. Use rich colors with gold accents and flat perspective " +
+      "characteristic of Mughal miniature art. " +
       PET_BLEND,
   },
 
   "pahari-mountain": {
-    guidanceScale: 3.5,
-    numInferenceSteps: 40,
+    guidanceScale: 3.0,
+    numInferenceSteps: 50,
     strength: 0.87,
     idWeight: 0.7,
     loraUrl: null,
     loraScale: 1.0,
     loraTrigger: null,
     humanPrompt:
-      "A Pahari Kangra school miniature painting, painted with fine sable brushes and mineral pigments on prepared wasli paper. " +
-      "The entire image is a traditional miniature — smooth paper surface, fine flowing brushstrokes, delicate pigment washes. " +
-      "No photographic elements remain — every pixel is painted. " +
-      "Extremely fine flowing calligraphic linework that swells and tapers with rhythmic grace. " +
-      "Soft lyrical palette: pastel pinks, sky blues, leaf greens with rich accent colors — " +
-      "the most tonally harmonious of all Indian miniature traditions. " +
-      "Lush Himalayan landscape background: snow-capped peaks, flowering trees " +
-      "with INDIVIDUALLY painted leaves (signature Kangra element), gentle streams, grazing deer, flowering creepers. " +
-      "Ornamental border with delicate floral vine on soft-colored ground. " +
-      "Face rendered in Kangra convention: soft rounded features, gentle downcast eyes, " +
-      "dreamy romantic expression — the person's distinctive features and likeness remain recognizable.",
+      "Keep the exact same face, eyes, nose, jawline, skin tone, and expression of this person — " +
+      "do not alter any facial features. Make the skin look smooth and subtly flattering. " +
+      "Restyle the image as a Pahari miniature painting in the Kangra school tradition " +
+      "with delicate fine brushwork, soft pastel colors, and rich accent tones. " +
+      "Add a Himalayan mountain landscape background with flowering trees and gentle " +
+      "streams. Include ornamental painted border with floral patterns.",
     petPrompt:
-      "Transform this photo into a Pahari Kangra miniature painting. " +
-      "Fine flowing linework, soft lyrical pastels, lush Himalayan landscape with individually painted leaves. " +
-      "Flowering trees, gentle streams, ornamental floral vine border. " +
+      "Keep the exact same animal — same breed, fur color, markings, eye color, ear shape, " +
+      "and body proportions. Do not change any physical features of the pet. " +
+      "Restyle the image as a Pahari Kangra miniature painting with delicate fine " +
+      "brushwork, soft pastel colors, and rich accents. Place the animal in a lyrical " +
+      "Himalayan mountain landscape with flowering trees. Add ornamental painted border " +
+      "with floral patterns and a serene mood. " +
       PET_BLEND,
   },
 
   "deccani-royal": {
     guidanceScale: 3.5,
-    numInferenceSteps: 40,
+    numInferenceSteps: 50,
     strength: 0.87,
     idWeight: 0.7,
     loraUrl: null,
     loraScale: 1.0,
     loraTrigger: null,
     humanPrompt:
-      "A Deccani painting from the Bijapur-Golconda court, painted with opaque watercolors and gold leaf on prepared paper. " +
-      "The entire image is a traditional court painting — smooth paper surface, fine flowing brushstrokes, gold leaf shimmer, opaque watercolor washes. " +
-      "No photographic elements remain — every pixel is painted. " +
-      "Rich sensuous jewel-box colors: deep purple, turquoise teal, rich gold, crimson — " +
-      "the most luxuriously saturated palette in Indian painting. " +
-      "Refined flowing linework with soft facial modeling and fine textile pattern brushwork. " +
-      "Background: ornate Islamic architecture with cusped onion domes, pointed arches, " +
-      "geometric zellige tile patterns, arabesque foliage, night sky with gold stars. " +
-      "Extensive gold leaf on clothing borders, architecture, elaborate illuminated border with Persian-style floral margins. " +
-      "Face rendered with Deccani conventions: rounded sensuous features, large dreamy eyes, " +
-      "rich adornment — the person's identity and expression remain recognizable.",
+      "Keep the exact same face, eyes, nose, jawline, skin tone, and expression of this person — " +
+      "do not alter any facial features. Make the skin look smooth and subtly flattering. " +
+      "Restyle the image as a Deccani painting from the Bijapur-Golconda tradition with " +
+      "rich luxurious colors and Persian-influenced composition. Add an ornate background " +
+      "with Islamic domes, pointed arches, and geometric tile patterns. Include gold " +
+      "accent details and refined courtly textile patterns.",
     petPrompt:
-      "Transform this photo into a Deccani painting from the Bijapur-Golconda court. " +
-      "Deep purple, turquoise, rich gold palette. Islamic architecture with domes and arches. " +
-      "Gold leaf accents, night sky, illuminated Persian-style border. " +
+      "Keep the exact same animal — same breed, fur color, markings, eye color, ear shape, " +
+      "and body proportions. Do not change any physical features of the pet. " +
+      "Restyle the image as a Deccani painting from the Bijapur tradition with rich " +
+      "luxurious colors and Persian-influenced composition. Place the animal in an ornate " +
+      "setting with Islamic arches and geometric patterns. Add gold accents blending " +
+      "Indian and Persian artistic elements. " +
       PET_BLEND,
   },
 
   "maratha-heritage": {
     guidanceScale: 3.5,
-    numInferenceSteps: 40,
+    numInferenceSteps: 50,
     strength: 0.87,
     idWeight: 0.7,
     loraUrl: null,
     loraScale: 1.0,
     loraTrigger: null,
     humanPrompt:
-      "A Maratha Peshwa-era court painting, painted by a Deccani court artist with mineral pigments on cloth. " +
-      "The entire image is a traditional painting on cloth — visible fabric texture, thick opaque pigments, bold confident brushstrokes. " +
-      "No photographic elements remain — every pixel is painted. " +
-      "Bold firm outlines, confident brushwork, flat opaque color fills — " +
-      "a blend of Deccani elegance and Rajput directness. " +
-      "Warm earthy palette: saffron (kesari) as the identity color, deep maroon, burnt sienna, antique gold, white. " +
-      "Background: Shaniwar Wada fort durbar hall with massive stone pillars, saffron Bhagwa flags, " +
-      "draped brocade textiles, ornate weapons display (tulwar, dhal shield). " +
-      "Painted border with Maratha saffron motifs and floral elements. " +
-      "Face rendered with strong dark outlines, flat opaque skin — " +
-      "the person's identity, facial structure, and gender remain recognizable within the painted tradition.",
+      "Keep the exact same face, eyes, nose, jawline, skin tone, and expression of this person — " +
+      "do not alter any facial features. Make the skin look smooth and subtly flattering. " +
+      "Restyle the image as a Maratha Peshwa-era court painting with bold composition, " +
+      "deep maroon and gold color palette. Add a fort rampart or durbar hall background " +
+      "with stone pillars and draped textiles. Use Peshwa painting style with strong " +
+      "outlines and flat color fills. Add traditional Maratha ornaments.",
     petPrompt:
-      "Transform this photo into a Maratha Peshwa-era court painting. " +
-      "Bold outlines, flat opaque fills. Saffron, deep maroon, gold palette. " +
-      "Fort durbar hall with stone pillars, saffron flags. Painted border. " +
+      "Keep the exact same animal — same breed, fur color, markings, eye color, ear shape, " +
+      "and body proportions. Do not change any physical features of the pet. " +
+      "Restyle the image as a Maratha Peshwa-era court painting with deep maroon and gold " +
+      "colors. Place the animal in a regal fort setting with stone pillars and draped " +
+      "textiles. Use Peshwa style with strong outlines and flat color fills, " +
+      "decorative border with Maratha motifs. " +
       PET_BLEND,
   },
 
   "punjab-royal": {
     guidanceScale: 3.5,
-    numInferenceSteps: 40,
+    numInferenceSteps: 50,
     strength: 0.87,
     idWeight: 0.7,
     loraUrl: null,
     loraScale: 1.0,
     loraTrigger: null,
     humanPrompt:
-      "A Sikh court painting from the Lahore darbar, painted in the bold Punjab-Pahari tradition with opaque watercolors on wasli paper. " +
-      "The entire image is a traditional court painting — smooth paper surface, thick opaque pigments, visible brushstrokes, shell gold shimmer. " +
-      "No photographic elements remain — every pixel is painted. " +
-      "Vibrant saturated colors with thick visible outlines and flat opaque fills. " +
-      "Rich saffron, royal blue, deep crimson, burnished gold palette — bold and regal. " +
-      "Background: grand Lahore darbar hall with white marble pillars, crystal chandeliers, " +
-      "Phulkari embroidered textile backdrop, Persian carpet with geometric patterns. " +
-      "Elaborate turban ornament (sarpech) and multiple jewelry pieces in shell gold. Golden nimbus. " +
-      "Ornate border with Sikh symbols (Khanda, Ik Onkar) and floral scrollwork. " +
-      "Face rendered in Punjab portrait tradition — slightly more naturalistic than Mewar, " +
-      "strong features, dignified expression — the person's identity and features remain recognizable.",
+      "Keep the exact same face, eyes, nose, jawline, skin tone, and expression of this person — " +
+      "do not alter any facial features. Make the skin look smooth and subtly flattering. " +
+      "Restyle the image as a Sikh court painting from the Punjab tradition with vibrant " +
+      "rich colors and ornate textiles featuring detailed embroidery patterns. " +
+      "Add a Lahore darbar hall background with marble pillars, chandeliers, and rich carpet. " +
+      "Use bold Punjabi royal color palette with warm golden lighting.",
     petPrompt:
-      "Transform this photo into a Sikh court painting from the Lahore darbar. " +
-      "Bold vibrant colors, thick outlines, saffron and royal blue palette. " +
-      "Grand darbar hall with marble pillars, Phulkari backdrop. Golden nimbus. " +
-      "Ornate border with Sikh symbols and floral scrollwork. " +
+      "Keep the exact same animal — same breed, fur color, markings, eye color, ear shape, " +
+      "and body proportions. Do not change any physical features of the pet. " +
+      "Restyle the image as a Sikh court painting from the Punjab tradition with vibrant " +
+      "rich colors and ornate textile backdrop with embroidery patterns. " +
+      "Place the animal on a cushioned throne in a darbar hall with marble pillars. " +
+      "Use bold Punjabi royal color palette with warm golden lighting. " +
       PET_BLEND,
   },
 
   "bengal-renaissance": {
-    guidanceScale: 3.5,
-    numInferenceSteps: 40,
+    guidanceScale: 3.0,
+    numInferenceSteps: 50,
     strength: 0.88,
     idWeight: 0.7,
     loraUrl: null,
     loraScale: 1.0,
     loraTrigger: null,
     humanPrompt:
-      "A Bengal School painting in the tradition of Abanindranath Tagore, using wet-on-wet watercolor wash technique on rough textured paper. " +
-      "The entire image is a watercolor painting — visible paper grain, water stains, bleeding pigment edges, translucent wash layers. " +
-      "No photographic elements remain — every pixel is soft watercolor on rough paper. " +
-      "Soft ethereal translucent washes with deliberately bleeding color boundaries — colors dissolve into each other. " +
-      "MUTED earthy palette only: ochre, burnt sienna, dusty rose, sage green, faded indigo, gray-blue. " +
-      "NOT bright primary colors — the Bengal School deliberately rejected vivid color. " +
-      "Japanese Nihonga influence: asymmetric composition, generous empty space (ma), vignette format. " +
-      "Dreamy atmospheric background dissolving into soft washes at the edges. " +
-      "Flowing graceful minimal brushstrokes with intentional imperfections. " +
-      "Face feels soft, idealized, romantic with wistful three-quarter expression — " +
-      "the person's identity remains recognizable but rendered through soft dissolving watercolor washes.",
+      "Keep the exact same face, eyes, nose, jawline, skin tone, and expression of this person — " +
+      "do not alter any facial features. Make the skin look smooth and subtly flattering. " +
+      "Restyle the image as a Bengal School painting in the style of Abanindranath Tagore " +
+      "with soft watercolor wash technique, flowing graceful lines, and earthy muted " +
+      "color palette with subtle golden undertones. Add a dreamy atmospheric background " +
+      "with soft gradients. Use delicate brushstrokes and poetic romantic composition.",
     petPrompt:
-      "Transform this photo into a Bengal School watercolor painting in Abanindranath Tagore tradition. " +
-      "Soft wet-on-wet washes, bleeding color edges, visible paper texture. " +
-      "Muted earthy palette: ochre, sienna, dusty rose, sage, faded indigo. " +
-      "Dreamy atmospheric dissolving background. Flowing minimal brushwork. " +
+      "Keep the exact same animal — same breed, fur color, markings, eye color, ear shape, " +
+      "and body proportions. Do not change any physical features of the pet. " +
+      "Restyle the image as a Bengal School watercolor painting with soft wash technique, " +
+      "flowing graceful lines, and earthy muted tones with golden undertones. " +
+      "Add a dreamy atmospheric background. Use delicate brushstrokes " +
+      "characteristic of the Bengal Renaissance style. " +
       PET_BLEND,
   },
 
@@ -431,48 +401,45 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
     loraScale: 1.0,
     loraTrigger: null,
     humanPrompt:
-      "A high-quality anime artwork blending Studio Ghibli warmth with Makoto Shinkai atmospheric lighting. " +
-      "The entire image is pure anime art — clean precise linework, flat cel-shading, digital painting surface. " +
-      "No photographic elements remain — every pixel is anime illustration. " +
-      "Clean precise linework with consistent weight, flat cel-shading with sharp two-tone shadow boundaries, " +
-      "vibrant hyper-saturated colors. " +
-      "Large expressive eyes with detailed multi-layered iris (highlight, reflection, pupil, color ring) — " +
-      "adapted for Indian features: warm skin tones (not pale), slightly more defined nose, " +
-      "fuller lips, thick dark wavy hair with individually rendered strands and highlight streaks. " +
-      "Atmospheric Indian background: golden hour light rays filtering through banyan trees, " +
-      "soft bokeh particles, warm monsoon sky colors. " +
-      "The person's facial identity, skin tone, and distinctive features remain recognizable within the anime style.",
+      "Keep the exact same face shape, eyes, nose, jawline, hairstyle, and expression " +
+      "of this person — do not alter any facial features. Make the person look slightly " +
+      "more attractive with clearer skin. " +
+      "Restyle the image as Japanese anime art with expressive eyes, clean precise " +
+      "linework, and vibrant saturated colors. Render detailed hair with strand highlights. " +
+      "Add a Studio Ghibli inspired atmospheric background with soft bokeh lighting. " +
+      "Use cel-shading and crisp outlines.",
     petPrompt:
-      "Transform this photo into Studio Ghibli / Makoto Shinkai anime art. " +
-      "Clean linework, flat cel-shading, vibrant saturated colors, expressive eyes. " +
-      "Atmospheric golden hour background with warm light. Pure anime style. " +
+      "Keep the exact same animal — same breed, fur color, markings, eye color, ear shape, " +
+      "and body proportions. Do not change any physical features of the pet. " +
+      "Restyle the image as Japanese anime art with expressive cute eyes, clean precise " +
+      "linework, and vibrant colors. Use cel-shading with dynamic composition and soft " +
+      "atmospheric background. Make the animal adorable in anime style while keeping " +
+      "its exact breed features and coloring. " +
       PET_BLEND,
   },
 
   "bollywood-retro": {
     guidanceScale: 3.5,
-    numInferenceSteps: 40,
+    numInferenceSteps: 50,
     strength: 0.85,
-    idWeight: 0.8,
+    idWeight: 0.7,
     loraUrl: null,
     loraScale: 1.0,
     loraTrigger: null,
     humanPrompt:
-      "A vintage 1970s hand-painted Bollywood movie poster, painted in thick oil and acrylic on canvas by a master poster gully Mumbai artist. " +
-      "The entire image is a hand-painted poster — thick visible oil paint brushstrokes, canvas weave texture, impasto highlights, slight poster patina. " +
-      "No photographic elements remain — every pixel is thick oil paint on canvas. " +
-      "Bold exaggerated colors with visible thick paint strokes. " +
-      "Dramatic chiaroscuro lighting: strong directional key light on the face, deep warm shadows, " +
-      "golden flesh tones with the characteristic 'Bollywood glow.' " +
-      "Face fills 60% of the frame with an intense dramatic expression — expressive eyes with bright catchlight, " +
-      "glossy full lips, windblown hair with painted highlight streaks. " +
-      "Fiery sunset/stormy sky background with hand-painted clouds in orange, crimson, deep blue. " +
-      "Vintage film grain and slightly worn poster patina. " +
-      "The person's exact likeness, features, and expression remain recognizable — painted by a master artist with drama and glamour.",
+      "Keep the exact same face, eyes, nose, jawline, skin tone, and expression of this person — " +
+      "do not alter any facial features. Make the person look glamorous with enhanced skin. " +
+      "Restyle the image as a vintage hand-painted Bollywood movie poster from the 1970s " +
+      "with bold saturated colors and visible painted brushstroke texture. Create dramatic " +
+      "composition with retro Indian cinema aesthetic — dramatic side lighting and " +
+      "dramatic sky background. Use hand-painted movie poster style with oil paint texture.",
     petPrompt:
-      "Transform this photo into a 1970s Bollywood movie poster style. " +
-      "Bold painted strokes, dramatic chiaroscuro lighting, fiery sky background. " +
-      "Warm golden tones, vintage film grain, poster patina. Expressive and dramatic. " +
+      "Keep the exact same animal — same breed, fur color, markings, eye color, ear shape, " +
+      "and body proportions. Do not change any physical features of the pet. " +
+      "Restyle the image as a vintage hand-painted Bollywood movie poster from the 1970s " +
+      "with bold saturated colors and painted brushstroke texture. Create dramatic " +
+      "composition with retro cinema lighting and dramatic sky background. " +
+      "Use hand-painted poster style with oil paint texture. " +
       PET_BLEND,
   },
 };
@@ -481,19 +448,20 @@ const STYLE_CONFIGS: Record<string, StyleConfig> = {
 
 const DEFAULT_CONFIG: StyleConfig = {
   guidanceScale: 3.5,
-  numInferenceSteps: 40,
+  numInferenceSteps: 50,
   strength: 0.87,
   idWeight: 0.7,
   loraUrl: null,
   loraScale: 1.0,
   loraTrigger: null,
   humanPrompt:
-    "A traditional Indian art painting with bold outlines, flat saturated colors, ornate decorative elements, and traditional composition. " +
-    "The entire image is a hand-painted artwork — no photographic elements remain. " +
-    "The person's facial identity remains recognizable within the artistic style.",
+    "Keep the exact same face, eyes, nose, jawline, skin tone, and expression of this person. " +
+    "Restyle the image as a traditional Indian art style painting with rich colors, " +
+    "ornate details, and traditional artistic techniques.",
   petPrompt:
-    "Transform this photo into a traditional Indian art painting. " +
-    "Bold outlines, flat saturated colors, ornate decorative elements. " +
+    "Keep the exact same animal — same breed, fur color, markings, and eye color. " +
+    "Restyle the image as a traditional Indian art style painting with rich colors, " +
+    "ornate details, and traditional artistic techniques. " +
     PET_BLEND,
 };
 
@@ -522,5 +490,5 @@ export function buildPrompt(
   }
 
   const label = subjectType === "pet" ? "pet" : "person";
-  return `Transform this portrait into traditional Indian art. Render the ${label} in heavily stylized artistic manner while keeping recognizable. Bold outlines, flat colors, ornate details.`;
+  return `Keep the exact same features of this ${label}. Restyle the image as traditional Indian art with rich colors and ornate details.`;
 }

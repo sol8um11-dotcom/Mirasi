@@ -154,10 +154,10 @@ export async function POST(
     const prompt = buildPrompt(style.slug, subjectType, style.prompt_template);
 
     // 7. Submit to the appropriate fal.ai pipeline
-    // ROUTING (V10):
-    // - Humans → PuLID Flux (identity-preserving generation from face reference)
+    // ROUTING (V11 — Back to Basics):
+    // - ALL humans → Kontext Pro (proven identity preservation)
     // - Pets with LoRA → Kontext LoRA (trained style LoRAs)
-    // - Pets without LoRA → Kontext Pro (PuLID is for human faces only)
+    // - Pets without LoRA → Kontext Pro (fallback)
     const useLora = subjectType === "pet" && !!styleConfig.loraUrl;
 
     const genParams: GenerationParams = {
@@ -165,11 +165,14 @@ export async function POST(
       prompt,
       subjectType,
       guidanceScale: styleConfig.guidanceScale,
-      numInferenceSteps: styleConfig.numInferenceSteps,
-      strength: styleConfig.strength,
-      idWeight: styleConfig.idWeight,
+      // numInferenceSteps and strength only used by LoRA pipeline
       ...(useLora
-        ? { loraUrl: styleConfig.loraUrl!, loraScale: styleConfig.loraScale }
+        ? {
+            loraUrl: styleConfig.loraUrl!,
+            loraScale: styleConfig.loraScale,
+            numInferenceSteps: styleConfig.numInferenceSteps,
+            strength: styleConfig.strength,
+          }
         : {}),
     };
 

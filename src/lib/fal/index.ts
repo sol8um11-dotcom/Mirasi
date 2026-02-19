@@ -7,38 +7,30 @@ fal.config({ credentials: process.env.FAL_KEY! });
 // ─── Model Endpoints ─────────────────────────────────────────────────────────
 
 /**
- * PuLID Flux — identity-preserving generation from face reference ($0.033/MP)
- * Generates a NEW image from the text prompt while preserving facial identity
- * from the reference image. Uses InsightFace embeddings + Flux backbone.
- * Has `id_weight` knob to dial between identity fidelity vs style freedom.
- * BEST option for "paint this person in art style X" use case.
+ * Kontext Pro — identity-preserving style transfer for humans ($0.04/image)
+ * PROVEN to work well with V2 identity-first prompts.
+ * This is the model that produced our best results in the very first session.
  */
-const PULID_FLUX = "fal-ai/flux-pulid" as const;
+const KONTEXT_PRO = "fal-ai/flux-pro/kontext" as const;
 
 /** Kontext LoRA — custom LoRA weights for pet style adherence ($0.035/MP) */
 const KONTEXT_LORA = "fal-ai/flux-kontext-lora" as const;
-
-/**
- * Kontext Pro — fallback for pets without LoRA ($0.04/image)
- * Still used as pet fallback because PuLID is designed for human faces.
- */
-const KONTEXT_PRO = "fal-ai/flux-pro/kontext" as const;
 
 // ─── Pipeline type tracking ─────────────────────────────────────────────────
 
 /**
  * Which fal.ai pipeline was used for a generation.
  * Must be stored so the polling route knows which endpoint to check.
+ *
+ * V11: Removed "pulid" — back to Kontext Pro for all humans.
  */
-export type PipelineType = "pulid" | "kontext-lora" | "kontext-pro";
+export type PipelineType = "kontext-pro" | "kontext-lora";
 
 /**
  * Determine the fal.ai model endpoint from pipeline type.
  */
 function getModelEndpoint(pipeline: PipelineType): string {
   switch (pipeline) {
-    case "pulid":
-      return PULID_FLUX;
     case "kontext-lora":
       return KONTEXT_LORA;
     case "kontext-pro":
@@ -62,7 +54,7 @@ export interface GenerationParams {
   numInferenceSteps?: number;
   /** Transformation intensity — used by LoRA pipeline only */
   strength?: number;
-  /** PuLID identity weight (0-1). Higher = more identity, less style freedom */
+  /** PuLID identity weight — UNUSED in V11 (kept for interface compat) */
   idWeight?: number;
   /** Seed for reproducibility */
   seed?: number;
@@ -76,10 +68,13 @@ export interface SubmitResult {
 /**
  * Submit a generation job to the appropriate fal.ai pipeline.
  *
- * ROUTING RULES (V10 — PuLID Flux):
- * - Human portraits → PuLID Flux (identity-preserving generation)
- * - Pet portraits with LoRA → Kontext LoRA (trained style LoRAs)
- * - Pet portraits without LoRA → Kontext Pro (fallback — PuLID is for human faces)
+ * V11 ROUTING — Back to Basics:
+ * - ALL humans → Kontext Pro (proven identity preservation with V2 prompts)
+ * - Pets with LoRA → Kontext LoRA (trained style LoRAs)
+ * - Pets without LoRA → Kontext Pro (fallback)
+ *
+ * REMOVED: PuLID Flux (V10) — generated beautiful art but lost facial identity completely.
+ * REMOVED: Flux Dev img2img (V9) — destroyed identity at high strength.
  */
 export async function submitGeneration(
   params: GenerationParams
@@ -97,7 +92,7 @@ export async function submitGeneration(
       ],
       guidance_scale: params.guidanceScale ?? 2.5,
       num_inference_steps: params.numInferenceSteps ?? 30,
-      strength: 0.88,
+      strength: params.strength ?? 0.88,
       output_format: "jpeg",
       resolution_mode: "match_input",
       ...(params.seed !== undefined && { seed: params.seed }),
@@ -108,28 +103,9 @@ export async function submitGeneration(
     return { requestId: result.request_id, pipeline: "kontext-lora" };
   }
 
-  if (params.subjectType === "human") {
-    // ─── PuLID Flux: Identity-preserving generation (HUMANS) ───
-    // PuLID takes a reference face image and generates a new image from the
-    // text prompt while preserving that person's facial identity.
-    // id_weight controls the balance: higher = more identity, lower = more style.
-    const pulidInput: Record<string, unknown> = {
-      reference_image_url: params.imageUrl,
-      prompt: params.prompt,
-      id_weight: params.idWeight ?? 0.7,
-      guidance_scale: params.guidanceScale ?? 4.0,
-      num_inference_steps: params.numInferenceSteps ?? 30,
-      max_sequence_length: "512",
-      output_format: "jpeg",
-      ...(params.seed !== undefined && { seed: params.seed }),
-    };
-    const result = await fal.queue.submit(PULID_FLUX, {
-      input: pulidInput as never,
-    });
-    return { requestId: result.request_id, pipeline: "pulid" };
-  }
-
-  // ─── Kontext Pro: Pet fallback (no LoRA trained for this style) ───
+  // ─── Kontext Pro: Humans + Pet fallback ───
+  // NOTE: Kontext Pro does NOT support num_inference_steps or strength params.
+  // Only guidance_scale controls the style/identity balance.
   const kontextInput: Record<string, unknown> = {
     image_url: params.imageUrl,
     prompt: params.prompt,

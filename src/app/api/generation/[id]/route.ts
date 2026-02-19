@@ -18,15 +18,12 @@ interface GenerationStatusResponse {
 
 /**
  * Derive which fal.ai pipeline was used from the generation record.
- * This is deterministic from subject_type + style LoRA availability.
+ * V11: All humans → Kontext Pro. Pets with LoRA → Kontext LoRA. Else → Kontext Pro.
  */
 function derivePipeline(
   subjectType: string,
   styleSlug: string | undefined
 ): PipelineType {
-  if (subjectType === "human") {
-    return "pulid";
-  }
   if (subjectType === "pet" && styleSlug) {
     const config = getStyleConfig(styleSlug);
     if (config.loraUrl) {
